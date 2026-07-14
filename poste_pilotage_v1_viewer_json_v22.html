@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Poste de pilotage V1 — V22</title>
+<style>
+:root{--bg:#000;--panel:#080808;--panel2:#111;--text:#fff;--muted:#a9a9a9;--yellow:#ffd400;--yellow2:#ffea61;--yellowSoft:rgba(255,212,0,.18);--grid:#252525;--grid2:#141414;--leftw:320px;--rightw:420px;--rightwWide:min(50vw,760px);--headerh:126px;--axish:52px;}
+*{box-sizing:border-box;-webkit-user-select:none;user-select:none}
+html,body{margin:0;height:100%;overflow:hidden;background:#000;color:#fff;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+#app{display:grid;grid-template-columns:var(--leftw) minmax(0,1fr) var(--rightw);grid-template-rows:var(--headerh) 1fr;height:100vh;}
+#app.panelWide{grid-template-columns:var(--leftw) minmax(0,1fr) var(--rightwWide);}
+#header{grid-column:1/4;grid-row:1;padding:14px 22px;border-bottom:1px solid #222;background:#000;z-index:20;}
+h1{margin:0;font-size:22px;line-height:1.12;font-weight:850;letter-spacing:.01em}
+.sub{margin-top:5px;font-size:12px;color:#c9c9c9}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:16px}
+button,.fileLabel{background:#090909;border:1px solid #3b3b3b;color:#fff;border-radius:999px;padding:8px 13px;font-size:12px;line-height:1;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+button:hover,.fileLabel:hover{border-color:#777} button.active{border-color:var(--yellow);background:var(--yellow);color:#000}
+.fileLabel input{display:none} .sep{height:28px;width:1px;background:#333;margin:0 3px}
+#left{grid-column:1;grid-row:2;background:#050505;border-right:1px solid #222;overflow:hidden;position:relative;}
+#leftInner{position:absolute;left:0;top:0;width:100%;will-change:transform;padding-top:8px}
+#center{grid-column:2;grid-row:2;min-width:0;background:#000;position:relative;overflow:hidden}
+#axisWrap{position:absolute;top:0;left:0;right:0;height:var(--axish);border-bottom:1px solid #242424;background:#050505;overflow:hidden;z-index:8}
+#axisInner{position:absolute;left:0;top:0;height:var(--axish)} #axisContent{position:relative;height:var(--axish)}
+.axisLabel{position:absolute;top:16px;white-space:nowrap;color:#f3f3f3;font-weight:750;font-size:13px;line-height:1;transform:none}
+.axisTick{position:absolute;top:0;bottom:0;width:1px;background:#323232}
+#chartScroll{position:absolute;left:0;right:0;top:var(--axish);bottom:0;overflow:auto;background:#000;cursor:grab}
+#chartContent{position:relative;background:#000} #chartSvg{position:absolute;left:0;top:0;overflow:visible} #labelLayer{position:absolute;left:0;top:0;pointer-events:none}
+#labelLayer .labelBox,#labelLayer .labelPlain{position:absolute;white-space:nowrap;pointer-events:auto;cursor:pointer}
+#labelLayer .threadLabel{z-index:6}
+.labelBox{background:var(--yellow);color:#000;border-radius:8px;padding:4px 10px;font-weight:800;line-height:1.15;box-shadow:0 0 0 1px rgba(0,0,0,.25)}
+.labelPlain{color:#f3f3f3;font-weight:500;line-height:1.15;text-shadow:0 0 4px #000,0 0 6px #000}
+#right{grid-column:3;grid-row:2;background:linear-gradient(180deg,#090909 0%,#070707 100%);border-left:1px solid #2a2a2a;overflow:auto;padding:14px 16px 18px;box-shadow:inset 12px 0 24px rgba(0,0,0,.22)}
+.detailHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:4px 0 14px;padding:8px 4px 12px;border-bottom:1px solid #1e1e1e}
+.detailHead strong{font-size:15px;letter-spacing:.01em}
+#togglePanel{padding:7px 11px;font-size:11px}
+.card{background:linear-gradient(180deg,#0f0f0f 0%, #0b0b0b 100%);border:1px solid #2a2a2a;border-radius:20px;padding:16px 16px 15px;margin-bottom:14px;box-shadow:0 10px 22px rgba(0,0,0,.28)}
+.card.primary{border-color:rgba(255,212,0,.35);box-shadow:0 0 0 1px rgba(255,212,0,.06),0 14px 28px rgba(0,0,0,.34)}
+.kicker{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--yellow);margin-bottom:9px;font-weight:800}
+.card h2{font-size:19px;margin:0 0 10px;line-height:1.18} .empty,.small{font-size:13px;color:#b9b9b9;line-height:1.5}
+.meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0} .pill{border:1px solid #323232;background:linear-gradient(180deg,#0d0d0d,#090909);border-radius:12px;padding:10px;color:#9e9e9e;font-size:12px} .pill strong{display:block;color:#fff;font-size:13px;margin-top:4px;line-height:1.25}
+.agenda{border-left:4px solid var(--yellow);padding:3px 0 3px 12px;margin-top:12px;background:linear-gradient(90deg,rgba(255,212,0,.08),rgba(255,212,0,0) 72%);border-radius:2px}
+ul{padding-left:18px;margin:10px 0 0} li{margin:8px 0}
+.roleRow{position:absolute;left:14px;right:10px;border-bottom:1px solid #171717} .roleHead{position:absolute;left:0;right:0;height:30px;display:flex;align-items:center;gap:8px;color:var(--yellow);font-size:14px;font-weight:800;cursor:pointer;border-radius:8px;padding-left:8px} .roleHead:hover{background:rgba(255,212,0,.08)} .roleHead .count{margin-left:auto;background:#1b1b1b;border:1px solid #333;color:#d8d8d8;border-radius:999px;min-width:22px;font-size:11px;text-align:center;padding:2px 6px}
+.roleBig{position:absolute;left:18px;top:18px;color:var(--yellow);font-weight:850;font-size:34px;line-height:1.02;text-shadow:0 0 10px rgba(255,212,0,.18)}
+.subRoleItem{position:absolute;left:18px;right:12px;height:32px;display:flex;align-items:center;color:#fff;font-size:13px;font-weight:650;cursor:pointer;border-radius:10px;padding-left:10px;border:1px solid transparent}
+.subRoleItem:hover,.subRoleItem.selected{background:rgba(255,212,0,.13);border-color:rgba(255,212,0,.45);color:var(--yellow)}
+.subRoleItem .count{margin-left:auto;margin-right:8px;background:#1b1b1b;border:1px solid #333;color:#d8d8d8;border-radius:999px;min-width:22px;font-size:11px;text-align:center;padding:2px 6px}
+.threadItem{position:absolute;left:22px;right:8px;height:30px;display:flex;align-items:center;color:#ddd;font-size:12px;cursor:pointer;border-radius:8px;padding-left:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.threadItem.child{left:58px;color:#cfcfcf} .threadItem:hover,.threadItem.selected{background:rgba(255,212,0,.12);color:#fff} .threadItem .dot{width:10px;height:10px;border:2px solid var(--yellow);border-radius:50%;margin-right:10px;flex:0 0 auto}
+.lifePath,.rolePath,.threadPath{fill:none;stroke:var(--yellow);stroke-linecap:round;stroke-linejoin:round} .lifePath{stroke-width:7} .rolePath{stroke-width:5} .threadPath{cursor:pointer}
+.threadPath.hot{stroke-width:5.4} .threadPath.active{stroke-width:3.8} .threadPath.watch{stroke-width:2.4;opacity:.8} .threadPath.dormant,.threadPath.closed{stroke-width:1.6;opacity:.48} .threadPath.fragile{stroke:#fff;stroke-width:3.9} .threadPath:hover{filter:drop-shadow(0 0 8px rgba(255,212,0,.45)) drop-shadow(0 0 18px rgba(255,212,0,.2));}
+.threadPath.isolated{filter:drop-shadow(0 0 8px rgba(255,212,0,.8)) drop-shadow(0 0 20px rgba(255,212,0,.34));}
+.threadGroup{cursor:pointer}
+.threadRibbon{fill:var(--yellow);opacity:1;transition:filter .14s ease,opacity .14s ease}
+.threadRibbon.watch{opacity:.78}.threadRibbon.dormant,.threadRibbon.closed{opacity:.46}.threadRibbon.fragile{fill:#fff;opacity:.96}
+.threadCap{fill:var(--yellow);pointer-events:none}.threadCap.watch{opacity:.78}.threadCap.dormant,.threadCap.closed{opacity:.46}.threadCap.fragile{fill:#fff;opacity:.96}
+.threadHit{fill:none;stroke:transparent;pointer-events:stroke;stroke-linecap:round;stroke-linejoin:round}
+.threadGroup:hover .threadRibbon,.threadGroup:hover .threadCap{filter:drop-shadow(0 0 7px rgba(255,212,0,.72)) drop-shadow(0 0 16px rgba(255,212,0,.32))}
+.threadGroup.isolated .threadRibbon,.threadGroup.isolated .threadCap{filter:drop-shadow(0 0 8px rgba(255,212,0,.92)) drop-shadow(0 0 22px rgba(255,212,0,.42))}
+
+.threadLabel.isolated{outline:1px solid rgba(255,212,0,.72);outline-offset:2px;}
+.gridV{stroke:#222;stroke-width:1} .gridVMinor{stroke:#111;stroke-width:1} .gridH{stroke:#161616;stroke-width:1}
+.hist circle{fill:#f4f4f4;stroke:#111;stroke-width:1.8} .hist:hover circle{fill:var(--yellow);filter:drop-shadow(0 0 4px #fff) drop-shadow(0 0 14px rgba(255,255,255,.95));}
+.node circle,.node rect,.node polygon{fill:#000;stroke:var(--yellow);stroke-width:2.2} .node.vigilance polygon{stroke:#fff} .node text{fill:#fff;font-size:12px;font-weight:850;text-anchor:middle;dominant-baseline:middle;pointer-events:none} .node:hover circle,.node:hover rect,.node:hover polygon{filter:drop-shadow(0 0 7px rgba(255,212,0,.85)) drop-shadow(0 0 16px rgba(255,212,0,.6));}
+#thicknessInfo{color:var(--yellow2);min-width:100px;text-align:center;font-variant-numeric:tabular-nums}.loadStatus{margin-top:10px;border-radius:12px;padding:10px 12px;font-size:12px;line-height:1.4}.loadStatus.ok{border:1px solid rgba(255,212,0,.45);background:rgba(255,212,0,.09);color:#fff}.loadStatus.error{border:1px solid rgba(255,80,80,.55);background:rgba(255,80,80,.08);color:#ffb5b5}.hint{position:absolute;left:14px;bottom:12px;z-index:10;padding:8px 11px;border:1px solid #2b2b2b;border-radius:12px;color:#aaa;font-size:12px;background:rgba(0,0,0,.82)} ::selection{background:#000;color:#000}
+</style>
+</head>
+<body>
+<div id="app">
+<header id="header"><h1>Poste de pilotage V1</h1><div class="sub" id="subtitle">3 semaines de Contrôle / Revue</div><div class="toolbar"><label class="fileLabel">Charger JSON<input id="fileInput" type="file" accept=".json,application/json"></label><button id="modeTime" class="active">Zoom temps</button><button id="modeDetail">Zoom détail</button><button id="zoomOut">−</button><span id="zoomInfo" class="small">100%</span><button id="zoomIn">+</button><span id="thicknessInfo" class="small" title="MAJ + molette">Épaisseur 100%</span><button id="reset">Reset vue</button><div class="sep"></div><button id="allRoles">Tous les rôles</button><button data-filter="all" class="active">Tout</button><button data-filter="hot">Chaud</button><button data-filter="active">Actif</button><button data-filter="watch">Veille</button><button data-filter="dormant">Dormant</button></div></header>
+<aside id="left"><div id="leftInner"></div></aside>
+<main id="center"><div id="axisWrap"><div id="axisInner"><div id="axisContent"></div></div></div><div id="chartScroll"><div id="chartContent"><svg id="chartSvg"></svg><div id="labelLayer"></div></div></div><div class="hint">CTRL + molette = zoom temps · ALT + molette = zoom détail · MAJ + molette = épaisseur · glisser = déplacer · double-clic fil = isoler / restaurer</div></main>
+<aside id="right"><div class="detailHead"><div><div class="kicker">Panneau</div><strong>Détail / synthèse</strong></div><button id="togglePanel">Panneau large</button></div><div id="detail"><div class="card primary"><div class="kicker">Prototype V22</div><h2>Chargement</h2><p class="empty">Les données sont intégrées. Tu peux aussi charger un autre JSON.</p></div></div></aside>
+</div>
+<script id="embedded-data" type="application/json">{}</script>
+<script>
+const months=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+const monthsShort=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
+let DATA=null, filter="all", focusLane=null, subRoleFocus=null, selectedId=null, isolatedThreadId=null;
+let pxPerDay=54, rowH=34, zoomMode="time", strokeScale=1, panelWide=false;
+const branchW=340, leftRootX=24, roleX=130, roleLabelX=170, rightPad=280;
+const app=document.getElementById("app"), togglePanelBtn=document.getElementById("togglePanel"), chartScroll=document.getElementById("chartScroll"), chartContent=document.getElementById("chartContent"), chartSvg=document.getElementById("chartSvg"), labelLayer=document.getElementById("labelLayer"), axisInner=document.getElementById("axisInner"), axisContent=document.getElementById("axisContent"), leftInner=document.getElementById("leftInner"), detail=document.getElementById("detail"), subtitle=document.getElementById("subtitle"), zoomInfo=document.getElementById("zoomInfo"), thicknessInfo=document.getElementById("thicknessInfo");
+function syncPanelWidth(){app.classList.toggle("panelWide",panelWide); if(togglePanelBtn) togglePanelBtn.textContent=panelWide?"Panneau normal":"Panneau large";}
+if(togglePanelBtn){togglePanelBtn.onclick=()=>{panelWide=!panelWide; syncPanelWidth();}; syncPanelWidth();}
+
+function totalDaysForData(){
+  if(!DATA || !DATA.meta || !DATA.meta.period) return 30;
+  return Math.max(1, (end()-start())/dayMs());
+}
+function fitPxPerDay(){
+  const available = Math.max(320, chartScroll.clientWidth - branchW - rightPad - 24);
+  return Math.max(0.35, available / totalDaysForData());
+}
+function minPxPerDay(){
+  return fitPxPerDay();
+}
+function fitFullPeriod(){
+  if(!DATA) return;
+  pxPerDay = fitPxPerDay();
+  rowH = Math.max(22, Math.min(rowH || 34, 34));
+  render();
+  chartScroll.scrollLeft = 0;
+  chartScroll.scrollTop = 0;
+}
+
+let layout={rows:[],lanes:[],roleMid:{},roleStart:{},yByThread:{},height:1000,width:1600};
+let dragging=false,last={x:0,y:0};
+function E(n,a={}){const e=document.createElementNS("http://www.w3.org/2000/svg",n);for(const[k,v]of Object.entries(a))e.setAttribute(k,v);return e}
+function H(tag,cls="",txt=""){const e=document.createElement(tag);if(cls)e.className=cls;if(txt)e.textContent=txt;return e}
+function D(s){if(!s)return null;const d=new Date(s);return isNaN(d)?null:d} function dayMs(){return 86400000} function start(){return D(DATA.meta.period.start)} function end(){return D(DATA.meta.period.end)} function pad2(n){return String(n).padStart(2,"0")} function dateLabel(d,h=false,compact=false){let s=compact?`${d.getDate()} ${monthsShort[d.getMonth()]}`:`${d.getDate()} ${months[d.getMonth()]}`; if(h)s+=` ${pad2(d.getHours())}h`; return s} function fmt(s){const d=D(s);return d?dateLabel(d,d.getHours()!=0||d.getMinutes()!=0):"—"} function xDate(d){return branchW + ((d-start())/dayMs())*pxPerDay}
+function dateFromX(x){
+  const ratio=(x-branchW)/Math.max(.0001,pxPerDay);
+  const ms=start().getTime()+ratio*dayMs();
+  return new Date(Math.max(start().getTime(),Math.min(end().getTime(),ms)));
+}
+const activityCache=new Map();
+const laneActivityCache=new Map();
+
+function scaledWidth(w){return +Math.max(.55,Math.min(36,w*strokeScale)).toFixed(2)}
+function baseThreadWidth(t){
+  const h=Math.max(1,t.heat||1);
+  let w=1.05*Math.pow(1.78,h-1)+0.45;
+  if(t.state==="fragile")w=Math.max(w,4.9);
+  if(t.state==="watch")w*=0.92;
+  if(t.state==="dormant"||t.state==="closed")w*=0.72;
+  return +w.toFixed(2);
+}
+function threadWidth(t){return scaledWidth(baseThreadWidth(t))}
+function baseRoleWidth(lane){
+  if(currentView()==='detail'){
+    let w=2.1;
+    visibleThreads().filter(t=>t.lane===lane).forEach(t=>w=Math.max(w,baseThreadWidth(t)));
+    return w;
+  }
+  const h=Math.max(1,roleHeat(lane)||1);
+  return +(1.35*Math.pow(1.72,h-1)+0.55).toFixed(2);
+}
+function roleWidth(lane){return scaledWidth(baseRoleWidth(lane))}
+function laneNames(){return DATA.visualConfig?.lanes || [...new Set(DATA.threads.map(t=>t.lane))]}
+function threadById(id){return (DATA&&Array.isArray(DATA.threads))?DATA.threads.find(t=>t.id===id):null}
+function ancestorChainIds(id){
+  const ids=new Set();
+  const guard=new Set();
+  let current=threadById(id);
+  while(current&&!guard.has(current.id)){
+    guard.add(current.id);
+    ids.add(current.id);
+    current=current.parentId?threadById(current.parentId):null;
+  }
+  return ids;
+}
+function toggleThreadIsolation(id){
+  const t=threadById(id);
+  if(!t)return;
+  isolatedThreadId=(isolatedThreadId===id)?null:id;
+  if(isolatedThreadId)focusLane=t.lane;
+  render();
+  showThread(id);
+}
+function visibleThreads(){
+  if(isolatedThreadId){
+    const chain=ancestorChainIds(isolatedThreadId);
+    return DATA.threads.filter(t=>chain.has(t.id));
+  }
+  return DATA.threads.filter(t=>{
+    const matchState=(filter==="all"||t.state===filter);
+    const matchLane=(!focusLane||t.lane===focusLane);
+    const matchRole=(!subRoleFocus || t.rolePrimary===subRoleFocus || (t.roleSecondary||[]).includes(subRoleFocus));
+    return matchState && matchLane && matchRole;
+  });
+} function topLevelThreads(lane){return visibleThreads().filter(t=>t.lane===lane&&!t.parentId)} function childThreads(parentId){return visibleThreads().filter(t=>t.parentId===parentId)} function visibleLaneNames(){const set=new Set(visibleThreads().map(t=>t.lane));return laneNames().filter(l=>set.has(l))} function roleHeat(lane){let h=1;visibleThreads().filter(t=>t.lane===lane).forEach(t=>h=Math.max(h,t.heat||1));return h}
+function historyFor(id){return (DATA.history||[]).filter(h=>h.threadId===id)} function nodesFor(id){return (DATA.nodes||[]).filter(n=>n.threadId===id)}
+function cleanDates(items){return items.filter(d=>d instanceof Date && !isNaN(d))}
+function minDate(items){const ds=cleanDates(items);return ds.length?new Date(Math.min(...ds)):null}
+function maxDate(items){const ds=cleanDates(items);return ds.length?new Date(Math.max(...ds)):null}
+function firstHistoryDate(t){return minDate(historyFor(t.id).map(h=>D(h.date)))}
+function lastHistoryDate(t){return maxDate(historyFor(t.id).map(h=>D(h.date)))}
+function firstNodeDate(t){return minDate(nodesFor(t.id).map(n=>D(n.date||n.deadline)))}
+function lastNodeDate(t){return maxDate(nodesFor(t.id).map(n=>D(n.date||n.deadline)))}
+function threadOwnStart(t){return firstHistoryDate(t)||firstNodeDate(t)||D(t.startDate)||start()}
+function threadOwnEnd(t){
+  const ownStart=threadOwnStart(t);
+  const histEnd=lastHistoryDate(t);
+  const nodeEnd=lastNodeDate(t);
+  const explicitEnd=D(t.endDate);
+  if(t.state==='closed') return histEnd||nodeEnd||explicitEnd||ownStart;
+  if(t.state==='dormant' && histEnd) return maxDate([histEnd,nodeEnd,ownStart])||ownStart;
+  return maxDate([explicitEnd,histEnd,nodeEnd,ownStart])||ownStart;
+}
+function renderedChildren(parentId){return visibleThreads().filter(t=>t.parentId===parentId)}
+function threadRange(t,visited=new Set()){
+  if(!t) return [start(),end()];
+  if(visited.has(t.id)) return [threadOwnStart(t),threadOwnEnd(t)];
+  const next=new Set(visited);next.add(t.id);
+  let starts=[threadOwnStart(t)], ends=[threadOwnEnd(t)];
+  renderedChildren(t.id).forEach(c=>{const [cs,ce]=threadRange(c,next);starts.push(cs);ends.push(ce)});
+  return [minDate(starts)||start(),maxDate(ends)||end()];
+}
+function currentView(){return focusLane?"detail":"overview"}
+function computeLayout(){
+  const lanes=visibleLaneNames();
+  const rows=[], roleMid={}, roleStart={}, yByThread={};
+  let y=currentView()==='detail'?84:70;
+  if(currentView()==='overview'){
+    lanes.forEach(lane=>{rows.push({type:'role',lane,y});roleStart[lane]=y;roleMid[lane]=y;y+=74});
+  }else{
+    const visible=visibleThreads();
+    const visibleIds=new Set(visible.map(t=>t.id));
+    const byParent=new Map();
+    visible.forEach(t=>{const key=(t.parentId&&visibleIds.has(t.parentId))?t.parentId:'__root__';if(!byParent.has(key))byParent.set(key,[]);byParent.get(key).push(t)});
+    const sortThreads=list=>list.sort((a,b)=>threadOwnStart(a)-threadOwnStart(b)||String(a.title).localeCompare(String(b.title),'fr'));
+    const append=(t,lane,depth,parent)=>{
+      rows.push({type:'thread',thread:t,lane,y,child:depth>0,parent:parent||null,depth});
+      yByThread[t.id]=y;
+      y+=rowH;
+      sortThreads(byParent.get(t.id)||[]).forEach(c=>append(c,lane,depth+1,t));
+    };
+    lanes.forEach(lane=>{
+      const roleY=72;roleStart[lane]=roleY;roleMid[lane]=roleY;y=112;
+      const roots=sortThreads((byParent.get('__root__')||[]).filter(t=>t.lane===lane));
+      roots.forEach(t=>append(t,lane,0,null));
+      y+=rowH*.8;
+    });
+  }
+  const days=(end()-start())/dayMs();
+  layout={rows,lanes,roleMid,roleStart,yByThread,height:Math.max(700,y+80),width:branchW+days*pxPerDay+rightPad};
+}
+function clear(){chartSvg.innerHTML=''; labelLayer.innerHTML=''; axisContent.innerHTML=''; leftInner.innerHTML='';}
+function setSizes(){chartContent.style.width=layout.width+'px'; chartContent.style.height=layout.height+'px'; chartSvg.setAttribute('width',layout.width); chartSvg.setAttribute('height',layout.height); labelLayer.style.width=layout.width+'px'; labelLayer.style.height=layout.height+'px'; axisInner.style.width=layout.width+'px'; axisContent.style.width=layout.width+'px';}
+function stepInfo(){
+  if(pxPerDay>=240)return {days:0.25,hour:true,mode:'quarter'};
+  if(pxPerDay>=140)return {days:0.5,hour:true,mode:'half'};
+  if(pxPerDay>=70)return {days:1,hour:false,mode:'day'};
+  if(pxPerDay>=34)return {days:2,hour:false,mode:'twoday'};
+  if(pxPerDay>=18)return {days:7,hour:false,mode:'week'};
+  if(pxPerDay>=8)return {days:15,hour:false,mode:'fortnight'};
+  return {days:15,hour:false,mode:'fortnight'};
+}
+function axisLabelText(d,info,prevDate){
+  if(info.hour) return dateLabel(d,true,true);
+  if(info.mode==='fortnight'){
+    const isMonthStart = !prevDate || prevDate.getMonth()!==d.getMonth() || prevDate.getFullYear()!==d.getFullYear() || d.getDate()<=3;
+    if(isMonthStart) return `${d.getDate()} ${monthsShort[d.getMonth()]}${(!prevDate || prevDate.getFullYear()!==d.getFullYear())?` ${d.getFullYear()}`:''}`;
+    return pad2(d.getDate());
+  }
+  if(info.mode==='week'){
+    const isMonthStart = !prevDate || prevDate.getMonth()!==d.getMonth() || prevDate.getFullYear()!==d.getFullYear();
+    return isMonthStart ? `${d.getDate()} ${monthsShort[d.getMonth()]}` : `${d.getDate()}`;
+  }
+  if(info.mode==='twoday') return `${d.getDate()} ${monthsShort[d.getMonth()]}`;
+  return dateLabel(d,false,true);
+}
+function renderAxis(){
+  const info=stepInfo();
+  const total=(end()-start())/dayMs();
+  let prevDate=null;
+  for(let i=0;i<=total+0.001;i+=info.days){
+    const d=new Date(start().getTime()+i*dayMs());
+    const x=xDate(d);
+    const tick=H('div','axisTick');
+    tick.style.left=x+'px';
+    axisContent.appendChild(tick);
+    const labelText=axisLabelText(d,info,prevDate);
+    const lab=H('div','axisLabel',labelText);
+    lab.style.left=(x+6)+'px';
+    if(info.mode==='fortnight') lab.style.fontSize='11px';
+    axisContent.appendChild(lab);
+    chartSvg.appendChild(E('line',{x1:x,y1:0,x2:x,y2:layout.height,class:i%1===0?'gridV':'gridVMinor'}));
+    prevDate=d;
+  }
+  if(currentView()==='detail'){
+    layout.rows.forEach(r=>{chartSvg.appendChild(E('line',{x1:0,y1:r.y+14,x2:layout.width,y2:r.y+14,class:'gridH'}));});
+  }
+}
+function render(){if(!DATA)return; activityCache.clear();laneActivityCache.clear(); computeLayout(); clear(); setSizes(); renderAxis(); renderChart(); renderSidebar(); syncScroll(); const isolated=isolatedThreadId?threadById(isolatedThreadId):null; subtitle.textContent=`${DATA.meta.title||'Poste de pilotage'} · ${dateLabel(start())} → ${dateLabel(end())}${focusLane?' · focus : '+focusLane:''}${isolated?' · isolé : '+isolated.title:''}`; zoomInfo.textContent=(zoomMode==='time'?Math.round(pxPerDay/54*100):Math.round(rowH/34*100))+'%';if(thicknessInfo)thicknessInfo.textContent='Épaisseur '+Math.round(strokeScale*100)+'%';}
+function rootY(){if(focusLane) return layout.roleMid[focusLane]||72; return layout.rows.length?layout.rows[Math.floor(layout.rows.length/2)].y:300;}
+function curveSpan(mult=1){
+  const base=currentView()==='overview'?220:180;
+  const zoomBias=pxPerDay<18 ? 1.35 : pxPerDay<36 ? 1.12 : 0.92;
+  const v=Math.max(78, Math.min(260, base*zoomBias - Math.max(0,pxPerDay-54)*0.28));
+  return v*mult;
+}
+function flowSpan(sx,targetX,mult=1){
+  const dist=Math.max(40,targetX-sx);
+  const zoomLean=pxPerDay<16 ? 1.45 : pxPerDay<32 ? 1.18 : 0.94;
+  return Math.max(54, Math.min(240, dist*0.42*zoomLean))*mult;
+}
+function pathRootToRole(lane){const y=layout.roleMid[lane]; const c=curveSpan(1); return `M0 ${rootY()} L${leftRootX} ${rootY()} C${leftRootX+c*0.34} ${rootY()}, ${roleX-c*0.8} ${y}, ${roleX} ${y}`;}
+function roleLabelWidth(text){return currentView()==='detail' ? Math.max(120, text.length*14+34) : Math.max(92, text.length*10+26)}
+function roleEndX(lane){return roleLabelX + roleLabelWidth(lane)}
+function laneRange(lane){let ds=[]; visibleThreads().filter(t=>t.lane===lane).forEach(t=>{const[a,b]=threadRange(t); ds.push(a,b)}); return [new Date(Math.min(...ds)),new Date(Math.max(...ds))]}
+function pathRoleToTimeline(lane,endX){const y=layout.roleMid[lane], sx=roleEndX(lane), c=curveSpan(.9), ex=Math.max(sx+c,endX); return `M${sx} ${y} C${sx+c*0.35} ${y}, ${sx+c*0.7} ${y}, ${sx+c} ${y} L${ex} ${y}`;}
+function roleTimelineGeom(lane,endX){
+  const y=layout.roleMid[lane],sourceX=roleEndX(lane),c=curveSpan(.9),xStart=sourceX+c,xEnd=Math.max(xStart,endX);
+  return {
+    d:`M${sourceX} ${y} C${sourceX+c*.35} ${y}, ${sourceX+c*.70} ${y}, ${xStart} ${y} L${xEnd} ${y}`,
+    sourceX,sourceY:y,cp1X:sourceX+c*.35,cp1Y:y,cp2X:sourceX+c*.70,cp2Y:y,
+    xStart,yStart:y,xEnd,yEnd:y,rangeStart:sourceX,rangeEnd:xEnd
+  };
+}
+
+function xHistMin(t){const d=firstHistoryDate(t);return d||threadOwnStart(t)}
+function pathThreadFromRole(t,y){
+  const sourceX=Math.max(branchW+18,xDate(threadOwnStart(t)));
+  const sourceY=layout.roleMid[t.lane];
+  const c=flowSpan(sourceX,sourceX+180,.96);
+  const bendEnd=sourceX+c;
+  const cp1X=sourceX+c*.38, cp1Y=sourceY;
+  const cp2X=bendEnd-c*.46, cp2Y=y;
+  const x2=Math.max(bendEnd+24,xDate(threadRange(t)[1]));
+  return {
+    d:`M${sourceX} ${sourceY} C${cp1X} ${cp1Y}, ${cp2X} ${cp2Y}, ${bendEnd} ${y} L${x2} ${y}`,
+    sourceX,sourceY,cp1X,cp1Y,cp2X,cp2Y,
+    xStart:bendEnd,yStart:y,xEnd:x2,yEnd:y,
+    rangeStart:sourceX,rangeEnd:x2
+  };
+}
+function pathChildThread(t,row,y,parentGeom){
+  const p=row.parent;
+  const fallbackY=layout.yByThread[p.id]??layout.roleMid[t.lane];
+  const geom=parentGeom||pathThreadFromRole(p,fallbackY);
+  const rawSource=xDate(threadOwnStart(t));
+  const sourceX=Math.max(geom.rangeStart,Math.min(rawSource,geom.rangeEnd));
+  const sourceY=pointYOnThread(geom,sourceX);
+  const c=flowSpan(sourceX,sourceX+170,.88);
+  const bendEnd=sourceX+c;
+  const cp1X=sourceX+c*.38, cp1Y=sourceY;
+  const cp2X=bendEnd-c*.48, cp2Y=y;
+  const x2=Math.max(bendEnd+22,xDate(threadRange(t)[1]));
+  return {
+    d:`M${sourceX} ${sourceY} C${cp1X} ${cp1Y}, ${cp2X} ${cp2Y}, ${bendEnd} ${y} L${x2} ${y}`,
+    sourceX,sourceY,cp1X,cp1Y,cp2X,cp2Y,
+    xStart:bendEnd,yStart:y,xEnd:x2,yEnd:y,
+    rangeStart:sourceX,rangeEnd:x2
+  };
+}
+function cubicValue(a,b,c,d,t){
+  const u=1-t;
+  return u*u*u*a+3*u*u*t*b+3*u*t*t*c+t*t*t*d;
+}
+function pointYOnThread(geom,x){
+  if(!geom)return 0;
+  if(x<=geom.sourceX)return geom.sourceY;
+  if(x>=geom.xStart)return geom.yStart;
+  let lo=0,hi=1;
+  for(let i=0;i<32;i++){
+    const mid=(lo+hi)/2;
+    const bx=cubicValue(geom.sourceX,geom.cp1X,geom.cp2X,geom.xStart,mid);
+    if(bx<x)lo=mid;else hi=mid;
+  }
+  const t=(lo+hi)/2;
+  return cubicValue(geom.sourceY,geom.cp1Y,geom.cp2Y,geom.yStart,t);
+}
+
+
+function historyActivitySpec(h){
+  const d=D(h.date);if(!d)return null;
+  const type=String(h.type||'').toLowerCase();
+  const weights={milestone:3.8,bascule:3.5,event:3.0,meeting:2.7,validation:3.0,decision:3.1,closure:2.4,action:2.0,discussion:1.5,signal:1.35,review:1.25,snapshot:1.2,capture:1.0,memory:.8,idea:.8,vigilance:2.6};
+  const sigmas={milestone:9,bascule:8,event:5,meeting:4.5,validation:7,decision:7,closure:5,action:4.5,discussion:5,signal:5,review:6,snapshot:6,capture:4,memory:5,idea:5,vigilance:11};
+  return {date:d,weight:weights[type]||1.45,sigma:sigmas[type]||5};
+}
+function nodeActivitySpec(n){
+  const d=D(n.date||n.deadline);if(!d)return null;
+  const type=String(n.type||'task').toLowerCase();
+  let weight=type==='appointment'?4.0:type==='vigilance'?3.1:type==='document'?2.5:type==='decision'?3.2:2.0;
+  let sigma=type==='appointment'?4:type==='vigilance'?13:type==='document'?6:type==='decision'?8:8;
+  if(n.status==='scheduled'||n.status==='open'||n.status==='waiting')weight+=.45;
+  if(n.energy==='high')weight+=.45;
+  if(n.agendaStatus==='to_propose')weight+=.55;
+  return {date:d,weight,sigma};
+}
+function ownActivityEvents(t){
+  const arr=[];
+  historyFor(t.id).forEach(h=>{const e=historyActivitySpec(h);if(e)arr.push(e)});
+  nodesFor(t.id).forEach(n=>{const e=nodeActivitySpec(n);if(e)arr.push(e)});
+  const birth=threadOwnStart(t);if(birth)arr.push({date:birth,weight:.9,sigma:3});
+  return arr;
+}
+function activityEventsForThread(t,visited=new Set()){
+  if(!t)return [];
+  if(activityCache.has(t.id))return activityCache.get(t.id);
+  if(visited.has(t.id))return ownActivityEvents(t);
+  const next=new Set(visited);next.add(t.id);
+  const arr=ownActivityEvents(t);
+  renderedChildren(t.id).forEach(c=>{
+    activityEventsForThread(c,next).forEach(e=>arr.push({date:e.date,weight:e.weight*.52,sigma:e.sigma*1.12}));
+  });
+  activityCache.set(t.id,arr);
+  return arr;
+}
+function laneActivityEvents(lane){
+  if(laneActivityCache.has(lane))return laneActivityCache.get(lane);
+  const arr=[];
+  visibleThreads().filter(t=>t.lane===lane).forEach(t=>{
+    ownActivityEvents(t).forEach(e=>arr.push({date:e.date,weight:e.weight*.72,sigma:e.sigma*1.18}));
+  });
+  laneActivityCache.set(lane,arr);return arr;
+}
+function localActivity(events,date){
+  const ms=date.getTime();let sum=0;
+  for(const e of events){
+    const days=(ms-e.date.getTime())/dayMs();
+    const z=days/Math.max(.75,e.sigma);
+    if(Math.abs(z)>4.5)continue;
+    sum+=e.weight*Math.exp(-.5*z*z);
+  }
+  return sum;
+}
+function widthFromActivity(events,date,heat=1,state='active'){
+  const activity=localActivity(events,date);
+  const priority=.84+Math.max(0,(heat||1)-1)*.11;
+  let base=(state==='dormant'||state==='closed')?.62:.82;
+  if(state==='fragile')base=1.0;
+  let semantic=base+2.15*Math.pow(Math.max(0,activity*priority),.68);
+  if(state==='watch')semantic*=.94;
+  if(state==='dormant'||state==='closed')semantic*=.78;
+  if(state==='fragile')semantic=Math.max(semantic,2.2);
+  return scaledWidth(Math.min(20,semantic));
+}
+function threadWidthAt(t,date){return widthFromActivity(activityEventsForThread(t),date,t.heat||1,t.state||'active')}
+function laneWidthAt(lane,date){return widthFromActivity(laneActivityEvents(lane),date,roleHeat(lane),'active')}
+function centerlineSamples(geom){
+  const pts=[];
+  const curveN=Math.max(12,Math.min(42,Math.ceil(Math.max(20,geom.xStart-geom.sourceX)/10)));
+  for(let i=0;i<=curveN;i++){
+    const u=i/curveN;
+    pts.push({x:cubicValue(geom.sourceX,geom.cp1X,geom.cp2X,geom.xStart,u),y:cubicValue(geom.sourceY,geom.cp1Y,geom.cp2Y,geom.yStart,u)});
+  }
+  const d0=dateFromX(geom.xStart),d1=dateFromX(geom.xEnd);
+  const duration=Math.max(0,(d1-d0)/dayMs());
+  const lineN=Math.max(2,Math.min(240,Math.ceil(duration/2)));
+  for(let i=1;i<=lineN;i++){
+    const u=i/lineN;
+    pts.push({x:geom.xStart+(geom.xEnd-geom.xStart)*u,y:geom.yStart+(geom.yEnd-geom.yStart)*u});
+  }
+  return pts;
+}
+function buildRibbon(geom,widthFn){
+  const pts=centerlineSamples(geom);if(pts.length<2)return {d:'',maxWidth:1,last:pts[0],lastWidth:1};
+  const upper=[],lower=[],widths=[];let maxWidth=0;
+  for(let i=0;i<pts.length;i++){
+    const p=pts[i],prev=pts[Math.max(0,i-1)],next=pts[Math.min(pts.length-1,i+1)];
+    let dx=next.x-prev.x,dy=next.y-prev.y,len=Math.hypot(dx,dy)||1;
+    const nx=-dy/len,ny=dx/len;
+    const w=widthFn(dateFromX(p.x),p);widths.push(w);maxWidth=Math.max(maxWidth,w);
+    upper.push({x:p.x+nx*w/2,y:p.y+ny*w/2});lower.push({x:p.x-nx*w/2,y:p.y-ny*w/2});
+  }
+  let d=`M${upper[0].x.toFixed(2)} ${upper[0].y.toFixed(2)}`;
+  for(let i=1;i<upper.length;i++)d+=` L${upper[i].x.toFixed(2)} ${upper[i].y.toFixed(2)}`;
+  for(let i=lower.length-1;i>=0;i--)d+=` L${lower[i].x.toFixed(2)} ${lower[i].y.toFixed(2)}`;
+  d+=' Z';
+  return {d,maxWidth,last:pts[pts.length-1],lastWidth:widths[widths.length-1]};
+}
+function drawRibbonGroup({geom,state='active',widthFn,onClick,onDblClick,isolated=false}){
+  const ribbon=buildRibbon(geom,widthFn);
+  const group=E('g',{class:`threadGroup${isolated?' isolated':''}`});
+  const visible=E('path',{d:ribbon.d,class:`threadRibbon ${stateClass(state)}`});
+  const cap=E('circle',{cx:ribbon.last.x,cy:ribbon.last.y,r:Math.max(.4,ribbon.lastWidth/2),class:`threadCap ${stateClass(state)}`});
+  const hit=E('path',{d:geom.d,class:'threadHit',style:`stroke-width:${Math.max(18,ribbon.maxWidth+12)}`});
+  group.appendChild(visible);group.appendChild(cap);group.appendChild(hit);
+  group.onclick=e=>{e.stopPropagation();if(onClick)onClick(e)};
+  if(onDblClick)group.ondblclick=e=>{e.preventDefault();e.stopPropagation();onDblClick(e)};
+  chartSvg.appendChild(group);return group;
+}
+
+function laneThreads(lane){
+  return DATA.threads.filter(t=>t.lane===lane && (filter==="all"||t.state===filter));
+}
+function nodeImportance(n,t){
+  let s=0;
+  if(n.type==="appointment") s+=5;
+  if(n.type==="vigilance") s+=4;
+  if(n.type==="document") s+=3;
+  if(n.status==="open"||n.status==="scheduled"||n.status==="waiting") s+=2;
+  if(n.agendaStatus==="to_propose") s+=4;
+  if(n.agendaStatus==="optional_reminder") s+=2;
+  if((t.heat||0)>=4) s+=2;
+  return s;
+}
+function importantLaneNodes(lane){
+  const arr=[];
+  laneThreads(lane).forEach(t=>{
+    nodesFor(t.id).forEach(n=>{
+      const score=nodeImportance(n,t);
+      if(score>=5) arr.push({node:n,thread:t,score});
+    });
+  });
+  return arr.sort((a,b)=>{
+    const da=D(a.node.date||a.node.deadline)||new Date(0);
+    const db=D(b.node.date||b.node.deadline)||new Date(0);
+    return da-db || b.score-a.score;
+  }).slice(0,8);
+}
+function addOverviewNode(n,t,x,y,i){
+  const yy=y;
+  const g=E('g',{class:`node ${n.type||'task'}`,transform:`translate(${x},${yy})`});
+  g.onclick=e=>{e.stopPropagation();showNode(n.id)};
+  if(n.type==='appointment') g.appendChild(E('circle',{cx:0,cy:0,r:12}));
+  else if(n.type==='vigilance') g.appendChild(E('polygon',{points:'0,-14 14,12 -14,12'}));
+  else g.appendChild(E('rect',{x:-11,y:-11,width:22,height:22,rx:4}));
+  const tx=E('text',{x:0,y:1});
+  tx.textContent=n.symbol||'■';
+  g.appendChild(tx);
+  chartSvg.appendChild(g);
+}
+function showLaneSummary(lane){
+  const threads=laneThreads(lane).sort((a,b)=>(b.heat||0)-(a.heat||0));
+  const hot=threads.filter(t=>(t.heat||0)>=4);
+  const nodes=importantLaneNodes(lane);
+  detail.innerHTML=`<div class="card"><div class="kicker">Rôle / grand fil</div><h2>${lane}</h2><div class="meta"><div class="pill">Fils<strong>${threads.length}</strong></div><div class="pill">Chaleur max<strong>${roleHeat(lane)}/5</strong></div></div><p class="small">Vue large : ce fil agrège les sujets du rôle. Les nœuds visibles sont les rendez-vous, tâches ou vigilances les plus importants.</p><div class="agenda"><strong>Action</strong><br>Clique sur “Ouvrir le rôle” ou sur le nom du rôle à gauche pour voir les sous-fils.</div><p><button onclick="openLaneFromPanel('${lane.replace(/'/g,"\\'")}')">Ouvrir le rôle</button></p></div>
+  <div class="card"><div class="kicker">Fils chauds / actifs</div>${threads.length?'<ul>'+threads.slice(0,10).map(t=>`<li><strong>${t.title}</strong><br><span class="small">${t.summary||''}</span></li>`).join('')+'</ul>':'<p class="empty">Aucun fil.</p>'}</div>
+  <div class="card"><div class="kicker">Nœuds importants</div>${nodes.length?'<ul>'+nodes.map(o=>`<li><strong>${o.node.symbol||'•'} ${o.node.title}</strong><br><span class="small">${fmt(o.node.date||o.node.deadline)} · ${o.thread.title}</span></li>`).join('')+'</ul>':'<p class="empty">Aucun nœud important visible.</p>'}</div>`;
+}
+function openLaneFromPanel(lane){isolatedThreadId=null;focusLane=lane; subRoleFocus=null; render();}
+window.openLaneFromPanel=openLaneFromPanel;
+function renderChart(){
+  if(currentView()==='overview'){
+    chartSvg.appendChild(E('path',{d:`M0 ${rootY()} L${leftRootX} ${rootY()}`,class:'lifePath',style:`stroke-width:${scaledWidth(7)}`}));
+    layout.lanes.forEach(lane=>{
+      const y=layout.roleMid[lane],roleW=Math.max(1.2,roleWidth(lane));
+      const rolePath=E('path',{d:pathRootToRole(lane),class:'rolePath',style:`stroke-width:${roleW}`});
+      rolePath.onclick=()=>showLaneSummary(lane);chartSvg.appendChild(rolePath);
+      const [d1,d2]=laneRange(lane),geom=roleTimelineGeom(lane,xDate(d2));
+      drawRibbonGroup({geom,state:'active',widthFn:date=>laneWidthAt(lane,date),onClick:()=>showLaneSummary(lane)});
+      addRoleBox(lane,roleLabelX,y,true,()=>showLaneSummary(lane));
+      importantLaneNodes(lane).forEach((o,i)=>{const d=D(o.node.date||o.node.deadline);if(d)addOverviewNode(o.node,o.thread,xDate(d),y,i)});
+    });
+  }else{
+    chartSvg.appendChild(E('path',{d:`M0 ${rootY()} L${leftRootX} ${rootY()}`,class:'lifePath',style:`stroke-width:${scaledWidth(7)}`}));
+    layout.lanes.forEach(lane=>{
+      const y=layout.roleMid[lane],w=Math.max(1.2,roleWidth(lane));
+      chartSvg.appendChild(E('path',{d:pathRootToRole(lane),class:'rolePath',style:`stroke-width:${w}`}));
+      addRoleBox(lane,roleLabelX,y,true,()=>{isolatedThreadId=null;focusLane=null;subRoleFocus=null;render()},true);
+    });
+    const geometryById=new Map();
+    layout.rows.forEach(row=>{
+      const t=row.thread,y=row.y,parentGeom=row.child&&row.parent?geometryById.get(row.parent.id):null;
+      const geom=row.child?pathChildThread(t,row,y,parentGeom):pathThreadFromRole(t,y);
+      geometryById.set(t.id,geom);
+      drawRibbonGroup({geom,state:t.state||'active',widthFn:date=>threadWidthAt(t,date),isolated:isolatedThreadId===t.id,onClick:()=>showThread(t.id),onDblClick:()=>toggleThreadIsolation(t.id)});
+      addThreadLabel(t,row,geom,y);
+      historyFor(t.id).forEach(h=>{const d=D(h.date);if(!d)return;const x=xDate(d);if(x>=geom.rangeStart-2&&x<=geom.rangeEnd+2)addHistory(h,x,pointYOnThread(geom,x))});
+      nodesFor(t.id).forEach(n=>{const d=D(n.date||n.deadline),x=d?xDate(d):geom.xEnd;if(x>=geom.rangeStart-2&&x<=geom.rangeEnd+2)addNode(n,x,pointYOnThread(geom,x))});
+    });
+  }
+}
+function stateClass(s){return ['hot','active','watch','dormant','closed','fragile'].includes(s)?s:'active'}
+function addRoleBox(text,x,y,active,onClick,big=false){const div=H('div','labelBox',text); div.style.left=x+'px'; div.style.top=(y-(big?18:14))+'px'; div.style.fontSize=(big? (focusLane?22:16) : 16)+'px'; div.onclick=onClick; labelLayer.appendChild(div);}
+function addThreadLabel(t,row,geom,y){
+  const fs=Math.max(12,Math.min(17,rowH*.4));
+  const useBox=(t.heat>=4||row.child||t.parentId||t.id==='thread_anne_claude');
+  const cls=(useBox?'labelBox':'labelPlain')+' threadLabel'+(isolatedThreadId===t.id?' isolated':'');
+  const div=H('div',cls,t.title);
+  const naturalX=Math.max(geom.xStart+8,branchW+16);
+  div.dataset.naturalX=String(naturalX);
+  div.dataset.rangeStartX=String(geom.rangeStart??geom.sourceX??geom.xStart);
+  div.dataset.rangeEndX=String(geom.rangeEnd??geom.xEnd);
+  div.style.fontSize=fs+'px';div.style.left=naturalX+'px';div.style.top=(y-fs-14)+'px';
+  div.onclick=()=>showThread(t.id);div.ondblclick=e=>{e.preventDefault();e.stopPropagation();toggleThreadIsolation(t.id)};labelLayer.appendChild(div);
+}
+function addHistory(h,x,y){const g=E('g',{class:'hist',transform:`translate(${x},${y})`}); g.onclick=e=>{e.stopPropagation();showHistory(h.id)}; const c=E('circle',{cx:0,cy:0,r:8.5}); g.appendChild(c); chartSvg.appendChild(g);}
+function addNode(n,x,y){const g=E('g',{class:`node ${n.type||'task'}`,transform:`translate(${x},${y})`}); g.onclick=e=>{e.stopPropagation();showNode(n.id)}; if(n.type==='appointment'){g.appendChild(E('circle',{cx:0,cy:0,r:15}))} else if(n.type==='vigilance'){g.appendChild(E('polygon',{points:'0,-17 17,15 -17,15'}))} else {g.appendChild(E('rect',{x:-14,y:-14,width:28,height:28,rx:5}))} const tx=E('text',{x:0,y:1}); tx.textContent=n.symbol||'■'; g.appendChild(tx); chartSvg.appendChild(g);}
+function roleThreads(roleId){
+  return visibleThreads().filter(t=>t.rolePrimary===roleId || (t.roleSecondary||[]).includes(roleId));
+}
+function rolesForLane(lane){
+  const ids=new Set();
+  DATA.threads.filter(t=>t.lane===lane).forEach(t=>{
+    if(t.rolePrimary) ids.add(t.rolePrimary);
+    (t.roleSecondary||[]).forEach(r=>ids.add(r));
+  });
+  return (DATA.roles||[]).filter(r=>ids.has(r.id));
+}
+function renderSidebar(){
+  leftInner.innerHTML='';
+  leftInner.style.height=layout.height+'px';
+  if(currentView()==='overview'){
+    layout.lanes.forEach(lane=>{
+      const y=layout.roleMid[lane];
+      const role=H('div','roleRow');
+      role.style.top=(y-18)+'px';
+      role.style.height='34px';
+      const head=H('div','roleHead',lane);
+      head.onclick=()=>{isolatedThreadId=null;focusLane=(focusLane===lane?null:lane); subRoleFocus=null; render();};
+      const count=H('span','count',String(visibleThreads().filter(t=>t.lane===lane).length));
+      head.appendChild(count);
+      role.appendChild(head);
+      leftInner.appendChild(role);
+    });
+  } else {
+    const title=H('div','roleBig',focusLane);
+    leftInner.appendChild(title);
+
+    const roles=rolesForLane(focusLane);
+    let y=76;
+    const all=H('div','subRoleItem'+(!subRoleFocus?' selected':''),'Tous les rôles');
+    all.style.top=y+'px';
+    const allCount=H('span','count',String(DATA.threads.filter(t=>t.lane===focusLane).length));
+    all.appendChild(allCount);
+    all.onclick=()=>{isolatedThreadId=null;subRoleFocus=null; render();};
+    leftInner.appendChild(all);
+    y+=40;
+
+    roles.forEach(role=>{
+      const count=DATA.threads.filter(t=>t.lane===focusLane && (t.rolePrimary===role.id || (t.roleSecondary||[]).includes(role.id))).length;
+      if(count===0) return;
+      const item=H('div','subRoleItem'+(subRoleFocus===role.id?' selected':''),role.name);
+      item.style.top=y+'px';
+      const c=H('span','count',String(count));
+      item.appendChild(c);
+      item.onclick=()=>{isolatedThreadId=null;subRoleFocus=(subRoleFocus===role.id?null:role.id); render();};
+      leftInner.appendChild(item);
+      y+=40;
+    });
+  }
+}
+function syncScroll(){axisInner.style.transform=`translateX(${-chartScroll.scrollLeft}px)`; leftInner.style.transform=`translateY(${currentView()==='detail'? 0 : -chartScroll.scrollTop}px)`; refreshThreadLabelPositions();}
+function refreshThreadLabelPositions(){
+  if(currentView()!=='detail')return;
+  const viewLeft=chartScroll.scrollLeft;
+  const viewRight=viewLeft+chartScroll.clientWidth;
+  const pinnedLeft=viewLeft+12;
+  labelLayer.querySelectorAll('.threadLabel').forEach(el=>{
+    const natural=parseFloat(el.dataset.naturalX||'0');
+    const rangeStart=parseFloat(el.dataset.rangeStartX||natural);
+    const rangeEnd=parseFloat(el.dataset.rangeEndX||natural);
+    const visible=rangeEnd>=viewLeft-4&&rangeStart<=viewRight+4;
+    el.style.display=visible?'':'none';
+    if(!visible)return;
+    const width=el.offsetWidth||0;
+    const latestX=Math.max(natural,rangeEnd-width-8);
+    el.style.left=Math.min(Math.max(natural,pinnedLeft),latestX)+'px';
+  });
+}
+function roleName(id){const r=(DATA.roles||[]).find(x=>x.id===id);return r?r.name:'—'}
+function showThread(id){const t=DATA.threads.find(x=>x.id===id); const hist=historyFor(id).sort((a,b)=>D(a.date)-D(b.date)); const nodes=nodesFor(id); const links=(DATA.threadLinks||[]).filter(l=>l.source===id||l.target===id); detail.innerHTML=`<div class="card primary"><div class="kicker">Fil</div><h2>${t.title}</h2><div class="meta"><div class="pill">État<strong>${t.state}</strong></div><div class="pill">Chaleur<strong>${t.heat}/5</strong></div><div class="pill">Rôle<strong>${roleName(t.rolePrimary)}</strong></div><div class="pill">Ligne<strong>${t.lane}</strong></div></div><p>${t.summary||''}</p><div class="agenda"><strong>Prochaine action</strong><br>${t.nextAction||'—'}</div><p class="small"><strong>Risque :</strong> ${t.risk||'—'}</p></div><div class="card"><div class="kicker">Historique</div>${hist.length?'<ul>'+hist.map(h=>`<li><strong>${fmt(h.date)}</strong> — ${h.summary}<br><span class="small">${h.effect||''}</span></li>`).join('')+'</ul>':'<p class="empty">Pas encore d’historique.</p>'}</div><div class="card"><div class="kicker">Nœuds</div>${nodes.length?'<ul>'+nodes.map(n=>`<li><strong>${n.symbol||'•'} ${n.title}</strong><br><span class="small">${fmt(n.date||n.deadline)} · ${n.status||''}</span></li>`).join('')+'</ul>':'<p class="empty">Aucun nœud.</p>'}</div><div class="card"><div class="kicker">Liens</div>${links.length?'<ul>'+links.map(l=>{const other=DATA.threads.find(t=>t.id===(l.source===id?l.target:l.source)); return `<li><strong>${other?other.title:'—'}</strong><br><span class="small">${l.type||'lien'} — ${l.summary||''}</span></li>`}).join('')+'</ul>':'<p class="empty">Pas de lien transversal.</p>'}</div>`; }
+function showHistory(id){const h=(DATA.history||[]).find(x=>x.id===id), t=DATA.threads.find(x=>x.id===h.threadId); detail.innerHTML=`<div class="card"><div class="kicker">Historique</div><h2>${fmt(h.date)}</h2><p><strong>Fil :</strong> ${t?t.title:'—'}</p><div class="agenda"><strong>${h.summary||''}</strong><br>${h.effect||''}</div><p class="small">Type : ${h.type||'—'}</p></div>`; }
+function showNode(id){const n=(DATA.nodes||[]).find(x=>x.id===id), t=DATA.threads.find(x=>x.id===n.threadId); detail.innerHTML=`<div class="card"><div class="kicker">Nœud</div><h2>${n.symbol||'•'} ${n.title}</h2><div class="meta"><div class="pill">Type<strong>${n.type||'—'}</strong></div><div class="pill">Statut<strong>${n.status||'—'}</strong></div><div class="pill">Énergie<strong>${n.energy||'—'}</strong></div><div class="pill">Temps<strong>${n.duration||'—'}</strong></div></div><p><strong>Fil :</strong> ${t?t.title:'—'}</p><div class="agenda"><strong>Date / échéance</strong><br>${fmt(n.date||n.deadline)}</div></div>`; }
+function validateData(obj){if(!obj||typeof obj!=='object')throw new Error('JSON vide ou invalide');if(!obj.meta||!obj.meta.period)throw new Error('meta.period absent');if(!Array.isArray(obj.threads))throw new Error('threads absent');obj.roles=Array.isArray(obj.roles)?obj.roles:[];obj.history=Array.isArray(obj.history)?obj.history:[];obj.nodes=Array.isArray(obj.nodes)?obj.nodes:[];obj.threadLinks=Array.isArray(obj.threadLinks)?obj.threadLinks:[];obj.visualConfig=obj.visualConfig||{};return obj}
+function loadData(obj){DATA=validateData(obj);focusLane=null;subRoleFocus=null;isolatedThreadId=null;strokeScale=1;filter='all';document.querySelectorAll('button[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter==='all'));fitFullPeriod();const firstLane=visibleLaneNames()[0];if(firstLane)showLaneSummary(firstLane);}
+function showLoadError(err){console.error(err);detail.innerHTML=`<div class="card primary"><div class="kicker">Erreur JSON</div><h2>Le fichier n'a pas pu être chargé</h2><p class="empty">${String(err&&err.message?err.message:err)}</p></div>`}
+function loadText(txt){try{loadData(JSON.parse(txt))}catch(err){showLoadError(err)}}
+document.getElementById('fileInput').addEventListener('change',e=>{const input=e.currentTarget;const f=input.files&&input.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{loadText(String(r.result||''));input.value=''};r.onerror=()=>{showLoadError(r.error||new Error('Lecture impossible'));input.value=''};r.readAsText(f,'UTF-8')}); document.querySelectorAll('button[data-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.filter; subRoleFocus=null; isolatedThreadId=null; document.querySelectorAll('button[data-filter]').forEach(x=>x.classList.remove('active')); b.classList.add('active'); render();}); document.getElementById('allRoles').onclick=()=>{isolatedThreadId=null;focusLane=null; subRoleFocus=null; render();}; document.getElementById('modeTime').onclick=()=>{zoomMode='time'; document.getElementById('modeTime').classList.add('active'); document.getElementById('modeDetail').classList.remove('active')}; document.getElementById('modeDetail').onclick=()=>{zoomMode='detail'; document.getElementById('modeDetail').classList.add('active'); document.getElementById('modeTime').classList.remove('active')};
+function zoomTime(f){const center=(chartScroll.scrollLeft+chartScroll.clientWidth/2-branchW)/pxPerDay; pxPerDay=Math.max(minPxPerDay(),Math.min(380,pxPerDay*f)); render(); chartScroll.scrollLeft=branchW+center*pxPerDay-chartScroll.clientWidth/2;}
+function zoomDetail(f){const center=(chartScroll.scrollTop+chartScroll.clientHeight/2)/rowH; rowH=Math.max(22,Math.min(80,rowH*f)); render(); chartScroll.scrollTop=center*rowH-chartScroll.clientHeight/2;}
+document.getElementById('zoomIn').onclick=()=>zoomMode==='time'?zoomTimeAt(1.25):zoomDetailAt(1.18); document.getElementById('zoomOut').onclick=()=>zoomMode==='time'?zoomTimeAt(1/1.25):zoomDetailAt(1/1.18); document.getElementById('reset').onclick=()=>{isolatedThreadId=null;focusLane=null;subRoleFocus=null;rowH=34;strokeScale=1;fitFullPeriod();};
+chartScroll.addEventListener('scroll',syncScroll); chartScroll.addEventListener('mousedown',e=>{dragging=true; last={x:e.clientX,y:e.clientY,l:chartScroll.scrollLeft,t:chartScroll.scrollTop}; chartScroll.style.cursor='grabbing'; e.preventDefault();}); window.addEventListener('mouseup',()=>{dragging=false; chartScroll.style.cursor='grab';}); window.addEventListener('mousemove',e=>{if(!dragging)return; chartScroll.scrollLeft=last.l-(e.clientX-last.x); chartScroll.scrollTop=last.t-(e.clientY-last.y);}); function zoomTimeAt(f, clientX){
+  const rect=chartScroll.getBoundingClientRect();
+  const localX=clientX ? (clientX-rect.left) : chartScroll.clientWidth/2;
+  const centerDays=(chartScroll.scrollLeft + localX - branchW)/pxPerDay;
+  pxPerDay=Math.max(minPxPerDay(),Math.min(380,pxPerDay*f));
+  render();
+  chartScroll.scrollLeft=branchW + centerDays*pxPerDay - localX;
+}
+function zoomDetailAt(f, clientY){
+  const rect=chartScroll.getBoundingClientRect();
+  const localY=clientY ? (clientY-rect.top) : chartScroll.clientHeight/2;
+  const oldH=layout.height || chartScroll.scrollHeight || 1;
+  const ratio=(chartScroll.scrollTop + localY)/oldH;
+  rowH=Math.max(22,Math.min(80,rowH*f));
+  render();
+  chartScroll.scrollTop=ratio*layout.height - localY;
+}
+function scaleThickness(f){
+  strokeScale=Math.max(.4,Math.min(2.5,strokeScale*f));
+  render();
+}
+chartScroll.addEventListener('wheel',e=>{
+  const shiftOn=e.shiftKey||(e.getModifierState&&e.getModifierState('Shift'));
+  const altOn=e.altKey||(e.getModifierState&&e.getModifierState('Alt'));
+  if(shiftOn){
+    e.preventDefault();
+    scaleThickness(e.deltaY<0?1.10:1/1.10);
+  }else if(e.ctrlKey){
+    e.preventDefault();
+    zoomTimeAt(e.deltaY<0?1.12:1/1.12,e.clientX);
+  }else if(altOn||zoomMode==='detail'){
+    e.preventDefault();
+    zoomDetailAt(e.deltaY<0?1.10:1/1.10,e.clientY);
+  }
+},{passive:false}); window.addEventListener('dragstart',e=>e.preventDefault());
+try {
+  const embedded = JSON.parse(document.getElementById('embedded-data').textContent || '{}');
+  if (embedded && embedded.meta && embedded.threads) {
+    loadData(embedded);
+  } else {
+    detail.innerHTML = `<div class="card primary"><div class="kicker">V22</div><h2>Charge un JSON</h2><p class="empty">Cette version HTML ne contient pas de base embarquée. Clique sur “Charger JSON” puis sélectionne ton export.</p></div>`;
+  }
+} catch(e) {
+  detail.innerHTML = `<div class="card primary"><div class="kicker">V22</div><h2>Charge un JSON</h2><p class="empty">Cette version HTML ne contient pas de base embarquée. Clique sur “Charger JSON” puis sélectionne ton export.</p></div>`;
+}
+</script>
+</body></html>
