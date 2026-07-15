@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Poste de pilotage V1 — V25 chronologie et navigation</title>
+<title>Poste de pilotage V1 — V26 courbes et alternance</title>
 <style>
 :root{--bg:#000;--panel:#080808;--panel2:#111;--text:#fff;--muted:#a9a9a9;--yellow:#ffd400;--yellow2:#ffea61;--yellowSoft:rgba(255,212,0,.18);--grid:#252525;--grid2:#141414;--leftw:320px;--rightw:420px;--rightwDynamic:420px;--headerh:126px;--axish:92px;}
 *{box-sizing:border-box;-webkit-user-select:none;user-select:none}
@@ -86,7 +86,7 @@ ul{padding-left:18px;margin:10px 0 0} li{margin:8px 0}
 <header id="header"><h1>Poste de pilotage V1</h1><div class="sub" id="subtitle">3 semaines de Contrôle / Revue</div><div class="toolbar"><label class="fileLabel">Charger JSON<input id="fileInput" type="file" accept=".json,application/json"></label><button id="modeTime" class="active">Zoom temps</button><button id="modeDetail">Zoom détail</button><button id="zoomOut">−</button><span id="zoomInfo" class="small">100%</span><button id="zoomIn">+</button><span id="thicknessInfo" class="small" title="MAJ + molette">Épaisseur 100%</span><button id="reset">Reset vue</button><div class="sep"></div><button id="allRoles">Tous les rôles</button><button data-filter="all" class="active">Tout</button><button data-filter="hot">Chaud</button><button data-filter="active">Actif</button><button data-filter="watch">Veille</button><button data-filter="dormant">Dormant</button></div></header>
 <aside id="left"><div id="leftInner"></div></aside>
 <main id="center"><div id="axisWrap"><div id="axisInner"><div id="axisContent"></div></div></div><div id="chartScroll"><div id="chartContent"><svg id="chartSvg"></svg><div id="labelLayer"></div></div></div><div class="hint">CTRL + molette = zoom temps · ALT + molette = zoom détail · MAJ + molette = épaisseur · glisser = déplacer · double-clic fil = isoler / restaurer</div></main>
-<div id="nodeTooltip"></div><div id="panelResize" title="Glisser pour redimensionner le panneau"></div><aside id="right"><div class="detailHead"><div><div class="kicker">Panneau</div><strong>Détail / synthèse</strong></div><button id="togglePanel" title="Alterner entre largeur normale et 50 %">Panneau 50%</button></div><div id="detail"><div class="card primary"><div class="kicker">Prototype V25</div><h2>Chargement</h2><p class="empty">Les données sont intégrées. Tu peux aussi charger un autre JSON.</p></div></div></aside>
+<div id="nodeTooltip"></div><div id="panelResize" title="Glisser pour redimensionner le panneau"></div><aside id="right"><div class="detailHead"><div><div class="kicker">Panneau</div><strong>Détail / synthèse</strong></div><button id="togglePanel" title="Alterner entre largeur normale et 50 %">Panneau 50%</button></div><div id="detail"><div class="card primary"><div class="kicker">Prototype V26</div><h2>Chargement</h2><p class="empty">Les données sont intégrées. Tu peux aussi charger un autre JSON.</p></div></div></aside>
 </div>
 <script id="embedded-data" type="application/json">{}</script>
 <script>
@@ -164,8 +164,9 @@ function applyStoredView(state){
 const branchW=340, leftRootX=24, roleX=130, roleLabelX=170, rightPad=280;
 const app=document.getElementById("app"), togglePanelBtn=document.getElementById("togglePanel"), panelResize=document.getElementById("panelResize"), nodeTooltip=document.getElementById("nodeTooltip"), chartScroll=document.getElementById("chartScroll"), chartContent=document.getElementById("chartContent"), chartSvg=document.getElementById("chartSvg"), labelLayer=document.getElementById("labelLayer"), axisInner=document.getElementById("axisInner"), axisContent=document.getElementById("axisContent"), leftInner=document.getElementById("leftInner"), detail=document.getElementById("detail"), subtitle=document.getElementById("subtitle"), zoomInfo=document.getElementById("zoomInfo"), thicknessInfo=document.getElementById("thicknessInfo");
 function panelBounds(){
-  const max=Math.max(360,Math.min(window.innerWidth*.62,920));
-  const min=Math.max(300,Math.min(380,window.innerWidth*.28));
+  const leftWidth=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--leftw'))||320;
+  const max=Math.max(360,window.innerWidth-leftWidth-18);
+  const min=Math.max(280,Math.min(380,window.innerWidth*.28));
   return {min,max};
 }
 function applyPanelWidth(width){
@@ -333,29 +334,57 @@ function threadRange(t,visited=new Set()){
 function currentView(){return focusLane?"detail":"overview"}
 function computeLayout(){
   const lanes=visibleLaneNames();
-  const rows=[], roleMid={}, roleStart={}, yByThread={};
+  const rows=[],roleMid={},roleStart={},yByThread={};
   let y=currentView()==='detail'?84:70;
+
   if(currentView()==='overview'){
-    lanes.forEach(lane=>{rows.push({type:'role',lane,y});roleStart[lane]=y;roleMid[lane]=y;y+=74});
+    lanes.forEach(lane=>{
+      rows.push({type:'role',lane,y});
+      roleStart[lane]=y;roleMid[lane]=y;
+      y+=74;
+    });
   }else{
     const visible=visibleThreads();
     const visibleIds=new Set(visible.map(t=>t.id));
     const byParent=new Map();
-    visible.forEach(t=>{const key=(t.parentId&&visibleIds.has(t.parentId))?t.parentId:'__root__';if(!byParent.has(key))byParent.set(key,[]);byParent.get(key).push(t)});
+
+    visible.forEach(t=>{
+      const key=(t.parentId&&visibleIds.has(t.parentId))?t.parentId:'__root__';
+      if(!byParent.has(key))byParent.set(key,[]);
+      byParent.get(key).push(t);
+    });
+
     const sortThreads=list=>list.sort((a,b)=>threadOwnStart(a)-threadOwnStart(b)||String(a.title).localeCompare(String(b.title),'fr'));
-    const append=(t,lane,depth,parent)=>{
-      rows.push({type:'thread',thread:t,lane,y,child:depth>0,parent:parent||null,depth});
-      yByThread[t.id]=y;
-      y+=rowH;
-      sortThreads(byParent.get(t.id)||[]).forEach(c=>append(c,lane,depth+1,t));
+
+    const treeRows=(t,lane,depth,parent)=>{
+      const children=sortThreads([...(byParent.get(t.id)||[])]);
+      const upper=children.filter((_,i)=>i%2===0);
+      const lower=children.filter((_,i)=>i%2===1);
+      const out=[];
+
+      [...upper].reverse().forEach(c=>out.push(...treeRows(c,lane,depth+1,t)));
+      out.push({type:'thread',thread:t,lane,child:depth>0,parent:parent||null,depth});
+      lower.forEach(c=>out.push(...treeRows(c,lane,depth+1,t)));
+      return out;
     };
+
     lanes.forEach(lane=>{
-      const roleY=72;roleStart[lane]=roleY;roleMid[lane]=roleY;y=112;
+      roleStart[lane]=72;roleMid[lane]=72;y=112;
       const roots=sortThreads((byParent.get('__root__')||[]).filter(t=>t.lane===lane));
-      roots.forEach(t=>append(t,lane,0,null));
-      y+=rowH*.8;
+      roots.forEach(root=>{
+        const block=treeRows(root,lane,0,null);
+        block.forEach(row=>{
+          row.y=y;
+          rows.push(row);
+          yByThread[row.thread.id]=y;
+          y+=rowH;
+        });
+        y+=rowH*.35;
+      });
+      y+=rowH*.45;
     });
   }
+
   const days=(end()-start())/dayMs();
   layout={rows,lanes,roleMid,roleStart,yByThread,height:Math.max(700,y+80),width:branchW+days*pxPerDay+rightPad};
 }
@@ -457,22 +486,36 @@ function curveSpan(mult=1){
 }
 function flowSpan(sx,targetX,mult=1,verticalDelta=0){
   const vertical=Math.abs(verticalDelta);
-  // Décalage horizontal limité : la branche descend surtout verticalement.
-  const base=vertical<34?46:vertical<90?58:72;
-  return Math.max(38,Math.min(94,base*mult));
+  const radius=Math.max(34,Math.min(82,vertical*.24+34));
+  return radius*mult;
 }
 function organicCurveGeom(sourceX,sourceY,targetY,targetEndX,mult=1){
-  const span=flowSpan(sourceX,sourceX,mult,targetY-sourceY);
-  const bendEnd=sourceX+span;
-  const tangent=Math.max(14,Math.min(24,span*.30));
-  const cp1X=sourceX+tangent,cp1Y=sourceY;
-  const cp2X=bendEnd-tangent,cp2Y=targetY;
-  const xEnd=Math.max(bendEnd+34,targetEndX);
+  const dy=targetY-sourceY;
+  const sign=dy>=0?1:-1;
+  const radius=Math.min(Math.abs(dy)/2||42,flowSpan(sourceX,sourceX,mult,dy));
+  const lead=Math.max(18,Math.min(42,radius*.52));
+  const verticalX=sourceX+lead+radius;
+  const childStartX=verticalX+radius;
+  const xEnd=Math.max(childStartX+34,targetEndX);
+
+  const topStartX=sourceX+lead;
+  const topEndY=sourceY+sign*radius;
+  const bottomStartY=targetY-sign*radius;
+
+  const d=[
+    `M${sourceX} ${sourceY}`,
+    `L${topStartX} ${sourceY}`,
+    `C${(topStartX+radius*.58).toFixed(2)} ${sourceY}, ${verticalX} ${(sourceY+sign*radius*.42).toFixed(2)}, ${verticalX} ${topEndY}`,
+    `L${verticalX} ${bottomStartY}`,
+    `C${verticalX} ${(targetY-sign*radius*.42).toFixed(2)}, ${(verticalX+radius*.42).toFixed(2)} ${targetY}, ${childStartX} ${targetY}`,
+    `L${xEnd} ${targetY}`
+  ].join(' ');
+
   return {
-    sourceX,sourceY,cp1X,cp1Y,cp2X,cp2Y,
-    xStart:bendEnd,yStart:targetY,xEnd,yEnd:targetY,
-    rangeStart:sourceX,rangeEnd:xEnd,
-    d:`M${sourceX} ${sourceY} C${cp1X} ${cp1Y}, ${cp2X} ${targetY}, ${bendEnd} ${targetY} L${xEnd} ${targetY}`
+    sourceX,sourceY,targetY,sign,radius,lead,
+    topStartX,verticalX,topEndY,bottomStartY,
+    xStart:childStartX,yStart:targetY,xEnd,yEnd:targetY,
+    rangeStart:sourceX,rangeEnd:xEnd,d
   };
 }
 function pathRootToRole(lane){
@@ -514,16 +557,19 @@ function cubicValue(a,b,c,d,t){
 }
 function pointYOnThread(geom,x){
   if(!geom)return 0;
-  if(x<=geom.sourceX)return geom.sourceY;
+  if(x<=geom.topStartX)return geom.sourceY;
   if(x>=geom.xStart)return geom.yStart;
-  let lo=0,hi=1;
-  for(let i=0;i<32;i++){
-    const mid=(lo+hi)/2;
-    const bx=cubicValue(geom.sourceX,geom.cp1X,geom.cp2X,geom.xStart,mid);
-    if(bx<x)lo=mid;else hi=mid;
+
+  const r=geom.radius,sign=geom.sign;
+  if(x<geom.verticalX){
+    const t=Math.max(0,Math.min(1,(x-geom.topStartX)/Math.max(1,geom.verticalX-geom.topStartX)));
+    const eased=t*t*(3-2*t);
+    return geom.sourceY+sign*r*eased;
   }
-  const t=(lo+hi)/2;
-  return cubicValue(geom.sourceY,geom.cp1Y,geom.cp2Y,geom.yStart,t);
+  if(x===geom.verticalX)return (geom.sourceY+geom.targetY)/2;
+  const t=Math.max(0,Math.min(1,(x-geom.verticalX)/Math.max(1,geom.xStart-geom.verticalX)));
+  const eased=t*t*(3-2*t);
+  return geom.bottomStartY+sign*r*eased;
 }
 
 
@@ -596,18 +642,41 @@ function threadWidthAt(t,date){return widthFromActivity(activityEventsForThread(
 function laneWidthAt(lane,date){return widthFromActivity(laneActivityEvents(lane),date,roleHeat(lane),'active')}
 function centerlineSamples(geom){
   const pts=[];
-  const curveN=Math.max(12,Math.min(42,Math.ceil(Math.max(20,geom.xStart-geom.sourceX)/10)));
-  for(let i=0;i<=curveN;i++){
-    const u=i/curveN;
-    pts.push({x:cubicValue(geom.sourceX,geom.cp1X,geom.cp2X,geom.xStart,u),y:cubicValue(geom.sourceY,geom.cp1Y,geom.cp2Y,geom.yStart,u)});
-  }
+  const add=(x,y)=>pts.push({x,y});
+  const lineSamples=(x1,y1,x2,y2,n)=>{
+    for(let i=0;i<=n;i++){const t=i/n;add(x1+(x2-x1)*t,y1+(y2-y1)*t);}
+  };
+  const cubicSamples=(p0,p1,p2,p3,n,skipFirst=false)=>{
+    for(let i=skipFirst?1:0;i<=n;i++){
+      const t=i/n;
+      add(cubicValue(p0.x,p1.x,p2.x,p3.x,t),cubicValue(p0.y,p1.y,p2.y,p3.y,t));
+    }
+  };
+
+  lineSamples(geom.sourceX,geom.sourceY,geom.topStartX,geom.sourceY,4);
+
+  cubicSamples(
+    {x:geom.topStartX,y:geom.sourceY},
+    {x:geom.topStartX+geom.radius*.58,y:geom.sourceY},
+    {x:geom.verticalX,y:geom.sourceY+geom.sign*geom.radius*.42},
+    {x:geom.verticalX,y:geom.topEndY},
+    14,true
+  );
+
+  const verticalDistance=Math.abs(geom.bottomStartY-geom.topEndY);
+  lineSamples(geom.verticalX,geom.topEndY,geom.verticalX,geom.bottomStartY,Math.max(2,Math.ceil(verticalDistance/12)));
+
+  cubicSamples(
+    {x:geom.verticalX,y:geom.bottomStartY},
+    {x:geom.verticalX,y:geom.targetY-geom.sign*geom.radius*.42},
+    {x:geom.verticalX+geom.radius*.42,y:geom.targetY},
+    {x:geom.xStart,y:geom.targetY},
+    14,true
+  );
+
   const d0=dateFromX(geom.xStart),d1=dateFromX(geom.xEnd);
   const duration=Math.max(0,(d1-d0)/dayMs());
-  const lineN=Math.max(2,Math.min(240,Math.ceil(duration/2)));
-  for(let i=1;i<=lineN;i++){
-    const u=i/lineN;
-    pts.push({x:geom.xStart+(geom.xEnd-geom.xStart)*u,y:geom.yStart+(geom.yEnd-geom.yStart)*u});
-  }
+  lineSamples(geom.xStart,geom.yStart,geom.xEnd,geom.yEnd,Math.max(2,Math.min(240,Math.ceil(duration/2))));
   return pts;
 }
 function catmullRomPath(points,move=true){
@@ -680,6 +749,22 @@ function importantLaneNodes(lane){
     const db=D(b.node.date||b.node.deadline)||new Date(0);
     return da-db || b.score-a.score;
   }).slice(0,8);
+}
+function historyTooltipDate(h){
+  return h.date?fmt(h.date):'Date non renseignée';
+}
+function showHistoryTooltip(h,e,threadTitle=''){
+  if(!nodeTooltip)return;
+  const title=h.summary||h.title||h.type||'Historique';
+  const detailText=h.effect||h.description||'';
+  nodeTooltip.innerHTML=`<strong>${title}</strong><span>${historyTooltipDate(h)}${threadTitle?' · '+threadTitle:''}${detailText?' · '+detailText:''}</span>`;
+  nodeTooltip.style.display='block';
+  moveNodeTooltip(e);
+}
+function bindHistoryTooltip(g,h,threadTitle=''){
+  g.addEventListener('mouseenter',e=>showHistoryTooltip(h,e,threadTitle));
+  g.addEventListener('mousemove',moveNodeTooltip);
+  g.addEventListener('mouseleave',hideNodeTooltip);
 }
 function tooltipDate(n){
   const d=n.date||n.deadline;
@@ -775,7 +860,15 @@ function addThreadLabel(t,row,geom,y){
   div.style.fontSize=fs+'px';div.style.left=naturalX+'px';div.style.top=(y-fs-14)+'px';
   div.onclick=()=>showThread(t.id);div.ondblclick=e=>{e.preventDefault();e.stopPropagation();toggleThreadIsolation(t.id)};labelLayer.appendChild(div);
 }
-function addHistory(h,x,y){const g=E('g',{class:'hist',transform:`translate(${x},${y})`}); g.onclick=e=>{e.stopPropagation();showHistory(h.id)}; const c=E('circle',{cx:0,cy:0,r:8.5}); g.appendChild(c); chartSvg.appendChild(g);}
+function addHistory(h,x,y){
+  const g=E('g',{class:'hist',transform:`translate(${x},${y})`});
+  const t=threadById(h.threadId);
+  g.onclick=e=>{e.stopPropagation();hideNodeTooltip();showHistory(h.id)};
+  bindHistoryTooltip(g,h,t?.title||'');
+  const c=E('circle',{cx:0,cy:0,r:8.5});
+  g.appendChild(c);
+  chartSvg.appendChild(g);
+}
 function addNode(n,x,y){const g=E('g',{class:`node ${n.type||'task'}`,transform:`translate(${x},${y})`}); g.onclick=e=>{e.stopPropagation();hideNodeTooltip();showNode(n.id)}; const t=threadById(n.threadId);bindNodeTooltip(g,n,t?.title||''); if(n.type==='appointment'){g.appendChild(E('circle',{cx:0,cy:0,r:15}))} else if(n.type==='vigilance'){g.appendChild(E('polygon',{points:'0,-17 17,15 -17,15'}))} else {g.appendChild(E('rect',{x:-14,y:-14,width:28,height:28,rx:5}))} const tx=E('text',{x:0,y:1}); tx.textContent=n.symbol||'■'; g.appendChild(tx); chartSvg.appendChild(g);}
 function roleThreads(roleId){
   return visibleThreads().filter(t=>t.rolePrimary===roleId || (t.roleSecondary||[]).includes(roleId));
@@ -908,11 +1001,11 @@ try {
     if (embedded && embedded.meta && embedded.threads) {
       loadData(embedded,{persist:true,restoreView:true});
     } else {
-      detail.innerHTML = `<div class="card primary"><div class="kicker">V25</div><h2>Charge un JSON</h2><p class="empty">Le prochain JSON chargé sera mémorisé automatiquement sur cet appareil.</p></div>`;
+      detail.innerHTML = `<div class="card primary"><div class="kicker">V26</div><h2>Charge un JSON</h2><p class="empty">Le prochain JSON chargé sera mémorisé automatiquement sur cet appareil.</p></div>`;
     }
   }
 } catch(e) {
-  detail.innerHTML = `<div class="card primary"><div class="kicker">V25</div><h2>Charge un JSON</h2><p class="empty">Le prochain JSON chargé sera mémorisé automatiquement sur cet appareil.</p></div>`;
+  detail.innerHTML = `<div class="card primary"><div class="kicker">V26</div><h2>Charge un JSON</h2><p class="empty">Le prochain JSON chargé sera mémorisé automatiquement sur cet appareil.</p></div>`;
 }
 window.addEventListener('beforeunload',persistViewState);
 </script>
