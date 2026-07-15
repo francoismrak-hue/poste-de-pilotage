@@ -3,13 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Poste de pilotage V1 — V23 persistante</title>
+<title>Poste de pilotage V1 — V24 courbes organiques</title>
 <style>
-:root{--bg:#000;--panel:#080808;--panel2:#111;--text:#fff;--muted:#a9a9a9;--yellow:#ffd400;--yellow2:#ffea61;--yellowSoft:rgba(255,212,0,.18);--grid:#252525;--grid2:#141414;--leftw:320px;--rightw:420px;--rightwWide:min(50vw,760px);--headerh:126px;--axish:52px;}
+:root{--bg:#000;--panel:#080808;--panel2:#111;--text:#fff;--muted:#a9a9a9;--yellow:#ffd400;--yellow2:#ffea61;--yellowSoft:rgba(255,212,0,.18);--grid:#252525;--grid2:#141414;--leftw:320px;--rightw:420px;--rightwDynamic:420px;--headerh:126px;--axish:52px;}
 *{box-sizing:border-box;-webkit-user-select:none;user-select:none}
 html,body{margin:0;height:100%;overflow:hidden;background:#000;color:#fff;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
-#app{display:grid;grid-template-columns:var(--leftw) minmax(0,1fr) var(--rightw);grid-template-rows:var(--headerh) 1fr;height:100vh;}
-#app.panelWide{grid-template-columns:var(--leftw) minmax(0,1fr) var(--rightwWide);}
+#app{display:grid;grid-template-columns:var(--leftw) minmax(0,1fr) var(--rightwDynamic);grid-template-rows:var(--headerh) 1fr;height:100vh;}
 #header{grid-column:1/4;grid-row:1;padding:14px 22px;border-bottom:1px solid #222;background:#000;z-index:20;}
 h1{margin:0;font-size:22px;line-height:1.12;font-weight:850;letter-spacing:.01em}
 .sub{margin-top:5px;font-size:12px;color:#c9c9c9}
@@ -28,9 +27,14 @@ button:hover,.fileLabel:hover{border-color:#777} button.active{border-color:var(
 #chartContent{position:relative;background:#000} #chartSvg{position:absolute;left:0;top:0;overflow:visible} #labelLayer{position:absolute;left:0;top:0;pointer-events:none}
 #labelLayer .labelBox,#labelLayer .labelPlain{position:absolute;white-space:nowrap;pointer-events:auto;cursor:pointer}
 #labelLayer .threadLabel{z-index:6}
-.labelBox{background:var(--yellow);color:#000;border-radius:8px;padding:4px 10px;font-weight:800;line-height:1.15;box-shadow:0 0 0 1px rgba(0,0,0,.25)}
+.labelBox{background:var(--yellow);color:#000;border-radius:9px;padding:4px 10px;font-weight:800;line-height:1.15;box-shadow:0 0 0 1px rgba(0,0,0,.38),0 2px 7px rgba(0,0,0,.36)}
 .labelPlain{color:#f3f3f3;font-weight:500;line-height:1.15;text-shadow:0 0 4px #000,0 0 6px #000}
-#right{grid-column:3;grid-row:2;background:linear-gradient(180deg,#090909 0%,#070707 100%);border-left:1px solid #2a2a2a;overflow:auto;padding:14px 16px 18px;box-shadow:inset 12px 0 24px rgba(0,0,0,.22)}
+#right{grid-column:3;grid-row:2;background:linear-gradient(180deg,#090909 0%,#070707 100%);border-left:1px solid #2a2a2a;overflow:auto;padding:14px 16px 18px;box-shadow:inset 12px 0 24px rgba(0,0,0,.22);position:relative}
+#panelResize{position:fixed;top:var(--headerh);bottom:0;width:12px;margin-left:-7px;z-index:30;cursor:col-resize;touch-action:none}
+#panelResize::before{content:"";position:absolute;left:5px;top:0;bottom:0;width:2px;background:#2d2d2d;transition:background .15s,box-shadow .15s}
+#panelResize:hover::before,#panelResize.dragging::before{background:var(--yellow);box-shadow:0 0 9px rgba(255,212,0,.45)}
+body.resizingPanel{cursor:col-resize}
+body.resizingPanel *{cursor:col-resize!important}
 .detailHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:4px 0 14px;padding:8px 4px 12px;border-bottom:1px solid #1e1e1e}
 .detailHead strong{font-size:15px;letter-spacing:.01em}
 #togglePanel{padding:7px 11px;font-size:11px}
@@ -71,14 +75,14 @@ ul{padding-left:18px;margin:10px 0 0} li{margin:8px 0}
 <header id="header"><h1>Poste de pilotage V1</h1><div class="sub" id="subtitle">3 semaines de Contrôle / Revue</div><div class="toolbar"><label class="fileLabel">Charger JSON<input id="fileInput" type="file" accept=".json,application/json"></label><button id="modeTime" class="active">Zoom temps</button><button id="modeDetail">Zoom détail</button><button id="zoomOut">−</button><span id="zoomInfo" class="small">100%</span><button id="zoomIn">+</button><span id="thicknessInfo" class="small" title="MAJ + molette">Épaisseur 100%</span><button id="reset">Reset vue</button><div class="sep"></div><button id="allRoles">Tous les rôles</button><button data-filter="all" class="active">Tout</button><button data-filter="hot">Chaud</button><button data-filter="active">Actif</button><button data-filter="watch">Veille</button><button data-filter="dormant">Dormant</button></div></header>
 <aside id="left"><div id="leftInner"></div></aside>
 <main id="center"><div id="axisWrap"><div id="axisInner"><div id="axisContent"></div></div></div><div id="chartScroll"><div id="chartContent"><svg id="chartSvg"></svg><div id="labelLayer"></div></div></div><div class="hint">CTRL + molette = zoom temps · ALT + molette = zoom détail · MAJ + molette = épaisseur · glisser = déplacer · double-clic fil = isoler / restaurer</div></main>
-<aside id="right"><div class="detailHead"><div><div class="kicker">Panneau</div><strong>Détail / synthèse</strong></div><button id="togglePanel">Panneau large</button></div><div id="detail"><div class="card primary"><div class="kicker">Prototype V23</div><h2>Chargement</h2><p class="empty">Les données sont intégrées. Tu peux aussi charger un autre JSON.</p></div></div></aside>
+<div id="panelResize" title="Glisser pour redimensionner le panneau"></div><aside id="right"><div class="detailHead"><div><div class="kicker">Panneau</div><strong>Détail / synthèse</strong></div><button id="togglePanel" title="Alterner entre largeur normale et 50 %">Panneau 50%</button></div><div id="detail"><div class="card primary"><div class="kicker">Prototype V24</div><h2>Chargement</h2><p class="empty">Les données sont intégrées. Tu peux aussi charger un autre JSON.</p></div></div></aside>
 </div>
 <script id="embedded-data" type="application/json">{}</script>
 <script>
 const months=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
 const monthsShort=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
 let DATA=null, filter="all", focusLane=null, subRoleFocus=null, selectedId=null, isolatedThreadId=null;
-let pxPerDay=54, rowH=34, zoomMode="time", strokeScale=1, panelWide=false;
+let pxPerDay=54, rowH=34, zoomMode="time", strokeScale=1, panelWide=false, panelWidth=420;
 
 const STORAGE_DATA_KEY='postePilotage:lastJson:v1';
 const STORAGE_VIEW_KEY='postePilotage:viewState:v1';
@@ -97,7 +101,7 @@ function persistJsonObject(obj){
 }
 function currentViewState(){
   return {
-    pxPerDay,rowH,zoomMode,strokeScale,panelWide,
+    pxPerDay,rowH,zoomMode,strokeScale,panelWide,panelWidth,
     filter,focusLane,subRoleFocus,selectedId,isolatedThreadId,
     scrollLeft:chartScroll ? chartScroll.scrollLeft : 0,
     scrollTop:chartScroll ? chartScroll.scrollTop : 0
@@ -147,9 +151,60 @@ function applyStoredView(state){
 }
 
 const branchW=340, leftRootX=24, roleX=130, roleLabelX=170, rightPad=280;
-const app=document.getElementById("app"), togglePanelBtn=document.getElementById("togglePanel"), chartScroll=document.getElementById("chartScroll"), chartContent=document.getElementById("chartContent"), chartSvg=document.getElementById("chartSvg"), labelLayer=document.getElementById("labelLayer"), axisInner=document.getElementById("axisInner"), axisContent=document.getElementById("axisContent"), leftInner=document.getElementById("leftInner"), detail=document.getElementById("detail"), subtitle=document.getElementById("subtitle"), zoomInfo=document.getElementById("zoomInfo"), thicknessInfo=document.getElementById("thicknessInfo");
-function syncPanelWidth(){app.classList.toggle("panelWide",panelWide); if(togglePanelBtn) togglePanelBtn.textContent=panelWide?"Panneau normal":"Panneau large";}
-if(togglePanelBtn){togglePanelBtn.onclick=()=>{panelWide=!panelWide; syncPanelWidth();}; syncPanelWidth();}
+const app=document.getElementById("app"), togglePanelBtn=document.getElementById("togglePanel"), panelResize=document.getElementById("panelResize"), chartScroll=document.getElementById("chartScroll"), chartContent=document.getElementById("chartContent"), chartSvg=document.getElementById("chartSvg"), labelLayer=document.getElementById("labelLayer"), axisInner=document.getElementById("axisInner"), axisContent=document.getElementById("axisContent"), leftInner=document.getElementById("leftInner"), detail=document.getElementById("detail"), subtitle=document.getElementById("subtitle"), zoomInfo=document.getElementById("zoomInfo"), thicknessInfo=document.getElementById("thicknessInfo");
+function panelBounds(){
+  const max=Math.max(360,Math.min(window.innerWidth*.62,920));
+  const min=Math.max(300,Math.min(380,window.innerWidth*.28));
+  return {min,max};
+}
+function applyPanelWidth(width){
+  const {min,max}=panelBounds();
+  panelWidth=Math.max(min,Math.min(max,width));
+  document.documentElement.style.setProperty('--rightwDynamic',panelWidth+'px');
+  requestAnimationFrame(()=>{
+    const rect=document.getElementById('right').getBoundingClientRect();
+    panelResize.style.left=rect.left+'px';
+  });
+}
+function syncPanelWidth(){
+  applyPanelWidth(panelWidth);
+  if(togglePanelBtn)togglePanelBtn.textContent=panelWidth>window.innerWidth*.42?'Panneau normal':'Panneau 50%';
+}
+if(togglePanelBtn){
+  togglePanelBtn.onclick=()=>{
+    panelWidth=panelWidth>window.innerWidth*.42?420:Math.min(window.innerWidth*.5,panelBounds().max);
+    syncPanelWidth();render();schedulePersistView();
+  };
+}
+if(panelResize){
+  let startX=0,startWidth=0;
+  const move=e=>{
+    const x=e.clientX??e.touches?.[0]?.clientX;
+    if(!Number.isFinite(x))return;
+    applyPanelWidth(startWidth+(startX-x));
+    render();
+    schedulePersistView();
+  };
+  const stop=()=>{
+    panelResize.classList.remove('dragging');
+    document.body.classList.remove('resizingPanel');
+    window.removeEventListener('pointermove',move);
+    window.removeEventListener('pointerup',stop);
+    persistViewState();
+  };
+  panelResize.addEventListener('pointerdown',e=>{
+    e.preventDefault();
+    startX=e.clientX;
+    startWidth=document.getElementById('right').getBoundingClientRect().width;
+    panelResize.classList.add('dragging');
+    document.body.classList.add('resizingPanel');
+    panelResize.setPointerCapture?.(e.pointerId);
+    window.addEventListener('pointermove',move);
+    window.addEventListener('pointerup',stop);
+  });
+}
+window.addEventListener('resize',()=>{applyPanelWidth(panelWidth);schedulePersistView();});
+syncPanelWidth();
 
 function totalDaysForData(){
   if(!DATA || !DATA.meta || !DATA.meta.period) return 30;
@@ -343,17 +398,34 @@ function renderAxis(){
 function render(){if(!DATA)return; activityCache.clear();laneActivityCache.clear(); computeLayout(); clear(); setSizes(); renderAxis(); renderChart(); renderSidebar(); syncScroll(); const isolated=isolatedThreadId?threadById(isolatedThreadId):null; subtitle.textContent=`${DATA.meta.title||'Poste de pilotage'} · ${dateLabel(start())} → ${dateLabel(end())}${focusLane?' · focus : '+focusLane:''}${isolated?' · isolé : '+isolated.title:''}`; zoomInfo.textContent=(zoomMode==='time'?Math.round(pxPerDay/54*100):Math.round(rowH/34*100))+'%';if(thicknessInfo)thicknessInfo.textContent='Épaisseur '+Math.round(strokeScale*100)+'%';}
 function rootY(){if(focusLane) return layout.roleMid[focusLane]||72; return layout.rows.length?layout.rows[Math.floor(layout.rows.length/2)].y:300;}
 function curveSpan(mult=1){
-  const base=currentView()==='overview'?220:180;
-  const zoomBias=pxPerDay<18 ? 1.35 : pxPerDay<36 ? 1.12 : 0.92;
-  const v=Math.max(78, Math.min(260, base*zoomBias - Math.max(0,pxPerDay-54)*0.28));
+  const base=currentView()==='overview'?250:210;
+  const zoomBias=pxPerDay<18 ? 1.38 : pxPerDay<36 ? 1.16 : .98;
+  const v=Math.max(100,Math.min(340,base*zoomBias-Math.max(0,pxPerDay-54)*.18));
   return v*mult;
 }
-function flowSpan(sx,targetX,mult=1){
-  const dist=Math.max(40,targetX-sx);
-  const zoomLean=pxPerDay<16 ? 1.45 : pxPerDay<32 ? 1.18 : 0.94;
-  return Math.max(54, Math.min(240, dist*0.42*zoomLean))*mult;
+function flowSpan(sx,targetX,mult=1,verticalDelta=0){
+  const dist=Math.max(60,targetX-sx);
+  const vertical=Math.abs(verticalDelta);
+  const zoomLean=pxPerDay<16?1.42:pxPerDay<32?1.20:1;
+  const organic=Math.max(120,dist*.50,vertical*.92+80);
+  return Math.min(420,organic*zoomLean)*mult;
 }
-function pathRootToRole(lane){const y=layout.roleMid[lane]; const c=curveSpan(1); return `M0 ${rootY()} L${leftRootX} ${rootY()} C${leftRootX+c*0.34} ${rootY()}, ${roleX-c*0.8} ${y}, ${roleX} ${y}`;}
+function organicCurveGeom(sourceX,sourceY,targetY,targetEndX,mult=1){
+  const dy=targetY-sourceY;
+  const span=flowSpan(sourceX,sourceX+220,mult,dy);
+  const bendEnd=sourceX+span;
+  // Deux tangentes horizontales longues : départ et arrivée restent doux.
+  const cp1X=sourceX+span*.56,cp1Y=sourceY;
+  const cp2X=bendEnd-span*.56,cp2Y=targetY;
+  const xEnd=Math.max(bendEnd+28,targetEndX);
+  return {sourceX,sourceY,cp1X,cp1Y,cp2X,cp2Y,xStart:bendEnd,yStart:targetY,xEnd,yEnd:targetY,rangeStart:sourceX,rangeEnd:xEnd,
+    d:`M${sourceX} ${sourceY} C${cp1X} ${cp1Y}, ${cp2X} ${cp2Y}, ${bendEnd} ${targetY} L${xEnd} ${targetY}`};
+}
+function pathRootToRole(lane){
+  const y=layout.roleMid[lane],sy=rootY(),c=curveSpan(1);
+  const cp1=leftRootX+c*.62,cp2=roleX-c*.62;
+  return `M0 ${sy} L${leftRootX} ${sy} C${cp1} ${sy}, ${cp2} ${y}, ${roleX} ${y}`;
+}
 function roleLabelWidth(text){return currentView()==='detail' ? Math.max(120, text.length*14+34) : Math.max(92, text.length*10+26)}
 function roleEndX(lane){return roleLabelX + roleLabelWidth(lane)}
 function laneRange(lane){let ds=[]; visibleThreads().filter(t=>t.lane===lane).forEach(t=>{const[a,b]=threadRange(t); ds.push(a,b)}); return [new Date(Math.min(...ds)),new Date(Math.max(...ds))]}
@@ -371,17 +443,7 @@ function xHistMin(t){const d=firstHistoryDate(t);return d||threadOwnStart(t)}
 function pathThreadFromRole(t,y){
   const sourceX=Math.max(branchW+18,xDate(threadOwnStart(t)));
   const sourceY=layout.roleMid[t.lane];
-  const c=flowSpan(sourceX,sourceX+180,.96);
-  const bendEnd=sourceX+c;
-  const cp1X=sourceX+c*.38, cp1Y=sourceY;
-  const cp2X=bendEnd-c*.46, cp2Y=y;
-  const x2=Math.max(bendEnd+24,xDate(threadRange(t)[1]));
-  return {
-    d:`M${sourceX} ${sourceY} C${cp1X} ${cp1Y}, ${cp2X} ${cp2Y}, ${bendEnd} ${y} L${x2} ${y}`,
-    sourceX,sourceY,cp1X,cp1Y,cp2X,cp2Y,
-    xStart:bendEnd,yStart:y,xEnd:x2,yEnd:y,
-    rangeStart:sourceX,rangeEnd:x2
-  };
+  return organicCurveGeom(sourceX,sourceY,y,xDate(threadRange(t)[1]),1);
 }
 function pathChildThread(t,row,y,parentGeom){
   const p=row.parent;
@@ -390,17 +452,7 @@ function pathChildThread(t,row,y,parentGeom){
   const rawSource=xDate(threadOwnStart(t));
   const sourceX=Math.max(geom.rangeStart,Math.min(rawSource,geom.rangeEnd));
   const sourceY=pointYOnThread(geom,sourceX);
-  const c=flowSpan(sourceX,sourceX+170,.88);
-  const bendEnd=sourceX+c;
-  const cp1X=sourceX+c*.38, cp1Y=sourceY;
-  const cp2X=bendEnd-c*.48, cp2Y=y;
-  const x2=Math.max(bendEnd+22,xDate(threadRange(t)[1]));
-  return {
-    d:`M${sourceX} ${sourceY} C${cp1X} ${cp1Y}, ${cp2X} ${cp2Y}, ${bendEnd} ${y} L${x2} ${y}`,
-    sourceX,sourceY,cp1X,cp1Y,cp2X,cp2Y,
-    xStart:bendEnd,yStart:y,xEnd:x2,yEnd:y,
-    rangeStart:sourceX,rangeEnd:x2
-  };
+  return organicCurveGeom(sourceX,sourceY,y,xDate(threadRange(t)[1]),.92);
 }
 function cubicValue(a,b,c,d,t){
   const u=1-t;
@@ -504,6 +556,21 @@ function centerlineSamples(geom){
   }
   return pts;
 }
+function catmullRomPath(points,move=true){
+  if(!points.length)return '';
+  if(points.length===1)return `${move?'M':'L'}${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)}`;
+  let d=`${move?'M':'L'}${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)}`;
+  for(let i=0;i<points.length-1;i++){
+    const p0=points[i-1]||points[i];
+    const p1=points[i];
+    const p2=points[i+1];
+    const p3=points[i+2]||p2;
+    const c1={x:p1.x+(p2.x-p0.x)/6,y:p1.y+(p2.y-p0.y)/6};
+    const c2={x:p2.x-(p3.x-p1.x)/6,y:p2.y-(p3.y-p1.y)/6};
+    d+=` C${c1.x.toFixed(2)} ${c1.y.toFixed(2)}, ${c2.x.toFixed(2)} ${c2.y.toFixed(2)}, ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`;
+  }
+  return d;
+}
 function buildRibbon(geom,widthFn){
   const pts=centerlineSamples(geom);if(pts.length<2)return {d:'',maxWidth:1,last:pts[0],lastWidth:1};
   const upper=[],lower=[],widths=[];let maxWidth=0;
@@ -514,10 +581,14 @@ function buildRibbon(geom,widthFn){
     const w=widthFn(dateFromX(p.x),p);widths.push(w);maxWidth=Math.max(maxWidth,w);
     upper.push({x:p.x+nx*w/2,y:p.y+ny*w/2});lower.push({x:p.x-nx*w/2,y:p.y-ny*w/2});
   }
-  let d=`M${upper[0].x.toFixed(2)} ${upper[0].y.toFixed(2)}`;
-  for(let i=1;i<upper.length;i++)d+=` L${upper[i].x.toFixed(2)} ${upper[i].y.toFixed(2)}`;
-  for(let i=lower.length-1;i>=0;i--)d+=` L${lower[i].x.toFixed(2)} ${lower[i].y.toFixed(2)}`;
-  d+=' Z';
+  const lowerRev=[...lower].reverse();
+  let d=catmullRomPath(upper,true);
+  const upperEnd=upper[upper.length-1],lowerStart=lowerRev[0];
+  const capX=(upperEnd.x+lowerStart.x)/2,capY=(upperEnd.y+lowerStart.y)/2;
+  d+=` Q${(upperEnd.x+capX).toFixed(2)} ${(upperEnd.y+capY).toFixed(2)}, ${lowerStart.x.toFixed(2)} ${lowerStart.y.toFixed(2)}`;
+  d+=catmullRomPath(lowerRev,false);
+  const lowerEnd=lowerRev[lowerRev.length-1],upperStart=upper[0];
+  d+=` Q${((lowerEnd.x+upperStart.x)/2).toFixed(2)} ${((lowerEnd.y+upperStart.y)/2).toFixed(2)}, ${upperStart.x.toFixed(2)} ${upperStart.y.toFixed(2)} Z`;
   return {d,maxWidth,last:pts[pts.length-1],lastWidth:widths[widths.length-1]};
 }
 function drawRibbonGroup({geom,state='active',widthFn,onClick,onDblClick,isolated=false}){
@@ -760,11 +831,11 @@ try {
     if (embedded && embedded.meta && embedded.threads) {
       loadData(embedded,{persist:true,restoreView:true});
     } else {
-      detail.innerHTML = `<div class="card primary"><div class="kicker">V23</div><h2>Charge un JSON</h2><p class="empty">Le prochain JSON chargé sera mémorisé automatiquement sur cet appareil.</p></div>`;
+      detail.innerHTML = `<div class="card primary"><div class="kicker">V24</div><h2>Charge un JSON</h2><p class="empty">Le prochain JSON chargé sera mémorisé automatiquement sur cet appareil.</p></div>`;
     }
   }
 } catch(e) {
-  detail.innerHTML = `<div class="card primary"><div class="kicker">V23</div><h2>Charge un JSON</h2><p class="empty">Le prochain JSON chargé sera mémorisé automatiquement sur cet appareil.</p></div>`;
+  detail.innerHTML = `<div class="card primary"><div class="kicker">V24</div><h2>Charge un JSON</h2><p class="empty">Le prochain JSON chargé sera mémorisé automatiquement sur cet appareil.</p></div>`;
 }
 window.addEventListener('beforeunload',persistViewState);
 </script>
