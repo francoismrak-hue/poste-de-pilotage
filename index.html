@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Poste de pilotage V1 — V26 courbes et alternance</title>
+<title>Poste de pilotage V1 — V27 stabilisation</title>
 <style>
 :root{--bg:#000;--panel:#080808;--panel2:#111;--text:#fff;--muted:#a9a9a9;--yellow:#ffd400;--yellow2:#ffea61;--yellowSoft:rgba(255,212,0,.18);--grid:#252525;--grid2:#141414;--leftw:320px;--rightw:420px;--rightwDynamic:420px;--headerh:126px;--axish:92px;}
 *{box-sizing:border-box;-webkit-user-select:none;user-select:none}
@@ -83,16 +83,16 @@ ul{padding-left:18px;margin:10px 0 0} li{margin:8px 0}
 </head>
 <body>
 <div id="app">
-<header id="header"><h1>Poste de pilotage V1</h1><div class="sub" id="subtitle">3 semaines de Contrôle / Revue</div><div class="toolbar"><label class="fileLabel">Charger JSON<input id="fileInput" type="file" accept=".json,application/json"></label><button id="modeTime" class="active">Zoom temps</button><button id="modeDetail">Zoom détail</button><button id="zoomOut">−</button><span id="zoomInfo" class="small">100%</span><button id="zoomIn">+</button><span id="thicknessInfo" class="small" title="MAJ + molette">Épaisseur 100%</span><button id="reset">Reset vue</button><div class="sep"></div><button id="allRoles">Tous les rôles</button><button data-filter="all" class="active">Tout</button><button data-filter="hot">Chaud</button><button data-filter="active">Actif</button><button data-filter="watch">Veille</button><button data-filter="dormant">Dormant</button></div></header>
+<header id="header"><h1>Poste de pilotage V1</h1><div class="sub" id="subtitle">3 semaines de Contrôle / Revue</div><div class="toolbar"><label class="fileLabel">Charger JSON<input id="fileInput" type="file" accept=".json,application/json"></label><button id="modeTime" class="active">Zoom temps</button><button id="modeDetail">Zoom détail</button><button id="zoomOut">−</button><span id="zoomInfo" class="small">100%</span><button id="zoomIn">+</button><span id="thicknessInfo" class="small" title="MAJ + molette">Épaisseur 100%</span><button id="reset">Reset vue</button><div class="sep"></div><button id="allRoles">Tous les rôles</button><button id="toggleSecondary">Afficher secondaires</button><button data-filter="all" class="active">Tout</button><button data-filter="hot">Chaud</button><button data-filter="active">Actif</button><button data-filter="watch">Veille</button><button data-filter="dormant">Dormant</button></div></header>
 <aside id="left"><div id="leftInner"></div></aside>
-<main id="center"><div id="axisWrap"><div id="axisInner"><div id="axisContent"></div></div></div><div id="chartScroll"><div id="chartContent"><svg id="chartSvg"></svg><div id="labelLayer"></div></div></div><div class="hint">CTRL + molette = zoom temps · ALT + molette = zoom détail · MAJ + molette = épaisseur · glisser = déplacer · double-clic fil = isoler / restaurer</div></main>
-<div id="nodeTooltip"></div><div id="panelResize" title="Glisser pour redimensionner le panneau"></div><aside id="right"><div class="detailHead"><div><div class="kicker">Panneau</div><strong>Détail / synthèse</strong></div><button id="togglePanel" title="Alterner entre largeur normale et 50 %">Panneau 50%</button></div><div id="detail"><div class="card primary"><div class="kicker">Prototype V26</div><h2>Chargement</h2><p class="empty">Les données sont intégrées. Tu peux aussi charger un autre JSON.</p></div></div></aside>
+<main id="center"><div id="axisWrap"><div id="axisInner"><div id="axisContent"></div></div></div><div id="chartScroll"><div id="chartContent"><svg id="chartSvg"></svg><div id="labelLayer"></div></div></div><div class="hint">CTRL + molette = zoom temps · ALT + molette = zoom détail · MAJ + molette = épaisseur · glisser = déplacer · double-clic fil = parent + enfants directs / restaurer</div></main>
+<div id="nodeTooltip"></div><div id="panelResize" title="Glisser pour redimensionner le panneau"></div><aside id="right"><div class="detailHead"><div><div class="kicker">Panneau</div><strong>Détail / synthèse</strong></div><button id="togglePanel" title="Alterner entre largeur normale et 50 %">Panneau 50%</button></div><div id="detail"><div class="card primary"><div class="kicker">Prototype V27</div><h2>Chargement</h2><p class="empty">Les données sont intégrées. Tu peux aussi charger un autre JSON.</p></div></div></aside>
 </div>
 <script id="embedded-data" type="application/json">{}</script>
 <script>
 const months=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
 const monthsShort=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
-let DATA=null, filter="all", focusLane=null, subRoleFocus=null, selectedId=null, isolatedThreadId=null;
+let DATA=null, filter="all", focusLane=null, subRoleFocus=null, selectedId=null, isolatedThreadId=null, showSecondary=false;
 let pxPerDay=54, rowH=34, zoomMode="time", strokeScale=1, panelWide=false, panelWidth=420;
 
 const STORAGE_DATA_KEY='postePilotage:lastJson:v1';
@@ -113,7 +113,7 @@ function persistJsonObject(obj){
 function currentViewState(){
   return {
     pxPerDay,rowH,zoomMode,strokeScale,panelWide,panelWidth,
-    filter,focusLane,subRoleFocus,selectedId,isolatedThreadId,
+    filter,focusLane,subRoleFocus,selectedId,isolatedThreadId,showSecondary,
     scrollLeft:chartScroll ? chartScroll.scrollLeft : 0,
     scrollTop:chartScroll ? chartScroll.scrollTop : 0
   };
@@ -145,6 +145,8 @@ function applyStoredView(state){
   subRoleFocus=state.subRoleFocus || null;
   selectedId=state.selectedId || null;
   isolatedThreadId=state.isolatedThreadId && threadById(state.isolatedThreadId) ? state.isolatedThreadId : null;
+  showSecondary=!!state.showSecondary;
+  const secBtn=document.getElementById('toggleSecondary');if(secBtn)secBtn.textContent=showSecondary?'Masquer secondaires':'Afficher secondaires';
   panelWide=!!state.panelWide;
   app.classList.toggle('panelWide',panelWide);
   togglePanelBtn.textContent=panelWide?'Panneau normal':'Panneau large';
@@ -292,16 +294,19 @@ function toggleThreadIsolation(id){
   render();
   showThread(id);
 }
+function isPrimaryThread(t){return (t.displayLevel||'primary')!=='secondary'}
 function visibleThreads(){
   if(isolatedThreadId){
     const chain=ancestorChainIds(isolatedThreadId);
-    return DATA.threads.filter(t=>chain.has(t.id));
+    const directChildren=new Set(DATA.threads.filter(t=>t.parentId===isolatedThreadId).map(t=>t.id));
+    return DATA.threads.filter(t=>chain.has(t.id)||directChildren.has(t.id));
   }
   return DATA.threads.filter(t=>{
     const matchState=(filter==="all"||t.state===filter);
     const matchLane=(!focusLane||t.lane===focusLane);
     const matchRole=(!subRoleFocus || t.rolePrimary===subRoleFocus || (t.roleSecondary||[]).includes(subRoleFocus));
-    return matchState && matchLane && matchRole;
+    const matchLevel=showSecondary||isPrimaryThread(t)||!t.parentId;
+    return matchState && matchLane && matchRole && matchLevel;
   });
 } function topLevelThreads(lane){return visibleThreads().filter(t=>t.lane===lane&&!t.parentId)} function childThreads(parentId){return visibleThreads().filter(t=>t.parentId===parentId)} function visibleLaneNames(){const set=new Set(visibleThreads().map(t=>t.lane));return laneNames().filter(l=>set.has(l))} function roleHeat(lane){let h=1;visibleThreads().filter(t=>t.lane===lane).forEach(t=>h=Math.max(h,t.heat||1));return h}
 function historyFor(id){return (DATA.history||[]).filter(h=>h.threadId===id)} function nodesFor(id){return (DATA.nodes||[]).filter(n=>n.threadId===id)}
@@ -823,7 +828,9 @@ function renderChart(){
       const rolePath=E('path',{d:pathRootToRole(lane),class:'rolePath',style:`stroke-width:${roleW}`});
       rolePath.onclick=()=>showLaneSummary(lane);chartSvg.appendChild(rolePath);
       const [d1,d2]=laneRange(lane),geom=roleTimelineGeom(lane,xDate(d2));
-      drawRibbonGroup({geom,state:'active',widthFn:date=>laneWidthAt(lane,date),onClick:()=>showLaneSummary(lane)});
+      const baseLine=E('path',{d:geom.d,class:'threadPath active',style:`stroke-width:${Math.max(1.2,scaledWidth(1.2))};opacity:.65`});
+      baseLine.onclick=()=>showLaneSummary(lane);chartSvg.appendChild(baseLine);
+      drawRibbonGroup({geom,state:'active',widthFn:date=>Math.max(1.15,laneWidthAt(lane,date)),onClick:()=>showLaneSummary(lane)});
       addRoleBox(lane,roleLabelX,y,true,()=>showLaneSummary(lane));
       importantLaneNodes(lane).forEach((o,i)=>{const d=D(o.node.date||o.node.deadline);if(d)addOverviewNode(o.node,o.thread,xDate(d),y,i)});
     });
@@ -841,8 +848,8 @@ function renderChart(){
       geometryById.set(t.id,geom);
       drawRibbonGroup({geom,state:t.state||'active',widthFn:date=>threadWidthAt(t,date),isolated:isolatedThreadId===t.id,onClick:()=>showThread(t.id),onDblClick:()=>toggleThreadIsolation(t.id)});
       addThreadLabel(t,row,geom,y);
-      historyFor(t.id).forEach(h=>{const d=D(h.date);if(!d)return;const x=xDate(d);if(x>=geom.rangeStart-2&&x<=geom.rangeEnd+2)addHistory(h,x,pointYOnThread(geom,x))});
-      nodesFor(t.id).forEach(n=>{const d=D(n.date||n.deadline),x=d?xDate(d):geom.xEnd;if(x>=geom.rangeStart-2&&x<=geom.rangeEnd+2)addNode(n,x,pointYOnThread(geom,x))});
+      historyFor(t.id).forEach(h=>{const d=D(h.date);if(!d)return;const rawX=xDate(d);const x=Math.max(geom.xStart,Math.min(rawX,geom.rangeEnd));if(x>=geom.xStart-2&&x<=geom.rangeEnd+2)addHistory(h,x,geom.yStart)});
+      nodesFor(t.id).forEach(n=>{const d=D(n.date||n.deadline),rawX=d?xDate(d):geom.xEnd,x=Math.max(geom.xStart,Math.min(rawX,geom.rangeEnd));if(x>=geom.xStart-2&&x<=geom.rangeEnd+2)addNode(n,x,geom.yStart)});
     });
   }
 }
@@ -850,7 +857,7 @@ function stateClass(s){return ['hot','active','watch','dormant','closed','fragil
 function addRoleBox(text,x,y,active,onClick,big=false){const div=H('div','labelBox',text); div.style.left=x+'px'; div.style.top=(y-(big?18:14))+'px'; div.style.fontSize=(big? (focusLane?22:16) : 16)+'px'; div.onclick=onClick; labelLayer.appendChild(div);}
 function addThreadLabel(t,row,geom,y){
   const fs=Math.max(12,Math.min(17,rowH*.4));
-  const useBox=(t.heat>=4||row.child||t.parentId||t.id==='thread_anne_claude');
+  const useBox=(isPrimaryThread(t)&&((t.heat||0)>=3||!t.parentId))||isolatedThreadId===t.id;
   const cls=(useBox?'labelBox':'labelPlain')+' threadLabel'+(isolatedThreadId===t.id?' isolated':'');
   const div=H('div',cls,t.title);
   const naturalX=Math.max(geom.xStart+8,branchW+16);
@@ -947,13 +954,13 @@ function showThread(id){const t=DATA.threads.find(x=>x.id===id); const hist=hist
 function showHistory(id){const h=(DATA.history||[]).find(x=>x.id===id), t=DATA.threads.find(x=>x.id===h.threadId); detail.innerHTML=`<div class="card"><div class="kicker">Historique</div><h2>${fmt(h.date)}</h2><p><strong>Fil :</strong> ${t?t.title:'—'}</p><div class="agenda"><strong>${h.summary||''}</strong><br>${h.effect||''}</div><p class="small">Type : ${h.type||'—'}</p></div>`; }
 function showNode(id){const n=(DATA.nodes||[]).find(x=>x.id===id), t=DATA.threads.find(x=>x.id===n.threadId); detail.innerHTML=`<div class="card"><div class="kicker">Nœud</div><h2>${n.symbol||'•'} ${n.title}</h2><div class="meta"><div class="pill">Type<strong>${n.type||'—'}</strong></div><div class="pill">Statut<strong>${n.status||'—'}</strong></div><div class="pill">Énergie<strong>${n.energy||'—'}</strong></div><div class="pill">Temps<strong>${n.duration||'—'}</strong></div></div><p><strong>Fil :</strong> ${t?t.title:'—'}</p><div class="agenda"><strong>Date / échéance</strong><br>${fmt(n.date||n.deadline)}</div></div>`; }
 function validateData(obj){if(!obj||typeof obj!=='object')throw new Error('JSON vide ou invalide');if(!obj.meta||!obj.meta.period)throw new Error('meta.period absent');if(!Array.isArray(obj.threads))throw new Error('threads absent');obj.roles=Array.isArray(obj.roles)?obj.roles:[];obj.history=Array.isArray(obj.history)?obj.history:[];obj.nodes=Array.isArray(obj.nodes)?obj.nodes:[];obj.threadLinks=Array.isArray(obj.threadLinks)?obj.threadLinks:[];obj.visualConfig=obj.visualConfig||{};return obj}
-function loadData(obj,options={}){DATA=validateData(obj);if(options.persist!==false)persistJsonObject(DATA);const stored=options.restoreView===false?null:readStoredView();if(stored){applyStoredView(stored);return;}focusLane=null;subRoleFocus=null;isolatedThreadId=null;selectedId=null;strokeScale=1;filter='all';document.querySelectorAll('button[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter==='all'));fitFullPeriod();const firstLane=visibleLaneNames()[0];if(firstLane)showLaneSummary(firstLane);schedulePersistView();}
+function loadData(obj,options={}){DATA=validateData(obj);if(options.persist!==false)persistJsonObject(DATA);const stored=options.restoreView===false?null:readStoredView();if(stored){applyStoredView(stored);return;}focusLane=null;subRoleFocus=null;isolatedThreadId=null;selectedId=null;showSecondary=!!DATA.visualConfig?.defaultShowSecondary;const secBtn=document.getElementById('toggleSecondary');if(secBtn)secBtn.textContent=showSecondary?'Masquer secondaires':'Afficher secondaires';strokeScale=1;filter='all';document.querySelectorAll('button[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter==='all'));fitFullPeriod();const firstLane=visibleLaneNames()[0];if(firstLane)showLaneSummary(firstLane);schedulePersistView();}
 function showLoadError(err){console.error(err);detail.innerHTML=`<div class="card primary"><div class="kicker">Erreur JSON</div><h2>Le fichier n'a pas pu être chargé</h2><p class="empty">${String(err&&err.message?err.message:err)}</p></div>`}
 function loadText(txt){try{loadData(JSON.parse(txt),{persist:true,restoreView:true})}catch(err){showLoadError(err)}}
-document.getElementById('fileInput').addEventListener('change',e=>{const input=e.currentTarget;const f=input.files&&input.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{loadText(String(r.result||''));input.value=''};r.onerror=()=>{showLoadError(r.error||new Error('Lecture impossible'));input.value=''};r.readAsText(f,'UTF-8')}); document.querySelectorAll('button[data-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.filter; subRoleFocus=null; isolatedThreadId=null; document.querySelectorAll('button[data-filter]').forEach(x=>x.classList.remove('active')); b.classList.add('active'); render(); schedulePersistView();}); document.getElementById('allRoles').onclick=()=>{isolatedThreadId=null;focusLane=null; subRoleFocus=null; render(); schedulePersistView();}; document.getElementById('modeTime').onclick=()=>{zoomMode='time'; document.getElementById('modeTime').classList.add('active'); document.getElementById('modeDetail').classList.remove('active'); schedulePersistView();}; document.getElementById('modeDetail').onclick=()=>{zoomMode='detail'; document.getElementById('modeDetail').classList.add('active'); document.getElementById('modeTime').classList.remove('active'); schedulePersistView();};
+document.getElementById('fileInput').addEventListener('change',e=>{const input=e.currentTarget;const f=input.files&&input.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{loadText(String(r.result||''));input.value=''};r.onerror=()=>{showLoadError(r.error||new Error('Lecture impossible'));input.value=''};r.readAsText(f,'UTF-8')}); document.querySelectorAll('button[data-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.filter; subRoleFocus=null; isolatedThreadId=null; document.querySelectorAll('button[data-filter]').forEach(x=>x.classList.remove('active')); b.classList.add('active'); render(); schedulePersistView();}); document.getElementById('allRoles').onclick=()=>{isolatedThreadId=null;focusLane=null; subRoleFocus=null; render(); schedulePersistView();}; const secondaryBtn=document.getElementById('toggleSecondary'); if(secondaryBtn){secondaryBtn.onclick=()=>{showSecondary=!showSecondary;secondaryBtn.textContent=showSecondary?'Masquer secondaires':'Afficher secondaires';isolatedThreadId=null;render();schedulePersistView();};secondaryBtn.textContent=showSecondary?'Masquer secondaires':'Afficher secondaires';} document.getElementById('modeTime').onclick=()=>{zoomMode='time'; document.getElementById('modeTime').classList.add('active'); document.getElementById('modeDetail').classList.remove('active'); schedulePersistView();}; document.getElementById('modeDetail').onclick=()=>{zoomMode='detail'; document.getElementById('modeDetail').classList.add('active'); document.getElementById('modeTime').classList.remove('active'); schedulePersistView();};
 function zoomTime(f){const center=(chartScroll.scrollLeft+chartScroll.clientWidth/2-branchW)/pxPerDay; pxPerDay=Math.max(minPxPerDay(),Math.min(380,pxPerDay*f)); render(); chartScroll.scrollLeft=branchW+center*pxPerDay-chartScroll.clientWidth/2;}
 function zoomDetail(f){const center=(chartScroll.scrollTop+chartScroll.clientHeight/2)/rowH; rowH=Math.max(22,Math.min(80,rowH*f)); render(); chartScroll.scrollTop=center*rowH-chartScroll.clientHeight/2;}
-document.getElementById('zoomIn').onclick=()=>zoomMode==='time'?zoomTimeAt(1.25):zoomDetailAt(1.18); document.getElementById('zoomOut').onclick=()=>zoomMode==='time'?zoomTimeAt(1/1.25):zoomDetailAt(1/1.18); document.getElementById('reset').onclick=()=>{isolatedThreadId=null;focusLane=null;subRoleFocus=null;selectedId=null;rowH=34;strokeScale=1;filter='all';document.querySelectorAll('button[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter==='all'));fitFullPeriod();schedulePersistView();};
+document.getElementById('zoomIn').onclick=()=>zoomMode==='time'?zoomTimeAt(1.25):zoomDetailAt(1.18); document.getElementById('zoomOut').onclick=()=>zoomMode==='time'?zoomTimeAt(1/1.25):zoomDetailAt(1/1.18); document.getElementById('reset').onclick=()=>{isolatedThreadId=null;focusLane=null;subRoleFocus=null;selectedId=null;showSecondary=false;const sb=document.getElementById('toggleSecondary');if(sb)sb.textContent='Afficher secondaires';rowH=34;strokeScale=1;filter='all';document.querySelectorAll('button[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter==='all'));fitFullPeriod();schedulePersistView();};
 chartScroll.addEventListener('scroll',()=>{hideNodeTooltip();syncScroll();schedulePersistView();}); chartScroll.addEventListener('mousedown',e=>{dragging=true; last={x:e.clientX,y:e.clientY,l:chartScroll.scrollLeft,t:chartScroll.scrollTop}; chartScroll.style.cursor='grabbing'; e.preventDefault();}); window.addEventListener('mouseup',()=>{dragging=false; chartScroll.style.cursor='grab';}); window.addEventListener('mousemove',e=>{if(!dragging)return; chartScroll.scrollLeft=last.l-(e.clientX-last.x); chartScroll.scrollTop=last.t-(e.clientY-last.y);}); function zoomTimeAt(f, clientX){
   const rect=chartScroll.getBoundingClientRect();
   const localX=clientX ? (clientX-rect.left) : chartScroll.clientWidth/2;
@@ -1001,11 +1008,11 @@ try {
     if (embedded && embedded.meta && embedded.threads) {
       loadData(embedded,{persist:true,restoreView:true});
     } else {
-      detail.innerHTML = `<div class="card primary"><div class="kicker">V26</div><h2>Charge un JSON</h2><p class="empty">Le prochain JSON chargé sera mémorisé automatiquement sur cet appareil.</p></div>`;
+      detail.innerHTML = `<div class="card primary"><div class="kicker">V27</div><h2>Charge un JSON</h2><p class="empty">Le prochain JSON chargé sera mémorisé automatiquement sur cet appareil.</p></div>`;
     }
   }
 } catch(e) {
-  detail.innerHTML = `<div class="card primary"><div class="kicker">V26</div><h2>Charge un JSON</h2><p class="empty">Le prochain JSON chargé sera mémorisé automatiquement sur cet appareil.</p></div>`;
+  detail.innerHTML = `<div class="card primary"><div class="kicker">V27</div><h2>Charge un JSON</h2><p class="empty">Le prochain JSON chargé sera mémorisé automatiquement sur cet appareil.</p></div>`;
 }
 window.addEventListener('beforeunload',persistViewState);
 </script>
