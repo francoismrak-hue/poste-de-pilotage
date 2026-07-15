@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Poste de pilotage V1 — V22</title>
+<title>Poste de pilotage V1 — V23 persistante</title>
 <style>
 :root{--bg:#000;--panel:#080808;--panel2:#111;--text:#fff;--muted:#a9a9a9;--yellow:#ffd400;--yellow2:#ffea61;--yellowSoft:rgba(255,212,0,.18);--grid:#252525;--grid2:#141414;--leftw:320px;--rightw:420px;--rightwWide:min(50vw,760px);--headerh:126px;--axish:52px;}
 *{box-sizing:border-box;-webkit-user-select:none;user-select:none}
@@ -71,7 +71,7 @@ ul{padding-left:18px;margin:10px 0 0} li{margin:8px 0}
 <header id="header"><h1>Poste de pilotage V1</h1><div class="sub" id="subtitle">3 semaines de Contrôle / Revue</div><div class="toolbar"><label class="fileLabel">Charger JSON<input id="fileInput" type="file" accept=".json,application/json"></label><button id="modeTime" class="active">Zoom temps</button><button id="modeDetail">Zoom détail</button><button id="zoomOut">−</button><span id="zoomInfo" class="small">100%</span><button id="zoomIn">+</button><span id="thicknessInfo" class="small" title="MAJ + molette">Épaisseur 100%</span><button id="reset">Reset vue</button><div class="sep"></div><button id="allRoles">Tous les rôles</button><button data-filter="all" class="active">Tout</button><button data-filter="hot">Chaud</button><button data-filter="active">Actif</button><button data-filter="watch">Veille</button><button data-filter="dormant">Dormant</button></div></header>
 <aside id="left"><div id="leftInner"></div></aside>
 <main id="center"><div id="axisWrap"><div id="axisInner"><div id="axisContent"></div></div></div><div id="chartScroll"><div id="chartContent"><svg id="chartSvg"></svg><div id="labelLayer"></div></div></div><div class="hint">CTRL + molette = zoom temps · ALT + molette = zoom détail · MAJ + molette = épaisseur · glisser = déplacer · double-clic fil = isoler / restaurer</div></main>
-<aside id="right"><div class="detailHead"><div><div class="kicker">Panneau</div><strong>Détail / synthèse</strong></div><button id="togglePanel">Panneau large</button></div><div id="detail"><div class="card primary"><div class="kicker">Prototype V22</div><h2>Chargement</h2><p class="empty">Les données sont intégrées. Tu peux aussi charger un autre JSON.</p></div></div></aside>
+<aside id="right"><div class="detailHead"><div><div class="kicker">Panneau</div><strong>Détail / synthèse</strong></div><button id="togglePanel">Panneau large</button></div><div id="detail"><div class="card primary"><div class="kicker">Prototype V23</div><h2>Chargement</h2><p class="empty">Les données sont intégrées. Tu peux aussi charger un autre JSON.</p></div></div></aside>
 </div>
 <script id="embedded-data" type="application/json">{}</script>
 <script>
@@ -79,6 +79,73 @@ const months=["janvier","février","mars","avril","mai","juin","juillet","août"
 const monthsShort=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
 let DATA=null, filter="all", focusLane=null, subRoleFocus=null, selectedId=null, isolatedThreadId=null;
 let pxPerDay=54, rowH=34, zoomMode="time", strokeScale=1, panelWide=false;
+
+const STORAGE_DATA_KEY='postePilotage:lastJson:v1';
+const STORAGE_VIEW_KEY='postePilotage:viewState:v1';
+let restoringView=false;
+let saveTimer=null;
+
+function readStoredJson(){
+  try{
+    const raw=localStorage.getItem(STORAGE_DATA_KEY);
+    return raw ? JSON.parse(raw) : null;
+  }catch(err){ console.warn('JSON mémorisé illisible',err); return null; }
+}
+function persistJsonObject(obj){
+  try{ localStorage.setItem(STORAGE_DATA_KEY,JSON.stringify(obj)); return true; }
+  catch(err){ console.warn('Impossible de mémoriser le JSON',err); return false; }
+}
+function currentViewState(){
+  return {
+    pxPerDay,rowH,zoomMode,strokeScale,panelWide,
+    filter,focusLane,subRoleFocus,selectedId,isolatedThreadId,
+    scrollLeft:chartScroll ? chartScroll.scrollLeft : 0,
+    scrollTop:chartScroll ? chartScroll.scrollTop : 0
+  };
+}
+function persistViewState(){
+  if(restoringView)return;
+  try{ localStorage.setItem(STORAGE_VIEW_KEY,JSON.stringify(currentViewState())); }
+  catch(err){ console.warn('Impossible de mémoriser la vue',err); }
+}
+function schedulePersistView(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(persistViewState,160);
+}
+function readStoredView(){
+  try{
+    const raw=localStorage.getItem(STORAGE_VIEW_KEY);
+    return raw ? JSON.parse(raw) : null;
+  }catch(err){ console.warn('Vue mémorisée illisible',err); return null; }
+}
+function applyStoredView(state){
+  if(!state||!DATA)return;
+  restoringView=true;
+  if(Number.isFinite(state.pxPerDay)) pxPerDay=Math.max(minPxPerDay(),Math.min(380,state.pxPerDay));
+  if(Number.isFinite(state.rowH)) rowH=Math.max(22,Math.min(80,state.rowH));
+  if(Number.isFinite(state.strokeScale)) strokeScale=Math.max(.4,Math.min(2.5,state.strokeScale));
+  if(['time','detail'].includes(state.zoomMode)) zoomMode=state.zoomMode;
+  if(['all','hot','active','watch','dormant'].includes(state.filter)) filter=state.filter;
+  focusLane=state.focusLane && laneNames().includes(state.focusLane) ? state.focusLane : null;
+  subRoleFocus=state.subRoleFocus || null;
+  selectedId=state.selectedId || null;
+  isolatedThreadId=state.isolatedThreadId && threadById(state.isolatedThreadId) ? state.isolatedThreadId : null;
+  panelWide=!!state.panelWide;
+  app.classList.toggle('panelWide',panelWide);
+  togglePanelBtn.textContent=panelWide?'Panneau normal':'Panneau large';
+  document.getElementById('modeTime').classList.toggle('active',zoomMode==='time');
+  document.getElementById('modeDetail').classList.toggle('active',zoomMode==='detail');
+  document.querySelectorAll('button[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter===filter));
+  render();
+  requestAnimationFrame(()=>{
+    chartScroll.scrollLeft=Math.max(0,Number(state.scrollLeft)||0);
+    chartScroll.scrollTop=Math.max(0,Number(state.scrollTop)||0);
+    syncScroll();
+    if(selectedId && threadById(selectedId)) showThread(selectedId);
+    restoringView=false;
+  });
+}
+
 const branchW=340, leftRootX=24, roleX=130, roleLabelX=170, rightPad=280;
 const app=document.getElementById("app"), togglePanelBtn=document.getElementById("togglePanel"), chartScroll=document.getElementById("chartScroll"), chartContent=document.getElementById("chartContent"), chartSvg=document.getElementById("chartSvg"), labelLayer=document.getElementById("labelLayer"), axisInner=document.getElementById("axisInner"), axisContent=document.getElementById("axisContent"), leftInner=document.getElementById("leftInner"), detail=document.getElementById("detail"), subtitle=document.getElementById("subtitle"), zoomInfo=document.getElementById("zoomInfo"), thicknessInfo=document.getElementById("thicknessInfo");
 function syncPanelWidth(){app.classList.toggle("panelWide",panelWide); if(togglePanelBtn) togglePanelBtn.textContent=panelWide?"Panneau normal":"Panneau large";}
@@ -639,20 +706,21 @@ function showThread(id){const t=DATA.threads.find(x=>x.id===id); const hist=hist
 function showHistory(id){const h=(DATA.history||[]).find(x=>x.id===id), t=DATA.threads.find(x=>x.id===h.threadId); detail.innerHTML=`<div class="card"><div class="kicker">Historique</div><h2>${fmt(h.date)}</h2><p><strong>Fil :</strong> ${t?t.title:'—'}</p><div class="agenda"><strong>${h.summary||''}</strong><br>${h.effect||''}</div><p class="small">Type : ${h.type||'—'}</p></div>`; }
 function showNode(id){const n=(DATA.nodes||[]).find(x=>x.id===id), t=DATA.threads.find(x=>x.id===n.threadId); detail.innerHTML=`<div class="card"><div class="kicker">Nœud</div><h2>${n.symbol||'•'} ${n.title}</h2><div class="meta"><div class="pill">Type<strong>${n.type||'—'}</strong></div><div class="pill">Statut<strong>${n.status||'—'}</strong></div><div class="pill">Énergie<strong>${n.energy||'—'}</strong></div><div class="pill">Temps<strong>${n.duration||'—'}</strong></div></div><p><strong>Fil :</strong> ${t?t.title:'—'}</p><div class="agenda"><strong>Date / échéance</strong><br>${fmt(n.date||n.deadline)}</div></div>`; }
 function validateData(obj){if(!obj||typeof obj!=='object')throw new Error('JSON vide ou invalide');if(!obj.meta||!obj.meta.period)throw new Error('meta.period absent');if(!Array.isArray(obj.threads))throw new Error('threads absent');obj.roles=Array.isArray(obj.roles)?obj.roles:[];obj.history=Array.isArray(obj.history)?obj.history:[];obj.nodes=Array.isArray(obj.nodes)?obj.nodes:[];obj.threadLinks=Array.isArray(obj.threadLinks)?obj.threadLinks:[];obj.visualConfig=obj.visualConfig||{};return obj}
-function loadData(obj){DATA=validateData(obj);focusLane=null;subRoleFocus=null;isolatedThreadId=null;strokeScale=1;filter='all';document.querySelectorAll('button[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter==='all'));fitFullPeriod();const firstLane=visibleLaneNames()[0];if(firstLane)showLaneSummary(firstLane);}
+function loadData(obj,options={}){DATA=validateData(obj);if(options.persist!==false)persistJsonObject(DATA);const stored=options.restoreView===false?null:readStoredView();if(stored){applyStoredView(stored);return;}focusLane=null;subRoleFocus=null;isolatedThreadId=null;selectedId=null;strokeScale=1;filter='all';document.querySelectorAll('button[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter==='all'));fitFullPeriod();const firstLane=visibleLaneNames()[0];if(firstLane)showLaneSummary(firstLane);schedulePersistView();}
 function showLoadError(err){console.error(err);detail.innerHTML=`<div class="card primary"><div class="kicker">Erreur JSON</div><h2>Le fichier n'a pas pu être chargé</h2><p class="empty">${String(err&&err.message?err.message:err)}</p></div>`}
-function loadText(txt){try{loadData(JSON.parse(txt))}catch(err){showLoadError(err)}}
-document.getElementById('fileInput').addEventListener('change',e=>{const input=e.currentTarget;const f=input.files&&input.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{loadText(String(r.result||''));input.value=''};r.onerror=()=>{showLoadError(r.error||new Error('Lecture impossible'));input.value=''};r.readAsText(f,'UTF-8')}); document.querySelectorAll('button[data-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.filter; subRoleFocus=null; isolatedThreadId=null; document.querySelectorAll('button[data-filter]').forEach(x=>x.classList.remove('active')); b.classList.add('active'); render();}); document.getElementById('allRoles').onclick=()=>{isolatedThreadId=null;focusLane=null; subRoleFocus=null; render();}; document.getElementById('modeTime').onclick=()=>{zoomMode='time'; document.getElementById('modeTime').classList.add('active'); document.getElementById('modeDetail').classList.remove('active')}; document.getElementById('modeDetail').onclick=()=>{zoomMode='detail'; document.getElementById('modeDetail').classList.add('active'); document.getElementById('modeTime').classList.remove('active')};
+function loadText(txt){try{loadData(JSON.parse(txt),{persist:true,restoreView:true})}catch(err){showLoadError(err)}}
+document.getElementById('fileInput').addEventListener('change',e=>{const input=e.currentTarget;const f=input.files&&input.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{loadText(String(r.result||''));input.value=''};r.onerror=()=>{showLoadError(r.error||new Error('Lecture impossible'));input.value=''};r.readAsText(f,'UTF-8')}); document.querySelectorAll('button[data-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.filter; subRoleFocus=null; isolatedThreadId=null; document.querySelectorAll('button[data-filter]').forEach(x=>x.classList.remove('active')); b.classList.add('active'); render(); schedulePersistView();}); document.getElementById('allRoles').onclick=()=>{isolatedThreadId=null;focusLane=null; subRoleFocus=null; render(); schedulePersistView();}; document.getElementById('modeTime').onclick=()=>{zoomMode='time'; document.getElementById('modeTime').classList.add('active'); document.getElementById('modeDetail').classList.remove('active'); schedulePersistView();}; document.getElementById('modeDetail').onclick=()=>{zoomMode='detail'; document.getElementById('modeDetail').classList.add('active'); document.getElementById('modeTime').classList.remove('active'); schedulePersistView();};
 function zoomTime(f){const center=(chartScroll.scrollLeft+chartScroll.clientWidth/2-branchW)/pxPerDay; pxPerDay=Math.max(minPxPerDay(),Math.min(380,pxPerDay*f)); render(); chartScroll.scrollLeft=branchW+center*pxPerDay-chartScroll.clientWidth/2;}
 function zoomDetail(f){const center=(chartScroll.scrollTop+chartScroll.clientHeight/2)/rowH; rowH=Math.max(22,Math.min(80,rowH*f)); render(); chartScroll.scrollTop=center*rowH-chartScroll.clientHeight/2;}
-document.getElementById('zoomIn').onclick=()=>zoomMode==='time'?zoomTimeAt(1.25):zoomDetailAt(1.18); document.getElementById('zoomOut').onclick=()=>zoomMode==='time'?zoomTimeAt(1/1.25):zoomDetailAt(1/1.18); document.getElementById('reset').onclick=()=>{isolatedThreadId=null;focusLane=null;subRoleFocus=null;rowH=34;strokeScale=1;fitFullPeriod();};
-chartScroll.addEventListener('scroll',syncScroll); chartScroll.addEventListener('mousedown',e=>{dragging=true; last={x:e.clientX,y:e.clientY,l:chartScroll.scrollLeft,t:chartScroll.scrollTop}; chartScroll.style.cursor='grabbing'; e.preventDefault();}); window.addEventListener('mouseup',()=>{dragging=false; chartScroll.style.cursor='grab';}); window.addEventListener('mousemove',e=>{if(!dragging)return; chartScroll.scrollLeft=last.l-(e.clientX-last.x); chartScroll.scrollTop=last.t-(e.clientY-last.y);}); function zoomTimeAt(f, clientX){
+document.getElementById('zoomIn').onclick=()=>zoomMode==='time'?zoomTimeAt(1.25):zoomDetailAt(1.18); document.getElementById('zoomOut').onclick=()=>zoomMode==='time'?zoomTimeAt(1/1.25):zoomDetailAt(1/1.18); document.getElementById('reset').onclick=()=>{isolatedThreadId=null;focusLane=null;subRoleFocus=null;selectedId=null;rowH=34;strokeScale=1;filter='all';document.querySelectorAll('button[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter==='all'));fitFullPeriod();schedulePersistView();};
+chartScroll.addEventListener('scroll',()=>{syncScroll();schedulePersistView();}); chartScroll.addEventListener('mousedown',e=>{dragging=true; last={x:e.clientX,y:e.clientY,l:chartScroll.scrollLeft,t:chartScroll.scrollTop}; chartScroll.style.cursor='grabbing'; e.preventDefault();}); window.addEventListener('mouseup',()=>{dragging=false; chartScroll.style.cursor='grab';}); window.addEventListener('mousemove',e=>{if(!dragging)return; chartScroll.scrollLeft=last.l-(e.clientX-last.x); chartScroll.scrollTop=last.t-(e.clientY-last.y);}); function zoomTimeAt(f, clientX){
   const rect=chartScroll.getBoundingClientRect();
   const localX=clientX ? (clientX-rect.left) : chartScroll.clientWidth/2;
   const centerDays=(chartScroll.scrollLeft + localX - branchW)/pxPerDay;
   pxPerDay=Math.max(minPxPerDay(),Math.min(380,pxPerDay*f));
   render();
   chartScroll.scrollLeft=branchW + centerDays*pxPerDay - localX;
+  schedulePersistView();
 }
 function zoomDetailAt(f, clientY){
   const rect=chartScroll.getBoundingClientRect();
@@ -662,10 +730,12 @@ function zoomDetailAt(f, clientY){
   rowH=Math.max(22,Math.min(80,rowH*f));
   render();
   chartScroll.scrollTop=ratio*layout.height - localY;
+  schedulePersistView();
 }
 function scaleThickness(f){
   strokeScale=Math.max(.4,Math.min(2.5,strokeScale*f));
   render();
+  schedulePersistView();
 }
 chartScroll.addEventListener('wheel',e=>{
   const shiftOn=e.shiftKey||(e.getModifierState&&e.getModifierState('Shift'));
@@ -682,14 +752,20 @@ chartScroll.addEventListener('wheel',e=>{
   }
 },{passive:false}); window.addEventListener('dragstart',e=>e.preventDefault());
 try {
-  const embedded = JSON.parse(document.getElementById('embedded-data').textContent || '{}');
-  if (embedded && embedded.meta && embedded.threads) {
-    loadData(embedded);
+  const stored = readStoredJson();
+  if (stored) {
+    loadData(stored,{persist:false,restoreView:true});
   } else {
-    detail.innerHTML = `<div class="card primary"><div class="kicker">V22</div><h2>Charge un JSON</h2><p class="empty">Cette version HTML ne contient pas de base embarquée. Clique sur “Charger JSON” puis sélectionne ton export.</p></div>`;
+    const embedded = JSON.parse(document.getElementById('embedded-data').textContent || '{}');
+    if (embedded && embedded.meta && embedded.threads) {
+      loadData(embedded,{persist:true,restoreView:true});
+    } else {
+      detail.innerHTML = `<div class="card primary"><div class="kicker">V23</div><h2>Charge un JSON</h2><p class="empty">Le prochain JSON chargé sera mémorisé automatiquement sur cet appareil.</p></div>`;
+    }
   }
 } catch(e) {
-  detail.innerHTML = `<div class="card primary"><div class="kicker">V22</div><h2>Charge un JSON</h2><p class="empty">Cette version HTML ne contient pas de base embarquée. Clique sur “Charger JSON” puis sélectionne ton export.</p></div>`;
+  detail.innerHTML = `<div class="card primary"><div class="kicker">V23</div><h2>Charge un JSON</h2><p class="empty">Le prochain JSON chargé sera mémorisé automatiquement sur cet appareil.</p></div>`;
 }
+window.addEventListener('beforeunload',persistViewState);
 </script>
 </body></html>
