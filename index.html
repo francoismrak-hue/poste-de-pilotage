@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Poste de pilotage V1 — V24 courbes organiques</title>
+<title>Poste de pilotage V1 — V25 chronologie et navigation</title>
 <style>
-:root{--bg:#000;--panel:#080808;--panel2:#111;--text:#fff;--muted:#a9a9a9;--yellow:#ffd400;--yellow2:#ffea61;--yellowSoft:rgba(255,212,0,.18);--grid:#252525;--grid2:#141414;--leftw:320px;--rightw:420px;--rightwDynamic:420px;--headerh:126px;--axish:52px;}
+:root{--bg:#000;--panel:#080808;--panel2:#111;--text:#fff;--muted:#a9a9a9;--yellow:#ffd400;--yellow2:#ffea61;--yellowSoft:rgba(255,212,0,.18);--grid:#252525;--grid2:#141414;--leftw:320px;--rightw:420px;--rightwDynamic:420px;--headerh:126px;--axish:92px;}
 *{box-sizing:border-box;-webkit-user-select:none;user-select:none}
 html,body{margin:0;height:100%;overflow:hidden;background:#000;color:#fff;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
 #app{display:grid;grid-template-columns:var(--leftw) minmax(0,1fr) var(--rightwDynamic);grid-template-rows:var(--headerh) 1fr;height:100vh;}
@@ -21,8 +21,16 @@ button:hover,.fileLabel:hover{border-color:#777} button.active{border-color:var(
 #center{grid-column:2;grid-row:2;min-width:0;background:#000;position:relative;overflow:hidden}
 #axisWrap{position:absolute;top:0;left:0;right:0;height:var(--axish);border-bottom:1px solid #242424;background:#050505;overflow:hidden;z-index:8}
 #axisInner{position:absolute;left:0;top:0;height:var(--axish)} #axisContent{position:relative;height:var(--axish)}
-.axisLabel{position:absolute;top:16px;white-space:nowrap;color:#f3f3f3;font-weight:750;font-size:13px;line-height:1;transform:none}
-.axisTick{position:absolute;top:0;bottom:0;width:1px;background:#323232}
+.axisLabel{position:absolute;top:10px;white-space:nowrap;color:#f3f3f3;font-weight:750;font-size:12px;line-height:1;transform:none;z-index:5}
+.axisTick{position:absolute;top:0;height:34px;width:1px;background:#323232;z-index:4}
+.axisMonthBand{position:absolute;top:34px;height:27px;border-left:1px solid #353535;border-right:1px solid #171717;background:rgba(255,212,0,.025);z-index:1}
+.axisMonthBand.alt{background:rgba(255,255,255,.018)}
+.axisMonthLabel{position:absolute;top:41px;height:20px;padding-left:8px;color:#d8d8d8;font-size:12px;font-weight:750;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;z-index:3}
+.axisYearBand{position:absolute;top:61px;height:31px;border-left:2px solid rgba(255,212,0,.7);background:rgba(255,212,0,.055);z-index:1}
+.axisYearBand.alt{background:rgba(255,255,255,.035)}
+.axisYearLabel{position:absolute;top:68px;height:21px;padding-left:10px;color:var(--yellow);font-size:13px;font-weight:900;letter-spacing:.04em;z-index:3}
+.axisRowLine{position:absolute;left:0;right:0;height:1px;background:#242424;z-index:2}
+.axisRowLine.month{top:34px}.axisRowLine.year{top:61px}
 #chartScroll{position:absolute;left:0;right:0;top:var(--axish);bottom:0;overflow:auto;background:#000;cursor:grab}
 #chartContent{position:relative;background:#000} #chartSvg{position:absolute;left:0;top:0;overflow:visible} #labelLayer{position:absolute;left:0;top:0;pointer-events:none}
 #labelLayer .labelBox,#labelLayer .labelPlain{position:absolute;white-space:nowrap;pointer-events:auto;cursor:pointer}
@@ -33,6 +41,9 @@ button:hover,.fileLabel:hover{border-color:#777} button.active{border-color:var(
 #panelResize{position:fixed;top:var(--headerh);bottom:0;width:12px;margin-left:-7px;z-index:30;cursor:col-resize;touch-action:none}
 #panelResize::before{content:"";position:absolute;left:5px;top:0;bottom:0;width:2px;background:#2d2d2d;transition:background .15s,box-shadow .15s}
 #panelResize:hover::before,#panelResize.dragging::before{background:var(--yellow);box-shadow:0 0 9px rgba(255,212,0,.45)}
+#nodeTooltip{position:fixed;z-index:1000;display:none;max-width:320px;padding:8px 11px;border:1px solid #4a4a4a;border-radius:8px;background:rgba(12,12,12,.96);color:#fff;box-shadow:0 10px 28px rgba(0,0,0,.55);font-size:13px;line-height:1.35;pointer-events:none}
+#nodeTooltip strong{display:block;color:var(--yellow);font-size:13px;margin-bottom:2px}
+#nodeTooltip span{color:#c8c8c8;font-size:11px}
 body.resizingPanel{cursor:col-resize}
 body.resizingPanel *{cursor:col-resize!important}
 .detailHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:4px 0 14px;padding:8px 4px 12px;border-bottom:1px solid #1e1e1e}
@@ -75,7 +86,7 @@ ul{padding-left:18px;margin:10px 0 0} li{margin:8px 0}
 <header id="header"><h1>Poste de pilotage V1</h1><div class="sub" id="subtitle">3 semaines de Contrôle / Revue</div><div class="toolbar"><label class="fileLabel">Charger JSON<input id="fileInput" type="file" accept=".json,application/json"></label><button id="modeTime" class="active">Zoom temps</button><button id="modeDetail">Zoom détail</button><button id="zoomOut">−</button><span id="zoomInfo" class="small">100%</span><button id="zoomIn">+</button><span id="thicknessInfo" class="small" title="MAJ + molette">Épaisseur 100%</span><button id="reset">Reset vue</button><div class="sep"></div><button id="allRoles">Tous les rôles</button><button data-filter="all" class="active">Tout</button><button data-filter="hot">Chaud</button><button data-filter="active">Actif</button><button data-filter="watch">Veille</button><button data-filter="dormant">Dormant</button></div></header>
 <aside id="left"><div id="leftInner"></div></aside>
 <main id="center"><div id="axisWrap"><div id="axisInner"><div id="axisContent"></div></div></div><div id="chartScroll"><div id="chartContent"><svg id="chartSvg"></svg><div id="labelLayer"></div></div></div><div class="hint">CTRL + molette = zoom temps · ALT + molette = zoom détail · MAJ + molette = épaisseur · glisser = déplacer · double-clic fil = isoler / restaurer</div></main>
-<div id="panelResize" title="Glisser pour redimensionner le panneau"></div><aside id="right"><div class="detailHead"><div><div class="kicker">Panneau</div><strong>Détail / synthèse</strong></div><button id="togglePanel" title="Alterner entre largeur normale et 50 %">Panneau 50%</button></div><div id="detail"><div class="card primary"><div class="kicker">Prototype V24</div><h2>Chargement</h2><p class="empty">Les données sont intégrées. Tu peux aussi charger un autre JSON.</p></div></div></aside>
+<div id="nodeTooltip"></div><div id="panelResize" title="Glisser pour redimensionner le panneau"></div><aside id="right"><div class="detailHead"><div><div class="kicker">Panneau</div><strong>Détail / synthèse</strong></div><button id="togglePanel" title="Alterner entre largeur normale et 50 %">Panneau 50%</button></div><div id="detail"><div class="card primary"><div class="kicker">Prototype V25</div><h2>Chargement</h2><p class="empty">Les données sont intégrées. Tu peux aussi charger un autre JSON.</p></div></div></aside>
 </div>
 <script id="embedded-data" type="application/json">{}</script>
 <script>
@@ -151,7 +162,7 @@ function applyStoredView(state){
 }
 
 const branchW=340, leftRootX=24, roleX=130, roleLabelX=170, rightPad=280;
-const app=document.getElementById("app"), togglePanelBtn=document.getElementById("togglePanel"), panelResize=document.getElementById("panelResize"), chartScroll=document.getElementById("chartScroll"), chartContent=document.getElementById("chartContent"), chartSvg=document.getElementById("chartSvg"), labelLayer=document.getElementById("labelLayer"), axisInner=document.getElementById("axisInner"), axisContent=document.getElementById("axisContent"), leftInner=document.getElementById("leftInner"), detail=document.getElementById("detail"), subtitle=document.getElementById("subtitle"), zoomInfo=document.getElementById("zoomInfo"), thicknessInfo=document.getElementById("thicknessInfo");
+const app=document.getElementById("app"), togglePanelBtn=document.getElementById("togglePanel"), panelResize=document.getElementById("panelResize"), nodeTooltip=document.getElementById("nodeTooltip"), chartScroll=document.getElementById("chartScroll"), chartContent=document.getElementById("chartContent"), chartSvg=document.getElementById("chartSvg"), labelLayer=document.getElementById("labelLayer"), axisInner=document.getElementById("axisInner"), axisContent=document.getElementById("axisContent"), leftInner=document.getElementById("leftInner"), detail=document.getElementById("detail"), subtitle=document.getElementById("subtitle"), zoomInfo=document.getElementById("zoomInfo"), thicknessInfo=document.getElementById("thicknessInfo");
 function panelBounds(){
   const max=Math.max(360,Math.min(window.innerWidth*.62,920));
   const min=Math.max(300,Math.min(380,window.innerWidth*.28));
@@ -373,7 +384,48 @@ function axisLabelText(d,info,prevDate){
   if(info.mode==='twoday') return `${d.getDate()} ${monthsShort[d.getMonth()]}`;
   return dateLabel(d,false,true);
 }
+function clippedPeriod(startDate,endDate){
+  const s=new Date(Math.max(start().getTime(),startDate.getTime()));
+  const e=new Date(Math.min(end().getTime(),endDate.getTime()));
+  return e>s?[s,e]:null;
+}
+function renderCalendarBands(){
+  axisContent.appendChild(H('div','axisRowLine month'));
+  axisContent.appendChild(H('div','axisRowLine year'));
+
+  let m=new Date(start().getFullYear(),start().getMonth(),1);
+  let monthIndex=0;
+  while(m<end()){
+    const next=new Date(m.getFullYear(),m.getMonth()+1,1);
+    const clipped=clippedPeriod(m,next);
+    if(clipped){
+      const [s,e]=clipped,x1=xDate(s),x2=xDate(e),w=Math.max(1,x2-x1);
+      const band=H('div','axisMonthBand'+(monthIndex%2?' alt':''));
+      band.style.left=x1+'px';band.style.width=w+'px';axisContent.appendChild(band);
+      const lab=H('div','axisMonthLabel',monthsShort[m.getMonth()]);
+      lab.style.left=x1+'px';lab.style.width=Math.max(0,w-4)+'px';
+      axisContent.appendChild(lab);
+    }
+    m=next;monthIndex++;
+  }
+
+  let y=start().getFullYear(),yearIndex=0;
+  while(y<=end().getFullYear()){
+    const ys=new Date(y,0,1),ye=new Date(y+1,0,1);
+    const clipped=clippedPeriod(ys,ye);
+    if(clipped){
+      const [s,e]=clipped,x1=xDate(s),x2=xDate(e),w=Math.max(1,x2-x1);
+      const band=H('div','axisYearBand'+(yearIndex%2?' alt':''));
+      band.style.left=x1+'px';band.style.width=w+'px';axisContent.appendChild(band);
+      const lab=H('div','axisYearLabel',String(y));
+      lab.style.left=x1+'px';lab.style.width=Math.max(0,w-4)+'px';
+      axisContent.appendChild(lab);
+    }
+    y++;yearIndex++;
+  }
+}
 function renderAxis(){
+  renderCalendarBands();
   const info=stepInfo();
   const total=(end()-start())/dayMs();
   let prevDate=null;
@@ -385,8 +437,8 @@ function renderAxis(){
     axisContent.appendChild(tick);
     const labelText=axisLabelText(d,info,prevDate);
     const lab=H('div','axisLabel',labelText);
-    lab.style.left=(x+6)+'px';
-    if(info.mode==='fortnight') lab.style.fontSize='11px';
+    lab.style.left=(x+5)+'px';
+    if(info.mode==='fortnight') lab.style.fontSize='10px';
     axisContent.appendChild(lab);
     chartSvg.appendChild(E('line',{x1:x,y1:0,x2:x,y2:layout.height,class:i%1===0?'gridV':'gridVMinor'}));
     prevDate=d;
@@ -404,22 +456,24 @@ function curveSpan(mult=1){
   return v*mult;
 }
 function flowSpan(sx,targetX,mult=1,verticalDelta=0){
-  const dist=Math.max(60,targetX-sx);
   const vertical=Math.abs(verticalDelta);
-  const zoomLean=pxPerDay<16?1.42:pxPerDay<32?1.20:1;
-  const organic=Math.max(120,dist*.50,vertical*.92+80);
-  return Math.min(420,organic*zoomLean)*mult;
+  // Décalage horizontal limité : la branche descend surtout verticalement.
+  const base=vertical<34?46:vertical<90?58:72;
+  return Math.max(38,Math.min(94,base*mult));
 }
 function organicCurveGeom(sourceX,sourceY,targetY,targetEndX,mult=1){
-  const dy=targetY-sourceY;
-  const span=flowSpan(sourceX,sourceX+220,mult,dy);
+  const span=flowSpan(sourceX,sourceX,mult,targetY-sourceY);
   const bendEnd=sourceX+span;
-  // Deux tangentes horizontales longues : départ et arrivée restent doux.
-  const cp1X=sourceX+span*.56,cp1Y=sourceY;
-  const cp2X=bendEnd-span*.56,cp2Y=targetY;
-  const xEnd=Math.max(bendEnd+28,targetEndX);
-  return {sourceX,sourceY,cp1X,cp1Y,cp2X,cp2Y,xStart:bendEnd,yStart:targetY,xEnd,yEnd:targetY,rangeStart:sourceX,rangeEnd:xEnd,
-    d:`M${sourceX} ${sourceY} C${cp1X} ${cp1Y}, ${cp2X} ${cp2Y}, ${bendEnd} ${targetY} L${xEnd} ${targetY}`};
+  const tangent=Math.max(14,Math.min(24,span*.30));
+  const cp1X=sourceX+tangent,cp1Y=sourceY;
+  const cp2X=bendEnd-tangent,cp2Y=targetY;
+  const xEnd=Math.max(bendEnd+34,targetEndX);
+  return {
+    sourceX,sourceY,cp1X,cp1Y,cp2X,cp2Y,
+    xStart:bendEnd,yStart:targetY,xEnd,yEnd:targetY,
+    rangeStart:sourceX,rangeEnd:xEnd,
+    d:`M${sourceX} ${sourceY} C${cp1X} ${cp1Y}, ${cp2X} ${targetY}, ${bendEnd} ${targetY} L${xEnd} ${targetY}`
+  };
 }
 function pathRootToRole(lane){
   const y=layout.roleMid[lane],sy=rootY(),c=curveSpan(1);
@@ -581,14 +635,10 @@ function buildRibbon(geom,widthFn){
     const w=widthFn(dateFromX(p.x),p);widths.push(w);maxWidth=Math.max(maxWidth,w);
     upper.push({x:p.x+nx*w/2,y:p.y+ny*w/2});lower.push({x:p.x-nx*w/2,y:p.y-ny*w/2});
   }
-  const lowerRev=[...lower].reverse();
-  let d=catmullRomPath(upper,true);
-  const upperEnd=upper[upper.length-1],lowerStart=lowerRev[0];
-  const capX=(upperEnd.x+lowerStart.x)/2,capY=(upperEnd.y+lowerStart.y)/2;
-  d+=` Q${(upperEnd.x+capX).toFixed(2)} ${(upperEnd.y+capY).toFixed(2)}, ${lowerStart.x.toFixed(2)} ${lowerStart.y.toFixed(2)}`;
-  d+=catmullRomPath(lowerRev,false);
-  const lowerEnd=lowerRev[lowerRev.length-1],upperStart=upper[0];
-  d+=` Q${((lowerEnd.x+upperStart.x)/2).toFixed(2)} ${((lowerEnd.y+upperStart.y)/2).toFixed(2)}, ${upperStart.x.toFixed(2)} ${upperStart.y.toFixed(2)} Z`;
+  let d=`M${upper[0].x.toFixed(2)} ${upper[0].y.toFixed(2)}`;
+  for(let i=1;i<upper.length;i++)d+=` L${upper[i].x.toFixed(2)} ${upper[i].y.toFixed(2)}`;
+  for(let i=lower.length-1;i>=0;i--)d+=` L${lower[i].x.toFixed(2)} ${lower[i].y.toFixed(2)}`;
+  d+=' Z';
   return {d,maxWidth,last:pts[pts.length-1],lastWidth:widths[widths.length-1]};
 }
 function drawRibbonGroup({geom,state='active',widthFn,onClick,onDblClick,isolated=false}){
@@ -631,10 +681,37 @@ function importantLaneNodes(lane){
     return da-db || b.score-a.score;
   }).slice(0,8);
 }
+function tooltipDate(n){
+  const d=n.date||n.deadline;
+  return d?fmt(d):'Date non renseignée';
+}
+function showNodeTooltip(n,e,threadTitle=''){
+  if(!nodeTooltip)return;
+  const type=n.type==='appointment'?'Rendez-vous':n.type==='vigilance'?'Vigilance':n.type==='document'?'Document':'Tâche';
+  nodeTooltip.innerHTML=`<strong>${n.title||'Nœud'}</strong><span>${type} · ${tooltipDate(n)}${threadTitle?' · '+threadTitle:''}</span>`;
+  nodeTooltip.style.display='block';
+  moveNodeTooltip(e);
+}
+function moveNodeTooltip(e){
+  if(!nodeTooltip||nodeTooltip.style.display==='none')return;
+  const pad=16,tw=nodeTooltip.offsetWidth||260,th=nodeTooltip.offsetHeight||52;
+  let x=e.clientX+14,y=e.clientY+14;
+  if(x+tw+pad>window.innerWidth)x=e.clientX-tw-14;
+  if(y+th+pad>window.innerHeight)y=e.clientY-th-14;
+  nodeTooltip.style.left=Math.max(pad,x)+'px';
+  nodeTooltip.style.top=Math.max(pad,y)+'px';
+}
+function hideNodeTooltip(){if(nodeTooltip)nodeTooltip.style.display='none';}
+function bindNodeTooltip(g,n,threadTitle=''){
+  g.addEventListener('mouseenter',e=>showNodeTooltip(n,e,threadTitle));
+  g.addEventListener('mousemove',moveNodeTooltip);
+  g.addEventListener('mouseleave',hideNodeTooltip);
+}
 function addOverviewNode(n,t,x,y,i){
   const yy=y;
   const g=E('g',{class:`node ${n.type||'task'}`,transform:`translate(${x},${yy})`});
-  g.onclick=e=>{e.stopPropagation();showNode(n.id)};
+  g.onclick=e=>{e.stopPropagation();hideNodeTooltip();showNode(n.id)};
+  bindNodeTooltip(g,n,t?.title||'');
   if(n.type==='appointment') g.appendChild(E('circle',{cx:0,cy:0,r:12}));
   else if(n.type==='vigilance') g.appendChild(E('polygon',{points:'0,-14 14,12 -14,12'}));
   else g.appendChild(E('rect',{x:-11,y:-11,width:22,height:22,rx:4}));
@@ -699,7 +776,7 @@ function addThreadLabel(t,row,geom,y){
   div.onclick=()=>showThread(t.id);div.ondblclick=e=>{e.preventDefault();e.stopPropagation();toggleThreadIsolation(t.id)};labelLayer.appendChild(div);
 }
 function addHistory(h,x,y){const g=E('g',{class:'hist',transform:`translate(${x},${y})`}); g.onclick=e=>{e.stopPropagation();showHistory(h.id)}; const c=E('circle',{cx:0,cy:0,r:8.5}); g.appendChild(c); chartSvg.appendChild(g);}
-function addNode(n,x,y){const g=E('g',{class:`node ${n.type||'task'}`,transform:`translate(${x},${y})`}); g.onclick=e=>{e.stopPropagation();showNode(n.id)}; if(n.type==='appointment'){g.appendChild(E('circle',{cx:0,cy:0,r:15}))} else if(n.type==='vigilance'){g.appendChild(E('polygon',{points:'0,-17 17,15 -17,15'}))} else {g.appendChild(E('rect',{x:-14,y:-14,width:28,height:28,rx:5}))} const tx=E('text',{x:0,y:1}); tx.textContent=n.symbol||'■'; g.appendChild(tx); chartSvg.appendChild(g);}
+function addNode(n,x,y){const g=E('g',{class:`node ${n.type||'task'}`,transform:`translate(${x},${y})`}); g.onclick=e=>{e.stopPropagation();hideNodeTooltip();showNode(n.id)}; const t=threadById(n.threadId);bindNodeTooltip(g,n,t?.title||''); if(n.type==='appointment'){g.appendChild(E('circle',{cx:0,cy:0,r:15}))} else if(n.type==='vigilance'){g.appendChild(E('polygon',{points:'0,-17 17,15 -17,15'}))} else {g.appendChild(E('rect',{x:-14,y:-14,width:28,height:28,rx:5}))} const tx=E('text',{x:0,y:1}); tx.textContent=n.symbol||'■'; g.appendChild(tx); chartSvg.appendChild(g);}
 function roleThreads(roleId){
   return visibleThreads().filter(t=>t.rolePrimary===roleId || (t.roleSecondary||[]).includes(roleId));
 }
@@ -784,7 +861,7 @@ document.getElementById('fileInput').addEventListener('change',e=>{const input=e
 function zoomTime(f){const center=(chartScroll.scrollLeft+chartScroll.clientWidth/2-branchW)/pxPerDay; pxPerDay=Math.max(minPxPerDay(),Math.min(380,pxPerDay*f)); render(); chartScroll.scrollLeft=branchW+center*pxPerDay-chartScroll.clientWidth/2;}
 function zoomDetail(f){const center=(chartScroll.scrollTop+chartScroll.clientHeight/2)/rowH; rowH=Math.max(22,Math.min(80,rowH*f)); render(); chartScroll.scrollTop=center*rowH-chartScroll.clientHeight/2;}
 document.getElementById('zoomIn').onclick=()=>zoomMode==='time'?zoomTimeAt(1.25):zoomDetailAt(1.18); document.getElementById('zoomOut').onclick=()=>zoomMode==='time'?zoomTimeAt(1/1.25):zoomDetailAt(1/1.18); document.getElementById('reset').onclick=()=>{isolatedThreadId=null;focusLane=null;subRoleFocus=null;selectedId=null;rowH=34;strokeScale=1;filter='all';document.querySelectorAll('button[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter==='all'));fitFullPeriod();schedulePersistView();};
-chartScroll.addEventListener('scroll',()=>{syncScroll();schedulePersistView();}); chartScroll.addEventListener('mousedown',e=>{dragging=true; last={x:e.clientX,y:e.clientY,l:chartScroll.scrollLeft,t:chartScroll.scrollTop}; chartScroll.style.cursor='grabbing'; e.preventDefault();}); window.addEventListener('mouseup',()=>{dragging=false; chartScroll.style.cursor='grab';}); window.addEventListener('mousemove',e=>{if(!dragging)return; chartScroll.scrollLeft=last.l-(e.clientX-last.x); chartScroll.scrollTop=last.t-(e.clientY-last.y);}); function zoomTimeAt(f, clientX){
+chartScroll.addEventListener('scroll',()=>{hideNodeTooltip();syncScroll();schedulePersistView();}); chartScroll.addEventListener('mousedown',e=>{dragging=true; last={x:e.clientX,y:e.clientY,l:chartScroll.scrollLeft,t:chartScroll.scrollTop}; chartScroll.style.cursor='grabbing'; e.preventDefault();}); window.addEventListener('mouseup',()=>{dragging=false; chartScroll.style.cursor='grab';}); window.addEventListener('mousemove',e=>{if(!dragging)return; chartScroll.scrollLeft=last.l-(e.clientX-last.x); chartScroll.scrollTop=last.t-(e.clientY-last.y);}); function zoomTimeAt(f, clientX){
   const rect=chartScroll.getBoundingClientRect();
   const localX=clientX ? (clientX-rect.left) : chartScroll.clientWidth/2;
   const centerDays=(chartScroll.scrollLeft + localX - branchW)/pxPerDay;
@@ -831,11 +908,11 @@ try {
     if (embedded && embedded.meta && embedded.threads) {
       loadData(embedded,{persist:true,restoreView:true});
     } else {
-      detail.innerHTML = `<div class="card primary"><div class="kicker">V24</div><h2>Charge un JSON</h2><p class="empty">Le prochain JSON chargé sera mémorisé automatiquement sur cet appareil.</p></div>`;
+      detail.innerHTML = `<div class="card primary"><div class="kicker">V25</div><h2>Charge un JSON</h2><p class="empty">Le prochain JSON chargé sera mémorisé automatiquement sur cet appareil.</p></div>`;
     }
   }
 } catch(e) {
-  detail.innerHTML = `<div class="card primary"><div class="kicker">V24</div><h2>Charge un JSON</h2><p class="empty">Le prochain JSON chargé sera mémorisé automatiquement sur cet appareil.</p></div>`;
+  detail.innerHTML = `<div class="card primary"><div class="kicker">V25</div><h2>Charge un JSON</h2><p class="empty">Le prochain JSON chargé sera mémorisé automatiquement sur cet appareil.</p></div>`;
 }
 window.addEventListener('beforeunload',persistViewState);
 </script>
