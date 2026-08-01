@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Pilotage">
-<title>Poste de pilotage V1 — V28 iPhone</title>
+<title>Poste de pilotage V1 — V29 iPhone</title>
 <style>
 :root{--bg:#000;--panel:#080808;--panel2:#111;--text:#fff;--muted:#a9a9a9;--yellow:#ffd400;--yellow2:#ffea61;--yellowSoft:rgba(255,212,0,.18);--grid:#252525;--grid2:#141414;--leftw:320px;--rightw:420px;--rightwDynamic:420px;--headerh:126px;--axish:92px;}
 *{box-sizing:border-box;-webkit-user-select:none;user-select:none}
@@ -214,6 +214,33 @@ ul{padding-left:18px;margin:10px 0 0} li{margin:8px 0}
   .mobileFilterGrid button.active{background:var(--yellow);color:#000;border-color:var(--yellow)}
   .mobileActionGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 
+
+  .mobilePeriodGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .mobilePeriodGrid button{min-height:44px;justify-content:center;border-radius:12px;font-size:12px}
+  .mobilePeriodGrid button.active{background:var(--yellow);color:#000;border-color:var(--yellow)}
+  .mobileCustomRange{display:none;margin-top:10px;padding-top:10px;border-top:1px solid #292929}
+  .mobileCustomRange.visible{display:block}
+  .mobileDateGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .mobileDateGrid label{font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:.06em}
+  .mobileDateGrid input{display:block;width:100%;margin-top:5px;min-height:42px;padding:7px 8px;border-radius:10px;border:1px solid #353535;background:#050505;color:#fff;font:inherit;color-scheme:dark}
+  #mobileApplyCustomRange{width:100%;min-height:44px;margin-top:9px;justify-content:center;border-radius:12px;background:var(--yellow);color:#000;border-color:var(--yellow);font-weight:850}
+  #mobileRangeSummary{display:block;margin-top:9px;color:#c9c9c9;font-size:11px;line-height:1.35}
+  #leftInner.mobileRoot{position:relative!important;height:auto!important;padding:14px 14px 100px!important}
+  .mobileLaneIntro{margin:3px 6px 16px;color:#aaa;font-size:11px;line-height:1.4}
+  .mobileLaneCard{position:relative;display:flex;align-items:center;gap:10px;min-height:58px;margin:0 0 9px;padding:11px 12px 11px 14px;border:1px solid #303030;border-radius:14px;background:#0b0b0b;color:#fff}
+  .mobileLaneCard:active,.mobileLaneCard.current{border-color:rgba(255,212,0,.65);background:rgba(255,212,0,.10)}
+  .mobileLaneText{min-width:0;flex:1}
+  .mobileLaneName{display:block;font-size:16px;font-weight:820;line-height:1.15}
+  .mobileLaneMeta{display:block;margin-top:4px;color:#969696;font-size:10px}
+  .mobileLaneCount{min-width:34px;padding:5px 8px;border:1px solid #393939;border-radius:999px;background:#171717;color:#ddd;text-align:center;font-size:11px;font-weight:750}
+  .mobileLaneChevron{color:var(--yellow);font-size:20px;font-weight:800}
+  .mobileRoleDetailHead{display:flex;align-items:center;gap:10px;margin:2px 4px 14px}
+  .mobileRoleDetailHead button{min-width:42px;min-height:40px;padding:0;border-radius:12px;font-size:20px}
+  .mobileRoleDetailHead strong{color:var(--yellow);font-size:22px;line-height:1.05}
+  .mobileRoleChoice{display:flex;align-items:center;min-height:50px;margin:0 0 8px;padding:10px 12px;border:1px solid #303030;border-radius:13px;background:#0b0b0b;color:#fff;font-size:14px;font-weight:680}
+  .mobileRoleChoice:active,.mobileRoleChoice.selected{border-color:rgba(255,212,0,.65);background:rgba(255,212,0,.10);color:var(--yellow)}
+  .mobileRoleChoice .count{margin-left:auto;background:#1b1b1b;border:1px solid #383838;color:#d8d8d8;border-radius:999px;min-width:28px;font-size:11px;text-align:center;padding:4px 7px}
+
   #mobileNav{
     display:grid;position:fixed;z-index:150;left:0;right:0;bottom:0;height:var(--mobileNavH);
     grid-template-columns:repeat(4,1fr);
@@ -243,17 +270,28 @@ ul{padding-left:18px;margin:10px 0 0} li{margin:8px 0}
 <header id="header"><h1>Poste de pilotage V1</h1><div class="sub" id="subtitle">3 semaines de Contrôle / Revue</div>
 <div id="mobileQuickBar">
   <label class="mobileFileLabel">JSON<input id="mobileFileInput" type="file" accept=".json,application/json"></label>
-  <button id="mobileToday">Aujourd’hui</button>
+  <button id="mobilePeriodTop">3 mois</button>
   <button id="mobileRolesTop">Rôles</button>
   <button id="mobileControlsTop">Réglages</button>
 </div><div class="toolbar"><label class="fileLabel">Charger JSON<input id="fileInput" type="file" accept=".json,application/json"></label><button id="modeTime" class="active">Zoom temps</button><button id="modeDetail">Zoom détail</button><button id="zoomOut">−</button><span id="zoomInfo" class="small">100%</span><button id="zoomIn">+</button><span id="thicknessInfo" class="small" title="MAJ + molette">Épaisseur 100%</span><button id="reset">Reset vue</button><div class="sep"></div><button id="allRoles">Tous les rôles</button><button id="toggleSecondary">Afficher secondaires</button><button data-filter="all" class="active">Tout</button><button data-filter="hot">Chaud</button><button data-filter="active">Actif</button><button data-filter="watch">Veille</button><button data-filter="dormant">Dormant</button></div></header>
 <aside id="left"><div class="mobileDrawerHead"><strong>Rôles et fils</strong><button id="mobileCloseLeft">×</button></div><div id="leftInner"></div></aside>
 <main id="center"><div id="axisWrap"><div id="axisInner"><div id="axisContent"></div></div></div><div id="chartScroll"><div id="chartContent"><svg id="chartSvg"></svg><div id="labelLayer"></div></div></div><div class="hint">CTRL + molette = zoom temps · ALT + molette = zoom détail · MAJ + molette = épaisseur · glisser = déplacer · double-clic fil = parent + enfants directs / restaurer</div></main>
-<div id="nodeTooltip"></div><div id="panelResize" title="Glisser pour redimensionner le panneau"></div><aside id="right"><div class="detailHead"><div><div class="kicker">Panneau</div><strong>Détail / synthèse</strong></div><button id="togglePanel" title="Alterner entre largeur normale et 50 %">Panneau 50%</button><div class="mobileDetailActions mobileOnly"><button id="mobileIsolate">Isoler</button><button id="mobileCloseRight">×</button></div></div><div id="detail"><div class="card primary"><div class="kicker">Prototype V28</div><h2>Chargement</h2><p class="empty">Les données sont intégrées. Tu peux aussi charger un autre JSON.</p></div></div></aside>
+<div id="nodeTooltip"></div><div id="panelResize" title="Glisser pour redimensionner le panneau"></div><aside id="right"><div class="detailHead"><div><div class="kicker">Panneau</div><strong>Détail / synthèse</strong></div><button id="togglePanel" title="Alterner entre largeur normale et 50 %">Panneau 50%</button><div class="mobileDetailActions mobileOnly"><button id="mobileIsolate">Isoler</button><button id="mobileCloseRight">×</button></div></div><div id="detail"><div class="card primary"><div class="kicker">Prototype V29</div><h2>Chargement</h2><p class="empty">Les données sont intégrées. Tu peux aussi charger un autre JSON.</p></div></div></aside>
 
 <div id="mobileBackdrop"></div>
 <section id="mobileControlsSheet" aria-label="Réglages d’affichage">
-  <div class="mobileSheetHead"><strong>Réglages d’affichage</strong><button id="mobileCloseControls">×</button></div>
+  <div class="mobileSheetHead"><strong>Réglages et période</strong><button id="mobileCloseControls">×</button></div>
+  <div class="mobileControlGroup" id="mobilePeriodGroup"><strong>Échelle de temps</strong>
+    <div class="mobilePeriodGrid">
+      <button data-time-range="all">Tout</button><button data-time-range="2w">2 semaines</button><button data-time-range="1m">1 mois</button>
+      <button data-time-range="3m">3 mois</button><button data-time-range="12m">12 mois</button><button data-time-range="custom">Dates</button>
+    </div>
+    <span id="mobileRangeSummary"></span>
+    <div class="mobileCustomRange" id="mobileCustomRange">
+      <div class="mobileDateGrid"><label>Début<input id="mobileRangeStart" type="date"></label><label>Fin<input id="mobileRangeEnd" type="date"></label></div>
+      <button id="mobileApplyCustomRange">Appliquer la période</button>
+    </div>
+  </div>
   <div class="mobileControlGroup"><strong>Zoom temporel</strong><div class="mobileStepper"><button id="mobileTimeOut">−</button><span id="mobileTimeInfo">100 %</span><button id="mobileTimeIn">+</button></div></div>
   <div class="mobileControlGroup"><strong>Espacement des fils</strong><div class="mobileStepper"><button id="mobileDetailOut">−</button><span id="mobileDetailInfo">100 %</span><button id="mobileDetailIn">+</button></div></div>
   <div class="mobileControlGroup"><strong>Épaisseur</strong><div class="mobileStepper"><button id="mobileThicknessOut">−</button><span id="mobileThicknessInfo">100 %</span><button id="mobileThicknessIn">+</button></div></div>
@@ -275,9 +313,11 @@ const months=["janvier","février","mars","avril","mai","juin","juillet","août"
 const monthsShort=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
 let DATA=null, filter="all", focusLane=null, subRoleFocus=null, selectedId=null, isolatedThreadId=null, showSecondary=false;
 let pxPerDay=54, rowH=34, zoomMode="time", strokeScale=1, panelWide=false, panelWidth=420;
+let timeRangeMode="all", viewStartOverride=null, viewEndOverride=null;
+let mobileRolesRoot=true, mobileRolesBrowseLane=null;
 
 const STORAGE_DATA_KEY='postePilotage:lastJson:v1';
-const STORAGE_VIEW_KEY='postePilotage:viewState:v28:'+(window.matchMedia('(max-width:820px)').matches?'mobile':'desktop');
+const STORAGE_VIEW_KEY='postePilotage:viewState:v29:'+(window.matchMedia('(max-width:820px)').matches?'mobile':'desktop');
 let restoringView=false;
 let saveTimer=null;
 
@@ -295,6 +335,7 @@ function currentViewState(){
   return {
     pxPerDay,rowH,zoomMode,strokeScale,panelWide,panelWidth,
     filter,focusLane,subRoleFocus,selectedId,isolatedThreadId,showSecondary,
+    timeRangeMode,viewStart:viewStartOverride?viewStartOverride.toISOString():null,viewEnd:viewEndOverride?viewEndOverride.toISOString():null,
     scrollLeft:chartScroll ? chartScroll.scrollLeft : 0,
     scrollTop:chartScroll ? chartScroll.scrollTop : 0
   };
@@ -317,6 +358,7 @@ function readStoredView(){
 function applyStoredView(state){
   if(!state||!DATA)return;
   restoringView=true;
+  applyTimeRangeState(state.timeRangeMode|| (isMobileMode()?"3m":"all"),state.viewStart,state.viewEnd);
   if(Number.isFinite(state.pxPerDay)) pxPerDay=Math.max(minPxPerDay(),Math.min(380,state.pxPerDay));
   if(Number.isFinite(state.rowH)) rowH=Math.max(22,Math.min(80,state.rowH));
   if(Number.isFinite(state.strokeScale)) strokeScale=Math.max(.4,Math.min(2.5,state.strokeScale));
@@ -334,6 +376,7 @@ function applyStoredView(state){
   document.getElementById('modeTime').classList.toggle('active',zoomMode==='time');
   document.getElementById('modeDetail').classList.toggle('active',zoomMode==='detail');
   document.querySelectorAll('button[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter===filter));
+  if(focusLane && !visibleThreads().length){focusLane=null;subRoleFocus=null;isolatedThreadId=null;}
   render();
   requestAnimationFrame(()=>{
     chartScroll.scrollLeft=Math.max(0,Number(state.scrollLeft)||0);
@@ -350,7 +393,7 @@ function applyResponsiveMetrics(){
   if(isMobileMode()){branchW=166;leftRootX=8;roleX=48;roleLabelX=70;rightPad=88}
   else{branchW=340;leftRootX=24;roleX=130;roleLabelX=170;rightPad=280}
 }
-const app=document.getElementById("app"), togglePanelBtn=document.getElementById("togglePanel"), panelResize=document.getElementById("panelResize"), nodeTooltip=document.getElementById("nodeTooltip"), chartScroll=document.getElementById("chartScroll"), chartContent=document.getElementById("chartContent"), chartSvg=document.getElementById("chartSvg"), labelLayer=document.getElementById("labelLayer"), axisInner=document.getElementById("axisInner"), axisContent=document.getElementById("axisContent"), leftInner=document.getElementById("leftInner"), detail=document.getElementById("detail"), subtitle=document.getElementById("subtitle"), zoomInfo=document.getElementById("zoomInfo"), thicknessInfo=document.getElementById("thicknessInfo"),mobileBackdrop=document.getElementById("mobileBackdrop"),mobileControlsSheet=document.getElementById("mobileControlsSheet"),mobileIsolate=document.getElementById("mobileIsolate"),mobileTimeInfo=document.getElementById("mobileTimeInfo"),mobileDetailInfo=document.getElementById("mobileDetailInfo"),mobileThicknessInfo=document.getElementById("mobileThicknessInfo");
+const app=document.getElementById("app"), togglePanelBtn=document.getElementById("togglePanel"), panelResize=document.getElementById("panelResize"), nodeTooltip=document.getElementById("nodeTooltip"), chartScroll=document.getElementById("chartScroll"), chartContent=document.getElementById("chartContent"), chartSvg=document.getElementById("chartSvg"), labelLayer=document.getElementById("labelLayer"), axisInner=document.getElementById("axisInner"), axisContent=document.getElementById("axisContent"), leftInner=document.getElementById("leftInner"), detail=document.getElementById("detail"), subtitle=document.getElementById("subtitle"), zoomInfo=document.getElementById("zoomInfo"), thicknessInfo=document.getElementById("thicknessInfo"),mobileBackdrop=document.getElementById("mobileBackdrop"),mobileControlsSheet=document.getElementById("mobileControlsSheet"),mobileIsolate=document.getElementById("mobileIsolate"),mobileTimeInfo=document.getElementById("mobileTimeInfo"),mobileDetailInfo=document.getElementById("mobileDetailInfo"),mobileThicknessInfo=document.getElementById("mobileThicknessInfo"),mobilePeriodTop=document.getElementById("mobilePeriodTop"),mobileRangeSummary=document.getElementById("mobileRangeSummary"),mobileCustomRange=document.getElementById("mobileCustomRange"),mobileRangeStart=document.getElementById("mobileRangeStart"),mobileRangeEnd=document.getElementById("mobileRangeEnd");
 function panelBounds(){
   const leftWidth=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--leftw'))||320;
   const max=Math.max(360,window.innerWidth-leftWidth-18);
@@ -436,22 +479,66 @@ function centerOnDate(date=new Date()){
 function fitMobileCurrentView(){
   if(!DATA)return;
   applyResponsiveMetrics();
-  if(!focusLane){
-    const lanes=visibleLaneNames();
-    focusLane=[...lanes].sort((a,b)=>roleHeat(b)-roleHeat(a)||visibleThreads().filter(t=>t.lane===b).length-visibleThreads().filter(t=>t.lane===a).length)[0]||null;
-  }
-  const usable=Math.max(240,chartScroll.clientWidth-36);
-  pxPerDay=Math.max(5.5,Math.min(18,usable/46));
   rowH=42;
+  fitSelectedPeriod();
   render();
-  requestAnimationFrame(()=>centerOnDate(new Date()));
+  requestAnimationFrame(()=>{chartScroll.scrollLeft=0;chartScroll.scrollTop=0;syncScroll();});
 }
 
 let layout={rows:[],lanes:[],roleMid:{},roleStart:{},yByThread:{},height:1000,width:1600};
 let dragging=false,last={x:0,y:0};
 function E(n,a={}){const e=document.createElementNS("http://www.w3.org/2000/svg",n);for(const[k,v]of Object.entries(a))e.setAttribute(k,v);return e}
 function H(tag,cls="",txt=""){const e=document.createElement(tag);if(cls)e.className=cls;if(txt)e.textContent=txt;return e}
-function D(s){if(!s)return null;const d=new Date(s);return isNaN(d)?null:d} function dayMs(){return 86400000} function start(){return D(DATA.meta.period.start)} function end(){return D(DATA.meta.period.end)} function pad2(n){return String(n).padStart(2,"0")} function dateLabel(d,h=false,compact=false){let s=compact?`${d.getDate()} ${monthsShort[d.getMonth()]}`:`${d.getDate()} ${months[d.getMonth()]}`; if(h)s+=` ${pad2(d.getHours())}h`; return s} function fmt(s){const d=D(s);return d?dateLabel(d,d.getHours()!=0||d.getMinutes()!=0):"—"} function xDate(d){return branchW + ((d-start())/dayMs())*pxPerDay}
+function D(s){if(!s)return null;const d=new Date(s);return isNaN(d)?null:d}
+function dayMs(){return 86400000}
+function dataStart(){return D(DATA.meta.period.start)}
+function dataEnd(){return D(DATA.meta.period.end)}
+function start(){return viewStartOverride||dataStart()}
+function end(){return viewEndOverride||dataEnd()}
+function pad2(n){return String(n).padStart(2,"0")}
+function dateLabel(d,h=false,compact=false){let s=compact?`${d.getDate()} ${monthsShort[d.getMonth()]}`:`${d.getDate()} ${months[d.getMonth()]}`; if(h)s+=` ${pad2(d.getHours())}h`; return s}
+function fmt(s){const d=D(s);return d?dateLabel(d,d.getHours()!=0||d.getMinutes()!=0):"—"}
+function isoDay(d){return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`}
+function parseLocalDay(s,endOfDay=false){if(!s)return null;const d=new Date(`${s}T${endOfDay?'23:59:59':'00:00:00'}`);return isNaN(d)?null:d}
+function clampToData(d){return new Date(Math.max(dataStart().getTime(),Math.min(dataEnd().getTime(),d.getTime())))}
+function rangeAnchor(){const now=new Date();return clampToData(now)}
+function rangeLabel(mode=timeRangeMode){return ({all:'Tout', '2w':'2 sem.', '1m':'1 mois', '3m':'3 mois', '12m':'12 mois', custom:'Dates'})[mode]||'Période'}
+function presetRange(mode){
+  if(mode==='all')return [dataStart(),dataEnd()];
+  const anchor=rangeAnchor();
+  const spans={"2w":[5,9],"1m":[10,20],"3m":[30,60],"12m":[90,275]};
+  const span=spans[mode]||spans['3m'];
+  const s=clampToData(new Date(anchor.getTime()-span[0]*dayMs()));
+  const e=clampToData(new Date(anchor.getTime()+span[1]*dayMs()));
+  return e>s?[s,e]:[dataStart(),dataEnd()];
+}
+function applyTimeRangeState(mode,customStart=null,customEnd=null){
+  timeRangeMode=['all','2w','1m','3m','12m','custom'].includes(mode)?mode:'all';
+  if(timeRangeMode==='all'){viewStartOverride=null;viewEndOverride=null;return;}
+  if(timeRangeMode==='custom'){
+    const s=clampToData(D(customStart)||dataStart()),e=clampToData(D(customEnd)||dataEnd());
+    if(e>s){viewStartOverride=s;viewEndOverride=e;return;}
+    timeRangeMode='3m';
+  }
+  const r=presetRange(timeRangeMode);viewStartOverride=r[0];viewEndOverride=r[1];
+}
+function fitSelectedPeriod(){
+  if(!DATA)return;
+  const usable=Math.max(170,chartScroll.clientWidth-branchW-20);
+  const days=Math.max(1,(end()-start())/dayMs());
+  const floor=timeRangeMode==='all'?.18:1.2;
+  pxPerDay=Math.max(floor,Math.min(80,usable/days));
+  if(isMobileMode())rowH=Math.max(38,rowH||42);
+}
+function setTimeRange(mode,customStart=null,customEnd=null,options={}){
+  if(!DATA)return;
+  applyTimeRangeState(mode,customStart,customEnd);
+  if(focusLane && !DATA.threads.some(t=>t.lane===focusLane&&threadIntersectsTimeRange(t))) {focusLane=null;subRoleFocus=null;isolatedThreadId=null;}
+  fitSelectedPeriod();
+  if(options.render!==false){render();requestAnimationFrame(()=>{chartScroll.scrollLeft=0;chartScroll.scrollTop=0;syncScroll();});}
+  updateMobileIndicators();schedulePersistView();
+}
+function xDate(d){return branchW + ((d-start())/dayMs())*pxPerDay}
 function dateFromX(x){
   const ratio=(x-branchW)/Math.max(.0001,pxPerDay);
   const ms=start().getTime()+ratio*dayMs();
@@ -502,19 +589,34 @@ function toggleThreadIsolation(id){
   showThread(id);
 }
 function isPrimaryThread(t){return (t.displayLevel||'primary')!=='secondary'}
+function threadIntersectsTimeRange(t){
+  if(timeRangeMode==='all')return true;
+  const dates=[D(t.startDate),D(t.endDate),...historyFor(t.id).map(h=>D(h.date)),...nodesFor(t.id).map(n=>D(n.date||n.deadline))].filter(Boolean);
+  if(!dates.length)return true;
+  const first=new Date(Math.min(...dates)),last=new Date(Math.max(...dates));
+  const ongoing=['hot','active','watch','fragile'].includes(t.state)&&!D(t.endDate);
+  const effectiveEnd=ongoing?end():last;
+  return first<=end()&&effectiveEnd>=start();
+}
 function visibleThreads(){
   if(isolatedThreadId){
     const chain=ancestorChainIds(isolatedThreadId);
     const directChildren=new Set(DATA.threads.filter(t=>t.parentId===isolatedThreadId).map(t=>t.id));
-    return DATA.threads.filter(t=>chain.has(t.id)||directChildren.has(t.id));
+    return DATA.threads.filter(t=>(chain.has(t.id)||directChildren.has(t.id))&&threadIntersectsTimeRange(t));
   }
-  return DATA.threads.filter(t=>{
+  const base=DATA.threads.filter(t=>{
     const matchState=(filter==="all"||t.state===filter);
     const matchLane=(!focusLane||t.lane===focusLane);
     const matchRole=(!subRoleFocus || t.rolePrimary===subRoleFocus || (t.roleSecondary||[]).includes(subRoleFocus));
     const matchLevel=showSecondary||isPrimaryThread(t)||!t.parentId;
     return matchState && matchLane && matchRole && matchLevel;
   });
+  if(timeRangeMode==='all')return base;
+  const baseIds=new Set(base.map(t=>t.id));
+  const keep=new Set(base.filter(threadIntersectsTimeRange).map(t=>t.id));
+  let changed=true;
+  while(changed){changed=false;base.forEach(t=>{if(keep.has(t.id)&&t.parentId&&baseIds.has(t.parentId)&&!keep.has(t.parentId)){keep.add(t.parentId);changed=true;}})}
+  return base.filter(t=>keep.has(t.id));
 } function topLevelThreads(lane){return visibleThreads().filter(t=>t.lane===lane&&!t.parentId)} function childThreads(parentId){return visibleThreads().filter(t=>t.parentId===parentId)} function visibleLaneNames(){const set=new Set(visibleThreads().map(t=>t.lane));return laneNames().filter(l=>set.has(l))} function roleHeat(lane){let h=1;visibleThreads().filter(t=>t.lane===lane).forEach(t=>h=Math.max(h,t.heat||1));return h}
 function historyFor(id){return (DATA.history||[]).filter(h=>h.threadId===id)} function nodesFor(id){return (DATA.nodes||[]).filter(n=>n.threadId===id)}
 function cleanDates(items){return items.filter(d=>d instanceof Date && !isNaN(d))}
@@ -532,6 +634,7 @@ function threadOwnEnd(t){
   const explicitEnd=D(t.endDate);
   if(t.state==='closed') return histEnd||nodeEnd||explicitEnd||ownStart;
   if(t.state==='dormant' && histEnd) return maxDate([histEnd,nodeEnd,ownStart])||ownStart;
+  if(['hot','active','watch','fragile'].includes(t.state)&&!explicitEnd) return maxDate([histEnd,nodeEnd,ownStart,end()])||end();
   return maxDate([explicitEnd,histEnd,nodeEnd,ownStart])||ownStart;
 }
 function renderedChildren(parentId){return visibleThreads().filter(t=>t.parentId===parentId)}
@@ -603,16 +706,20 @@ function computeLayout(){
 function clear(){chartSvg.innerHTML=''; labelLayer.innerHTML=''; axisContent.innerHTML=''; leftInner.innerHTML='';}
 function setSizes(){chartContent.style.width=layout.width+'px'; chartContent.style.height=layout.height+'px'; chartSvg.setAttribute('width',layout.width); chartSvg.setAttribute('height',layout.height); labelLayer.style.width=layout.width+'px'; labelLayer.style.height=layout.height+'px'; axisInner.style.width=layout.width+'px'; axisContent.style.width=layout.width+'px';}
 function stepInfo(){
-  if(pxPerDay>=240)return {days:0.25,hour:true,mode:'quarter'};
-  if(pxPerDay>=140)return {days:0.5,hour:true,mode:'half'};
-  if(pxPerDay>=70)return {days:1,hour:false,mode:'day'};
-  if(pxPerDay>=34)return {days:2,hour:false,mode:'twoday'};
-  if(pxPerDay>=18)return {days:7,hour:false,mode:'week'};
-  if(pxPerDay>=8)return {days:15,hour:false,mode:'fortnight'};
-  return {days:15,hour:false,mode:'fortnight'};
+  if(pxPerDay>=240)return {days:.25,hour:true,mode:'quarter'};
+  if(pxPerDay>=140)return {days:.5,hour:true,mode:'half'};
+  const minGap=isMobileMode()?88:72;
+  const options=[
+    {days:1,mode:'day'},{days:2,mode:'twoday'},{days:7,mode:'week'},{days:14,mode:'fortnight'},
+    {days:30,mode:'month'},{days:60,mode:'bimonth'},{days:90,mode:'quarterYear'},
+    {days:180,mode:'halfyear'},{days:365,mode:'year'}
+  ];
+  return options.find(o=>o.days*pxPerDay>=minGap)||options[options.length-1];
 }
 function axisLabelText(d,info,prevDate){
   if(info.hour) return dateLabel(d,true,true);
+  if(info.mode==='year') return String(d.getFullYear());
+  if(['month','bimonth','quarterYear','halfyear'].includes(info.mode)) return `${monthsShort[d.getMonth()]}${(!prevDate||prevDate.getFullYear()!==d.getFullYear())?' '+d.getFullYear():''}`;
   if(info.mode==='fortnight'){
     const isMonthStart = !prevDate || prevDate.getMonth()!==d.getMonth() || prevDate.getFullYear()!==d.getFullYear() || d.getDate()<=3;
     if(isMonthStart) return `${d.getDate()} ${monthsShort[d.getMonth()]}${(!prevDate || prevDate.getFullYear()!==d.getFullYear())?` ${d.getFullYear()}`:''}`;
@@ -643,9 +750,11 @@ function renderCalendarBands(){
       const [s,e]=clipped,x1=xDate(s),x2=xDate(e),w=Math.max(1,x2-x1);
       const band=H('div','axisMonthBand'+(monthIndex%2?' alt':''));
       band.style.left=x1+'px';band.style.width=w+'px';axisContent.appendChild(band);
-      const lab=H('div','axisMonthLabel',monthsShort[m.getMonth()]);
-      lab.style.left=x1+'px';lab.style.width=Math.max(0,w-4)+'px';
-      axisContent.appendChild(lab);
+      if(!isMobileMode()||w>=38){
+        const lab=H('div','axisMonthLabel',monthsShort[m.getMonth()]);
+        lab.style.left=x1+'px';lab.style.width=Math.max(0,w-4)+'px';
+        axisContent.appendChild(lab);
+      }
     }
     m=next;monthIndex++;
   }
@@ -688,7 +797,7 @@ function renderAxis(){
     layout.rows.forEach(r=>{chartSvg.appendChild(E('line',{x1:0,y1:r.y+14,x2:layout.width,y2:r.y+14,class:'gridH'}));});
   }
 }
-function render(){if(!DATA)return;applyResponsiveMetrics();activityCache.clear();laneActivityCache.clear();computeLayout();clear();setSizes();renderAxis();renderChart();renderSidebar();syncScroll();const isolated=isolatedThreadId?threadById(isolatedThreadId):null;subtitle.textContent=`${DATA.meta.title||'Poste de pilotage'} · ${dateLabel(start())} → ${dateLabel(end())}${focusLane?' · focus : '+focusLane:''}${isolated?' · isolé : '+isolated.title:''}`;zoomInfo.textContent=(zoomMode==='time'?Math.round(pxPerDay/54*100):Math.round(rowH/34*100))+'%';if(thicknessInfo)thicknessInfo.textContent='Épaisseur '+Math.round(strokeScale*100)+'%';updateMobileIndicators();updateMobileIsolateButton();}
+function render(){if(!DATA)return;applyResponsiveMetrics();activityCache.clear();laneActivityCache.clear();computeLayout();clear();setSizes();renderAxis();renderChart();renderSidebar();syncScroll();const isolated=isolatedThreadId?threadById(isolatedThreadId):null;subtitle.textContent=`${DATA.meta.title||'Poste de pilotage'} · ${rangeLabel()} · ${dateLabel(start())} → ${dateLabel(end())}${focusLane?' · focus : '+focusLane:''}${isolated?' · isolé : '+isolated.title:''}`;zoomInfo.textContent=(zoomMode==='time'?Math.round(pxPerDay/54*100):Math.round(rowH/34*100))+'%';if(thicknessInfo)thicknessInfo.textContent='Épaisseur '+Math.round(strokeScale*100)+'%';updateMobileIndicators();updateMobileIsolateButton();}
 function rootY(){if(focusLane) return layout.roleMid[focusLane]||72; return layout.rows.length?layout.rows[Math.floor(layout.rows.length/2)].y:300;}
 function curveSpan(mult=1){
   const base=currentView()==='overview'?250:210;
@@ -1043,7 +1152,7 @@ function renderChart(){
       baseLine.onclick=()=>showLaneSummary(lane);chartSvg.appendChild(baseLine);
       drawRibbonGroup({geom,state:'active',widthFn:date=>Math.max(1.15,laneWidthAt(lane,date)),onClick:()=>showLaneSummary(lane)});
       addRoleBox(lane,roleLabelX,y,true,()=>showLaneSummary(lane));
-      importantLaneNodes(lane).forEach((o,i)=>{const d=D(o.node.date||o.node.deadline);if(d)addOverviewNode(o.node,o.thread,xDate(d),y,i)});
+      importantLaneNodes(lane).forEach((o,i)=>{const d=D(o.node.date||o.node.deadline);if(d&&d>=start()&&d<=end())addOverviewNode(o.node,o.thread,xDate(d),y,i)});
     });
   }else{
     chartSvg.appendChild(E('path',{d:`M0 ${rootY()} L${leftRootX} ${rootY()}`,class:'lifePath',style:`stroke-width:${scaledWidth(7)}`}));
@@ -1059,8 +1168,8 @@ function renderChart(){
       geometryById.set(t.id,geom);
       drawRibbonGroup({geom,state:t.state||'active',widthFn:date=>threadWidthAt(t,date),isolated:isolatedThreadId===t.id,onClick:()=>showThread(t.id),onDblClick:()=>toggleThreadIsolation(t.id)});
       addThreadLabel(t,row,geom,y);
-      historyFor(t.id).forEach(h=>{const d=D(h.date);if(!d)return;const rawX=xDate(d);const x=Math.max(geom.xStart,Math.min(rawX,geom.rangeEnd));if(x>=geom.xStart-2&&x<=geom.rangeEnd+2)addHistory(h,x,geom.yStart)});
-      nodesFor(t.id).forEach(n=>{const d=D(n.date||n.deadline),rawX=d?xDate(d):geom.xEnd,x=Math.max(geom.xStart,Math.min(rawX,geom.rangeEnd));if(x>=geom.xStart-2&&x<=geom.rangeEnd+2)addNode(n,x,geom.yStart)});
+      historyFor(t.id).forEach(h=>{const d=D(h.date);if(!d||d<start()||d>end())return;const rawX=xDate(d);const x=Math.max(geom.xStart,Math.min(rawX,geom.rangeEnd));if(x>=geom.xStart-2&&x<=geom.rangeEnd+2)addHistory(h,x,geom.yStart)});
+      nodesFor(t.id).forEach(n=>{const d=D(n.date||n.deadline);if(d&&(d<start()||d>end()))return;const rawX=d?xDate(d):geom.xEnd,x=Math.max(geom.xStart,Math.min(rawX,geom.rangeEnd));if(x>=geom.xStart-2&&x<=geom.rangeEnd+2)addNode(n,x,geom.yStart)});
     });
   }
 }
@@ -1101,44 +1210,70 @@ function rolesForLane(lane){
 }
 function renderSidebar(){
   leftInner.innerHTML='';
+  leftInner.classList.remove('mobileRoot');
+  if(isMobileMode()){
+    leftInner.classList.add('mobileRoot');
+    leftInner.style.height='auto';
+    if(mobileRolesRoot){
+      const intro=H('div','mobileLaneIntro','Toutes les lignes de vie. Touche une ligne pour choisir ensuite un rôle ou afficher tous ses fils.');
+      leftInner.appendChild(intro);
+      laneNames().forEach(lane=>{
+        const all=DATA.threads.filter(t=>t.lane===lane);
+        if(!all.length)return;
+        const current=focusLane===lane;
+        const card=H('div','mobileLaneCard'+(current?' current':''));
+        const text=H('div','mobileLaneText');
+        text.appendChild(H('span','mobileLaneName',lane));
+        const active=all.filter(t=>['hot','active','watch','fragile'].includes(t.state)).length;
+        const laneHeat=Math.max(1,...all.map(t=>t.heat||1));text.appendChild(H('span','mobileLaneMeta',`${active} actif${active>1?'s':''} · chaleur ${laneHeat}/5`));
+        card.appendChild(text);
+        card.appendChild(H('span','mobileLaneCount',String(all.length)));
+        card.appendChild(H('span','mobileLaneChevron','›'));
+        card.onclick=()=>{mobileRolesRoot=false;mobileRolesBrowseLane=lane;renderSidebar();};
+        leftInner.appendChild(card);
+      });
+      return;
+    }
+    const lane=mobileRolesBrowseLane||focusLane||laneNames()[0];
+    const head=H('div','mobileRoleDetailHead');
+    const back=H('button','', '‹');back.onclick=()=>{mobileRolesRoot=true;mobileRolesBrowseLane=null;renderSidebar();};
+    head.appendChild(back);head.appendChild(H('strong','',lane));leftInner.appendChild(head);
+    const all=H('div','mobileRoleChoice'+(focusLane===lane&&!subRoleFocus?' selected':''),'Tous les rôles / fils');
+    all.appendChild(H('span','count',String(DATA.threads.filter(t=>t.lane===lane).length)));
+    all.onclick=()=>{isolatedThreadId=null;focusLane=lane;subRoleFocus=null;render();mobileAfterSelection();};
+    leftInner.appendChild(all);
+    rolesForLane(lane).forEach(role=>{
+      const count=DATA.threads.filter(t=>t.lane===lane&&(t.rolePrimary===role.id||(t.roleSecondary||[]).includes(role.id))).length;
+      if(!count)return;
+      const item=H('div','mobileRoleChoice'+(focusLane===lane&&subRoleFocus===role.id?' selected':''),role.name);
+      item.appendChild(H('span','count',String(count)));
+      item.onclick=()=>{isolatedThreadId=null;focusLane=lane;subRoleFocus=role.id;render();mobileAfterSelection();};
+      leftInner.appendChild(item);
+    });
+    return;
+  }
   leftInner.style.height=layout.height+'px';
   if(currentView()==='overview'){
     layout.lanes.forEach(lane=>{
       const y=layout.roleMid[lane];
-      const role=H('div','roleRow');
-      role.style.top=(y-18)+'px';
-      role.style.height='34px';
+      const role=H('div','roleRow');role.style.top=(y-18)+'px';role.style.height='34px';
       const head=H('div','roleHead',lane);
-      head.onclick=()=>{isolatedThreadId=null;focusLane=(focusLane===lane?null:lane);subRoleFocus=null;render();mobileAfterSelection();};
-      const count=H('span','count',String(visibleThreads().filter(t=>t.lane===lane).length));
-      head.appendChild(count);
-      role.appendChild(head);
-      leftInner.appendChild(role);
+      head.onclick=()=>{isolatedThreadId=null;focusLane=(focusLane===lane?null:lane);subRoleFocus=null;render();};
+      head.appendChild(H('span','count',String(visibleThreads().filter(t=>t.lane===lane).length)));
+      role.appendChild(head);leftInner.appendChild(role);
     });
-  } else {
-    const title=H('div','roleBig',focusLane);
-    leftInner.appendChild(title);
-
-    const roles=rolesForLane(focusLane);
-    let y=76;
-    const all=H('div','subRoleItem'+(!subRoleFocus?' selected':''),'Tous les rôles');
-    all.style.top=y+'px';
-    const allCount=H('span','count',String(DATA.threads.filter(t=>t.lane===focusLane).length));
-    all.appendChild(allCount);
-    all.onclick=()=>{isolatedThreadId=null;subRoleFocus=null;render();mobileAfterSelection();};
-    leftInner.appendChild(all);
-    y+=40;
-
+  }else{
+    const title=H('div','roleBig',focusLane);leftInner.appendChild(title);
+    const roles=rolesForLane(focusLane);let y=76;
+    const all=H('div','subRoleItem'+(!subRoleFocus?' selected':''),'Tous les rôles');all.style.top=y+'px';
+    all.appendChild(H('span','count',String(DATA.threads.filter(t=>t.lane===focusLane).length)));
+    all.onclick=()=>{isolatedThreadId=null;subRoleFocus=null;render();};leftInner.appendChild(all);y+=40;
     roles.forEach(role=>{
-      const count=DATA.threads.filter(t=>t.lane===focusLane && (t.rolePrimary===role.id || (t.roleSecondary||[]).includes(role.id))).length;
-      if(count===0) return;
-      const item=H('div','subRoleItem'+(subRoleFocus===role.id?' selected':''),role.name);
-      item.style.top=y+'px';
-      const c=H('span','count',String(count));
-      item.appendChild(c);
-      item.onclick=()=>{isolatedThreadId=null;subRoleFocus=(subRoleFocus===role.id?null:role.id);render();mobileAfterSelection();};
-      leftInner.appendChild(item);
-      y+=40;
+      const count=DATA.threads.filter(t=>t.lane===focusLane&&(t.rolePrimary===role.id||(t.roleSecondary||[]).includes(role.id))).length;
+      if(!count)return;
+      const item=H('div','subRoleItem'+(subRoleFocus===role.id?' selected':''),role.name);item.style.top=y+'px';
+      item.appendChild(H('span','count',String(count)));
+      item.onclick=()=>{isolatedThreadId=null;subRoleFocus=(subRoleFocus===role.id?null:role.id);render();};leftInner.appendChild(item);y+=40;
     });
   }
 }
@@ -1162,6 +1297,12 @@ function refreshThreadLabelPositions(){
 }
 let mobilePanel='chart';
 function updateMobileIndicators(){
+  if(mobilePeriodTop)mobilePeriodTop.textContent=rangeLabel();
+  document.querySelectorAll('[data-time-range]').forEach(b=>b.classList.toggle('active',b.dataset.timeRange===timeRangeMode));
+  if(mobileRangeSummary&&DATA)mobileRangeSummary.textContent=`${dateLabel(start())} → ${dateLabel(end())}`;
+  if(mobileCustomRange)mobileCustomRange.classList.toggle('visible',timeRangeMode==='custom');
+  if(mobileRangeStart&&DATA)mobileRangeStart.value=isoDay(start());
+  if(mobileRangeEnd&&DATA)mobileRangeEnd.value=isoDay(end());
   if(mobileTimeInfo)mobileTimeInfo.textContent=Math.round(pxPerDay/54*100)+' %';
   if(mobileDetailInfo)mobileDetailInfo.textContent=Math.round(rowH/34*100)+' %';
   if(mobileThicknessInfo)mobileThicknessInfo.textContent=Math.round(strokeScale*100)+' %';
@@ -1187,7 +1328,7 @@ function openMobilePanel(name){
   if(!isMobileMode())return;
   closeMobilePanels(true);
   mobilePanel=name;
-  if(name==='roles')document.getElementById('left').classList.add('mobileOpen');
+  if(name==='roles'){mobileRolesRoot=true;mobileRolesBrowseLane=null;renderSidebar();document.getElementById('left').classList.add('mobileOpen');}
   if(name==='detail')document.getElementById('right').classList.add('mobileOpen');
   if(name==='controls')mobileControlsSheet?.classList.add('mobileOpen');
   if(name!=='chart')mobileBackdrop?.classList.add('visible');
@@ -1200,13 +1341,13 @@ function showThread(id){const t=DATA.threads.find(x=>x.id===id);if(!t)return;sel
 function showHistory(id){const h=(DATA.history||[]).find(x=>x.id===id);if(!h)return;const t=DATA.threads.find(x=>x.id===h.threadId);selectedId=t?.id||null; detail.innerHTML=`<div class="card"><div class="kicker">Historique</div><h2>${fmt(h.date)}</h2><p><strong>Fil :</strong> ${t?t.title:'—'}</p><div class="agenda"><strong>${h.summary||''}</strong><br>${h.effect||''}</div><p class="small">Type : ${h.type||'—'}</p></div>`;updateMobileIsolateButton();if(isMobileMode())openMobilePanel('detail'); }
 function showNode(id){const n=(DATA.nodes||[]).find(x=>x.id===id);if(!n)return;const t=DATA.threads.find(x=>x.id===n.threadId);selectedId=t?.id||null; detail.innerHTML=`<div class="card"><div class="kicker">Nœud</div><h2>${n.symbol||'•'} ${n.title}</h2><div class="meta"><div class="pill">Type<strong>${n.type||'—'}</strong></div><div class="pill">Statut<strong>${n.status||'—'}</strong></div><div class="pill">Énergie<strong>${n.energy||'—'}</strong></div><div class="pill">Temps<strong>${n.duration||'—'}</strong></div></div><p><strong>Fil :</strong> ${t?t.title:'—'}</p><div class="agenda"><strong>Date / échéance</strong><br>${fmt(n.date||n.deadline)}</div></div>`;updateMobileIsolateButton();if(isMobileMode())openMobilePanel('detail'); }
 function validateData(obj){if(!obj||typeof obj!=='object')throw new Error('JSON vide ou invalide');if(!obj.meta||!obj.meta.period)throw new Error('meta.period absent');if(!Array.isArray(obj.threads))throw new Error('threads absent');obj.roles=Array.isArray(obj.roles)?obj.roles:[];obj.history=Array.isArray(obj.history)?obj.history:[];obj.nodes=Array.isArray(obj.nodes)?obj.nodes:[];obj.threadLinks=Array.isArray(obj.threadLinks)?obj.threadLinks:[];obj.visualConfig=obj.visualConfig||{};return obj}
-function loadData(obj,options={}){DATA=validateData(obj);if(options.persist!==false)persistJsonObject(DATA);const stored=options.restoreView===false?null:readStoredView();if(stored){applyStoredView(stored);return;}focusLane=null;subRoleFocus=null;isolatedThreadId=null;selectedId=null;showSecondary=!!DATA.visualConfig?.defaultShowSecondary;const secBtn=document.getElementById('toggleSecondary');if(secBtn)secBtn.textContent=showSecondary?'Masquer secondaires':'Afficher secondaires';strokeScale=1;filter='all';document.querySelectorAll('button[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter==='all'));if(isMobileMode())fitMobileCurrentView();else fitFullPeriod();const firstLane=visibleLaneNames()[0];if(firstLane)showLaneSummary(firstLane);schedulePersistView();}
+function loadData(obj,options={}){DATA=validateData(obj);if(options.persist!==false)persistJsonObject(DATA);const stored=options.restoreView===false?null:readStoredView();if(stored){applyStoredView(stored);return;}focusLane=null;subRoleFocus=null;isolatedThreadId=null;selectedId=null;mobileRolesRoot=true;mobileRolesBrowseLane=null;showSecondary=!!DATA.visualConfig?.defaultShowSecondary;const secBtn=document.getElementById('toggleSecondary');if(secBtn)secBtn.textContent=showSecondary?'Masquer secondaires':'Afficher secondaires';strokeScale=1;filter='all';document.querySelectorAll('button[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter==='all'));applyTimeRangeState(isMobileMode()?'3m':'all');if(isMobileMode())fitMobileCurrentView();else fitFullPeriod();const firstLane=visibleLaneNames()[0];if(firstLane)showLaneSummary(firstLane);schedulePersistView();}
 function showLoadError(err){console.error(err);detail.innerHTML=`<div class="card primary"><div class="kicker">Erreur JSON</div><h2>Le fichier n'a pas pu être chargé</h2><p class="empty">${String(err&&err.message?err.message:err)}</p></div>`}
 function loadText(txt){try{loadData(JSON.parse(txt),{persist:true,restoreView:true})}catch(err){showLoadError(err)}}
 document.getElementById('fileInput').addEventListener('change',e=>{const input=e.currentTarget;const f=input.files&&input.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{loadText(String(r.result||''));input.value=''};r.onerror=()=>{showLoadError(r.error||new Error('Lecture impossible'));input.value=''};r.readAsText(f,'UTF-8')}); const mobileFileInput=document.getElementById('mobileFileInput');if(mobileFileInput)mobileFileInput.addEventListener('change',e=>{const input=e.currentTarget;const f=input.files&&input.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{loadText(String(r.result||''));input.value=''};r.onerror=()=>{showLoadError(r.error||new Error('Lecture impossible'));input.value=''};r.readAsText(f,'UTF-8')}); document.querySelectorAll('button[data-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.filter; subRoleFocus=null; isolatedThreadId=null; document.querySelectorAll('button[data-filter]').forEach(x=>x.classList.remove('active')); b.classList.add('active'); render(); schedulePersistView();}); document.getElementById('allRoles').onclick=()=>{isolatedThreadId=null;focusLane=null; subRoleFocus=null; render(); schedulePersistView();}; const secondaryBtn=document.getElementById('toggleSecondary'); if(secondaryBtn){secondaryBtn.onclick=()=>{showSecondary=!showSecondary;secondaryBtn.textContent=showSecondary?'Masquer secondaires':'Afficher secondaires';isolatedThreadId=null;render();schedulePersistView();};secondaryBtn.textContent=showSecondary?'Masquer secondaires':'Afficher secondaires';} document.getElementById('modeTime').onclick=()=>{zoomMode='time'; document.getElementById('modeTime').classList.add('active'); document.getElementById('modeDetail').classList.remove('active'); schedulePersistView();}; document.getElementById('modeDetail').onclick=()=>{zoomMode='detail'; document.getElementById('modeDetail').classList.add('active'); document.getElementById('modeTime').classList.remove('active'); schedulePersistView();};
 function zoomTime(f){const center=(chartScroll.scrollLeft+chartScroll.clientWidth/2-branchW)/pxPerDay; pxPerDay=Math.max(minPxPerDay(),Math.min(380,pxPerDay*f)); render(); chartScroll.scrollLeft=branchW+center*pxPerDay-chartScroll.clientWidth/2;}
 function zoomDetail(f){const center=(chartScroll.scrollTop+chartScroll.clientHeight/2)/rowH; rowH=Math.max(22,Math.min(80,rowH*f)); render(); chartScroll.scrollTop=center*rowH-chartScroll.clientHeight/2;}
-document.getElementById('zoomIn').onclick=()=>zoomMode==='time'?zoomTimeAt(1.25):zoomDetailAt(1.18); document.getElementById('zoomOut').onclick=()=>zoomMode==='time'?zoomTimeAt(1/1.25):zoomDetailAt(1/1.18); document.getElementById('reset').onclick=()=>{isolatedThreadId=null;focusLane=null;subRoleFocus=null;selectedId=null;showSecondary=false;const sb=document.getElementById('toggleSecondary');if(sb)sb.textContent='Afficher secondaires';rowH=34;strokeScale=1;filter='all';document.querySelectorAll('button[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter==='all'));fitFullPeriod();schedulePersistView();};
+document.getElementById('zoomIn').onclick=()=>zoomMode==='time'?zoomTimeAt(1.25):zoomDetailAt(1.18); document.getElementById('zoomOut').onclick=()=>zoomMode==='time'?zoomTimeAt(1/1.25):zoomDetailAt(1/1.18); document.getElementById('reset').onclick=()=>{isolatedThreadId=null;focusLane=null;subRoleFocus=null;selectedId=null;mobileRolesRoot=true;mobileRolesBrowseLane=null;showSecondary=false;const sb=document.getElementById('toggleSecondary');if(sb)sb.textContent='Afficher secondaires';rowH=isMobileMode()?42:34;strokeScale=1;filter='all';document.querySelectorAll('button[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter==='all'));applyTimeRangeState(isMobileMode()?'3m':'all');if(isMobileMode())fitMobileCurrentView();else fitFullPeriod();schedulePersistView();};
 chartScroll.addEventListener('scroll',()=>{hideNodeTooltip();syncScroll();schedulePersistView();}); chartScroll.addEventListener('mousedown',e=>{dragging=true; last={x:e.clientX,y:e.clientY,l:chartScroll.scrollLeft,t:chartScroll.scrollTop}; chartScroll.style.cursor='grabbing'; e.preventDefault();}); window.addEventListener('mouseup',()=>{dragging=false; chartScroll.style.cursor='grab';}); window.addEventListener('mousemove',e=>{if(!dragging)return; chartScroll.scrollLeft=last.l-(e.clientX-last.x); chartScroll.scrollTop=last.t-(e.clientY-last.y);}); function zoomTimeAt(f, clientX){
   const rect=chartScroll.getBoundingClientRect();
   const localX=clientX ? (clientX-rect.left) : chartScroll.clientWidth/2;
@@ -1235,7 +1376,17 @@ function scaleThickness(f){
 document.querySelectorAll('#mobileNav button').forEach(b=>b.addEventListener('click',()=>openMobilePanel(b.dataset.mobileView)));
 document.getElementById('mobileRolesTop')?.addEventListener('click',()=>openMobilePanel('roles'));
 document.getElementById('mobileControlsTop')?.addEventListener('click',()=>openMobilePanel('controls'));
-document.getElementById('mobileToday')?.addEventListener('click',()=>centerOnDate(new Date()));
+mobilePeriodTop?.addEventListener('click',()=>{openMobilePanel('controls');setTimeout(()=>document.getElementById('mobilePeriodGroup')?.scrollIntoView({block:'start',behavior:'smooth'}),80);});
+document.querySelectorAll('[data-time-range]').forEach(b=>b.addEventListener('click',()=>{
+  const mode=b.dataset.timeRange;
+  if(mode==='custom'){timeRangeMode='custom';updateMobileIndicators();return;}
+  setTimeRange(mode);closeMobilePanels();
+}));
+document.getElementById('mobileApplyCustomRange')?.addEventListener('click',()=>{
+  const s=parseLocalDay(mobileRangeStart?.value),e=parseLocalDay(mobileRangeEnd?.value,true);
+  if(!s||!e||e<=s)return;
+  setTimeRange('custom',s,e);closeMobilePanels();
+});
 document.getElementById('mobileCloseLeft')?.addEventListener('click',()=>closeMobilePanels());
 document.getElementById('mobileCloseRight')?.addEventListener('click',()=>closeMobilePanels());
 document.getElementById('mobileCloseControls')?.addEventListener('click',()=>closeMobilePanels());
@@ -1260,7 +1411,7 @@ document.querySelectorAll('[data-mobile-filter]').forEach(b=>b.addEventListener(
 document.getElementById('mobileAllRoles')?.addEventListener('click',()=>{document.getElementById('allRoles')?.click();closeMobilePanels();});
 document.getElementById('mobileSecondary')?.addEventListener('click',()=>{document.getElementById('toggleSecondary')?.click();updateMobileIndicators();});
 document.getElementById('mobileCenterToday')?.addEventListener('click',()=>{centerOnDate(new Date());closeMobilePanels();});
-document.getElementById('mobileReset')?.addEventListener('click',()=>{document.getElementById('reset')?.click();if(isMobileMode())fitMobileCurrentView();closeMobilePanels();});
+document.getElementById('mobileReset')?.addEventListener('click',()=>{document.getElementById('reset')?.click();closeMobilePanels();});
 
 const touchPoints=new Map();
 let touchMode=null,touchStart=null,pinchStart=null,touchMoved=false,suppressClickUntil=0,touchRAF=0,pendingTouch=null;
