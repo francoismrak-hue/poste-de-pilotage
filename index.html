@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Pilotage">
-<title>Poste de pilotage V1 — V29.1 iPhone + iPad</title>
+<title>Poste de pilotage — iPad V1</title>
 <style>
 :root{--bg:#000;--panel:#080808;--panel2:#111;--text:#fff;--muted:#a9a9a9;--yellow:#ffd400;--yellow2:#ffea61;--yellowSoft:rgba(255,212,0,.18);--grid:#252525;--grid2:#141414;--leftw:320px;--rightw:420px;--rightwDynamic:420px;--headerh:126px;--axish:92px;}
 *{box-sizing:border-box;-webkit-user-select:none;user-select:none}
@@ -313,20 +313,141 @@ ul{padding-left:18px;margin:10px 0 0} li{margin:8px 0}
   .card h2{font-size:22px}
 }
 
+
+/* ==================== VERSION DÉDIÉE IPAD V1 ==================== */
+body.ipad{
+  --headerh:calc(118px + env(safe-area-inset-top));
+  --axish:82px;
+  --mobileNavH:calc(68px + env(safe-area-inset-bottom));
+  --rightwDynamic:0px;
+  margin:0;position:fixed;inset:0;width:100%;height:100%;overflow:hidden;
+  background:#000;color:#fff;overscroll-behavior:none;-webkit-user-select:none;user-select:none;
+}
+body.ipad *{-webkit-tap-highlight-color:transparent}
+body.ipad #app{display:block!important;position:fixed;inset:0;width:100vw;height:100dvh;overflow:hidden}
+body.ipad #header{
+  display:block!important;position:fixed!important;z-index:90;left:0;right:0;top:0;height:var(--headerh)!important;
+  padding:calc(10px + env(safe-area-inset-top)) 18px 10px!important;border-bottom:1px solid #292929;
+  background:rgba(0,0,0,.97);backdrop-filter:blur(16px)
+}
+body.ipad .ipadTitleRow{display:flex;align-items:center;gap:12px;min-width:0}
+body.ipad h1{font-size:22px!important;line-height:1.05;margin:0!important;text-transform:uppercase;letter-spacing:.01em}
+body.ipad .ipadVersion{display:inline-flex;align-items:center;min-height:26px;padding:4px 9px;border-radius:999px;background:var(--yellow);color:#000;font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}
+body.ipad .sub{margin-top:4px!important;max-width:100%;font-size:11px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#aaa}
+body.ipad .toolbar{display:none!important}
+body.ipad #mobileQuickBar{display:grid!important;grid-template-columns:.78fr 1fr .9fr .9fr 1fr;gap:8px;margin-top:10px;max-width:820px}
+body.ipad #mobileQuickBar button,body.ipad #mobileQuickBar .mobileFileLabel{
+  display:flex;min-height:42px;align-items:center;justify-content:center;padding:7px 10px;border-radius:12px;
+  background:#0d0d0d;border:1px solid #393939;color:#fff;font-size:12px;font-weight:800;white-space:nowrap
+}
+body.ipad #mobileQuickBar button.active,body.ipad #mobileQuickBar button:active,body.ipad #mobileQuickBar .mobileFileLabel:active{background:var(--yellow);border-color:var(--yellow);color:#000}
+body.ipad .mobileFileLabel input{display:none}
+body.ipad #center{display:block!important;position:fixed!important;z-index:1;left:0;right:0;top:var(--headerh);bottom:var(--mobileNavH);width:auto!important;height:auto!important;overflow:hidden}
+body.ipad #axisWrap{height:var(--axish)!important;background:#050505;border-bottom:1px solid #242424}
+body.ipad #chartScroll{position:absolute;left:0;right:0;top:var(--axish)!important;bottom:0;overflow:hidden;cursor:default;touch-action:none;overscroll-behavior:contain}
+body.ipad #left{
+  display:block!important;position:fixed!important;z-index:125;left:0;top:0;bottom:var(--mobileNavH);width:min(62vw,620px)!important;height:auto!important;
+  padding-top:calc(62px + env(safe-area-inset-top));overflow:auto;background:#070707;border-right:1px solid #3a3a3a;
+  transform:translateX(-105%);transition:transform .23s ease;box-shadow:18px 0 50px rgba(0,0,0,.62)
+}
+body.ipad #left.mobileOpen{transform:translateX(0)}
+body.ipad #leftInner{position:relative!important;left:0!important;top:0!important;width:100%!important;height:auto!important;padding:8px 0 90px;transform:none!important}
+body.ipad .mobileDrawerHead{
+  display:flex!important;position:fixed;z-index:4;left:0;top:0;width:min(62vw,620px);height:calc(62px + env(safe-area-inset-top));
+  padding:calc(10px + env(safe-area-inset-top)) 14px 8px 18px;align-items:center;justify-content:space-between;background:#090909;border-bottom:1px solid #292929
+}
+body.ipad .mobileDrawerHead strong{font-size:17px}
+body.ipad .mobileDrawerHead button{min-width:44px;min-height:40px;padding:0;font-size:24px}
+body.ipad #right{
+  display:block!important;position:fixed!important;z-index:130;left:auto!important;right:0!important;top:var(--headerh)!important;bottom:var(--mobileNavH)!important;
+  width:min(47vw,640px)!important;height:auto!important;max-height:none!important;min-height:0!important;padding:0 16px 24px;overflow:auto;
+  border:1px solid #383838;border-right:0;border-radius:22px 0 0 22px;background:linear-gradient(180deg,#111 0%,#070707 100%);
+  transform:translateX(108%);transition:transform .24s ease;box-shadow:-20px 0 56px rgba(0,0,0,.68)
+}
+body.ipad #right.mobileOpen{transform:translateX(0)}
+body.ipad #right .detailHead{position:sticky;z-index:4;top:0;margin:0 -16px 14px;padding:14px 16px 12px;background:rgba(11,11,11,.98);border-radius:22px 0 0 0}
+body.ipad #togglePanel,body.ipad #panelResize{display:none!important}
+body.ipad .mobileDetailActions{display:flex!important;gap:8px;align-items:center}
+body.ipad .mobileDetailActions button{min-height:40px;padding:8px 12px;font-size:12px}
+body.ipad #mobileControlsSheet{
+  display:block!important;position:fixed;z-index:140;left:auto;right:0;top:var(--headerh);bottom:var(--mobileNavH);width:min(48vw,660px);max-height:none;
+  padding:0 16px 24px;overflow:auto;border:1px solid #383838;border-right:0;border-radius:22px 0 0 22px;
+  background:linear-gradient(180deg,#111 0%,#080808 100%);transform:translateX(108%);transition:transform .24s ease;box-shadow:-20px 0 56px rgba(0,0,0,.68)
+}
+body.ipad #mobileControlsSheet.mobileOpen{transform:translateX(0)}
+body.ipad .mobileSheetHead{display:flex;position:sticky;top:0;z-index:3;align-items:center;justify-content:space-between;margin:0 -16px 10px;padding:14px 16px;background:#0c0c0c;border-bottom:1px solid #2b2b2b;border-radius:22px 0 0 0}
+body.ipad .mobileSheetHead strong{font-size:17px}
+body.ipad .mobileControlGroup{margin:12px 0;padding:13px;border:1px solid #2c2c2c;border-radius:15px;background:#090909}
+body.ipad .mobileControlGroup>strong{display:block;margin-bottom:10px;color:var(--yellow);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+body.ipad .mobileStepper{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:9px;align-items:center}
+body.ipad .mobileStepper button{min-height:46px;font-size:22px}
+body.ipad .mobilePeriodGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+body.ipad .mobilePeriodGrid button,body.ipad .mobileFilterGrid button,body.ipad .mobileActionGrid button{min-height:44px;border-radius:12px;justify-content:center}
+body.ipad #mobileBackdrop{display:none;position:fixed;z-index:115;inset:0;background:rgba(0,0,0,.58);backdrop-filter:blur(2px)}
+body.ipad #mobileBackdrop.visible{display:block}
+body.ipad #mobileNav{
+  display:grid!important;position:fixed;z-index:150;left:0;right:0;bottom:0;height:var(--mobileNavH);grid-template-columns:repeat(4,1fr);
+  padding:7px 14px calc(7px + env(safe-area-inset-bottom));gap:7px;background:rgba(4,4,4,.98);border-top:1px solid #292929
+}
+body.ipad #mobileNav button{display:flex;min-height:46px;padding:5px;border:0;border-radius:12px;background:transparent;color:#aaa;font-size:11px;font-weight:800;justify-content:center;align-items:center;flex-direction:column;gap:2px}
+body.ipad #mobileNav button::before{font-size:19px;line-height:1}
+body.ipad #mobileNav button[data-mobile-view="chart"]::before{content:"⌁"}
+body.ipad #mobileNav button[data-mobile-view="roles"]::before{content:"≡"}
+body.ipad #mobileNav button[data-mobile-view="detail"]::before{content:"▤"}
+body.ipad #mobileNav button[data-mobile-view="controls"]::before{content:"⚙"}
+body.ipad #mobileNav button.active{background:rgba(255,212,0,.13);color:var(--yellow)}
+body.ipad #ipadZoomDock{
+  display:grid;position:absolute;z-index:20;right:18px;bottom:18px;grid-template-columns:46px 76px 46px 76px;gap:7px;padding:7px;border:1px solid #343434;border-radius:16px;background:rgba(7,7,7,.92);box-shadow:0 12px 34px rgba(0,0,0,.52);backdrop-filter:blur(10px)
+}
+body.ipad #ipadZoomDock button{min-height:44px;justify-content:center;border-radius:11px;font-size:13px;font-weight:850}
+body.ipad #ipadZoomOut,body.ipad #ipadZoomIn{font-size:22px!important}
+body.ipad #ipadZoomMode.active{background:var(--yellow);color:#000;border-color:var(--yellow)}
+body.ipad #ipadEmptyState{
+  display:none;position:absolute;z-index:18;left:50%;top:50%;width:min(420px,72vw);transform:translate(-50%,-50%);padding:20px;border:1px solid #3a3a3a;border-radius:18px;background:rgba(9,9,9,.95);text-align:center;box-shadow:0 18px 48px rgba(0,0,0,.55)
+}
+body.ipad #ipadEmptyState.visible{display:flex;flex-direction:column;gap:8px;align-items:center}
+body.ipad #ipadEmptyState strong{font-size:19px;color:var(--yellow)}
+body.ipad #ipadEmptyState span{font-size:13px;color:#bbb;line-height:1.4}
+body.ipad #ipadEmptyState button{min-height:42px;margin-top:4px;padding:8px 14px}
+body.ipad .hint{display:block;position:absolute;z-index:10;left:16px;bottom:18px;max-width:380px;padding:7px 11px;border:1px solid #333;border-radius:12px;background:rgba(7,7,7,.86);color:#aaa;font-size:10px;pointer-events:none}
+body.ipad #nodeTooltip{display:none!important}
+body.ipad .desktopOnly{display:none!important}
+body.ipad .mobileOnly{display:flex!important}
+body.ipad .mobileLaneCard{min-height:66px}
+body.ipad .mobileLaneName{font-size:17px}
+body.ipad .mobileRoleChoice{min-height:52px;font-size:15px}
+body.ipad .card{border-radius:17px;padding:15px;margin-bottom:12px}
+body.ipad .card h2{font-size:21px}
+body.ipad .axisLabel{font-size:10px}
+body.ipad .axisMonthLabel{font-size:10px}
+body.ipad .axisYearLabel{font-size:11px}
+body.ipad .labelBox{border-radius:8px;padding:4px 8px}
+body.ipad .labelPlain{font-weight:700;text-shadow:0 0 5px #000,0 0 9px #000}
+@media (orientation:portrait){
+  body.ipad{--headerh:calc(122px + env(safe-area-inset-top))}
+  body.ipad #mobileQuickBar{grid-template-columns:.8fr 1fr .9fr .9fr 1fr;max-width:none}
+  body.ipad #left{width:78vw!important}
+  body.ipad .mobileDrawerHead{width:78vw}
+  body.ipad #right,body.ipad #mobileControlsSheet{width:76vw!important}
+  body.ipad #ipadZoomDock{right:12px;bottom:12px;grid-template-columns:44px 70px 44px 70px}
+  body.ipad .hint{display:none}
+}
+
 </style>
 </head>
-<body>
+<body class="ipad">
 <div id="app">
-<header id="header"><h1>Poste de pilotage V1</h1><div class="sub" id="subtitle">3 semaines de Contrôle / Revue</div>
+<header id="header"><div class="ipadTitleRow"><h1>Poste de pilotage</h1><span class="ipadVersion">iPad V1</span></div><div class="sub" id="subtitle">3 semaines de Contrôle / Revue</div>
 <div id="mobileQuickBar">
   <label class="mobileFileLabel">JSON<input id="mobileFileInput" type="file" accept=".json,application/json"></label>
   <button id="mobilePeriodTop">3 mois</button>
   <button id="mobileRolesTop">Rôles</button>
+  <button id="ipadDetailTop">Détail</button>
   <button id="mobileControlsTop">Réglages</button>
 </div><div class="toolbar"><label class="fileLabel">Charger JSON<input id="fileInput" type="file" accept=".json,application/json"></label><button id="modeTime" class="active">Zoom temps</button><button id="modeDetail">Zoom détail</button><button id="zoomOut">−</button><span id="zoomInfo" class="small">100%</span><button id="zoomIn">+</button><span id="thicknessInfo" class="small" title="MAJ + molette">Épaisseur 100%</span><button id="reset">Reset vue</button><div class="sep"></div><button id="allRoles">Tous les rôles</button><button id="toggleSecondary">Afficher secondaires</button><button data-filter="all" class="active">Tout</button><button data-filter="hot">Chaud</button><button data-filter="active">Actif</button><button data-filter="watch">Veille</button><button data-filter="dormant">Dormant</button></div></header>
 <aside id="left"><div class="mobileDrawerHead"><strong>Rôles et fils</strong><button id="mobileCloseLeft">×</button></div><div id="leftInner"></div></aside>
-<main id="center"><div id="axisWrap"><div id="axisInner"><div id="axisContent"></div></div></div><div id="chartScroll"><div id="chartContent"><svg id="chartSvg"></svg><div id="labelLayer"></div></div></div><div class="hint">CTRL + molette = zoom temps · ALT + molette = zoom détail · MAJ + molette = épaisseur · glisser = déplacer · double-clic fil = parent + enfants directs / restaurer</div></main>
-<div id="nodeTooltip"></div><div id="panelResize" title="Glisser pour redimensionner le panneau"></div><aside id="right"><div class="detailHead"><div><div class="kicker">Panneau</div><strong>Détail / synthèse</strong></div><button id="togglePanel" title="Alterner entre largeur normale et 50 %">Panneau 50%</button><div class="mobileDetailActions mobileOnly"><button id="mobileIsolate">Isoler</button><button id="mobileCloseRight">×</button></div></div><div id="detail"><div class="card primary"><div class="kicker">Prototype V29.1</div><h2>Chargement</h2><p class="empty">Les données sont intégrées. Tu peux aussi charger un autre JSON.</p></div></div></aside>
+<main id="center"><div id="axisWrap"><div id="axisInner"><div id="axisContent"></div></div></div><div id="chartScroll"><div id="chartContent"><svg id="chartSvg"></svg><div id="labelLayer"></div></div></div><div id="ipadEmptyState"><strong>Aucun fil visible</strong><span>La combinaison rôle, période et filtre ne contient aucun fil.</span><button id="ipadShowAll">Voir tout</button></div><div id="ipadZoomDock"><button id="ipadZoomOut" aria-label="Dézoomer">−</button><button id="ipadZoomMode">Temps</button><button id="ipadZoomIn" aria-label="Zoomer">+</button><button id="ipadFit">Ajuster</button></div><div class="hint">Un doigt : déplacer · deux doigts : zoomer · boutons −/+ : zoom précis</div></main>
+<div id="nodeTooltip"></div><div id="panelResize" title="Glisser pour redimensionner le panneau"></div><aside id="right"><div class="detailHead"><div><div class="kicker">Panneau</div><strong>Détail / synthèse</strong></div><button id="togglePanel" title="Alterner entre largeur normale et 50 %">Panneau 50%</button><div class="mobileDetailActions mobileOnly"><button id="mobileIsolate">Isoler</button><button id="mobileCloseRight">×</button></div></div><div id="detail"><div class="card primary"><div class="kicker">iPad V1</div><h2>Chargement</h2><p class="empty">Les données sont intégrées. Tu peux aussi charger un autre JSON.</p></div></div></aside>
 
 <div id="mobileBackdrop"></div>
 <section id="mobileControlsSheet" aria-label="Réglages d’affichage">
@@ -367,8 +488,9 @@ let timeRangeMode="all", viewStartOverride=null, viewEndOverride=null;
 let mobileRolesRoot=true, mobileRolesBrowseLane=null;
 
 const STORAGE_DATA_KEY='postePilotage:lastJson:v1';
-const TOUCH_LAYOUT_QUERY='(max-width:1180px), (max-width:1366px) and (any-pointer:coarse)';
-const STORAGE_VIEW_KEY='postePilotage:viewState:v29.1:'+(window.matchMedia(TOUCH_LAYOUT_QUERY).matches?'touch':'desktop');
+const TOUCH_LAYOUT_QUERY='all';
+const STORAGE_VIEW_KEY='postePilotage:viewState:IPAD:v1';
+const IPAD_NATIVE_TOUCH=true;
 let restoringView=false;
 let saveTimer=null;
 
@@ -439,15 +561,12 @@ function applyStoredView(state){
 }
 
 let branchW=340,leftRootX=24,roleX=130,roleLabelX=170,rightPad=280;
-function isMobileMode(){
-  return window.matchMedia(TOUCH_LAYOUT_QUERY).matches
-    || (navigator.maxTouchPoints>1 && window.matchMedia('(max-width:1366px)').matches);
-}
+function isMobileMode(){return true}
 function applyResponsiveMetrics(){
-  if(isMobileMode()){branchW=166;leftRootX=8;roleX=48;roleLabelX=70;rightPad=88}
-  else{branchW=340;leftRootX=24;roleX=130;roleLabelX=170;rightPad=280}
+  const wide=window.innerWidth>=1050;
+  branchW=wide?250:210;leftRootX=10;roleX=wide?76:62;roleLabelX=wide?112:94;rightPad=wide?150:110;
 }
-const app=document.getElementById("app"), togglePanelBtn=document.getElementById("togglePanel"), panelResize=document.getElementById("panelResize"), nodeTooltip=document.getElementById("nodeTooltip"), chartScroll=document.getElementById("chartScroll"), chartContent=document.getElementById("chartContent"), chartSvg=document.getElementById("chartSvg"), labelLayer=document.getElementById("labelLayer"), axisInner=document.getElementById("axisInner"), axisContent=document.getElementById("axisContent"), leftInner=document.getElementById("leftInner"), detail=document.getElementById("detail"), subtitle=document.getElementById("subtitle"), zoomInfo=document.getElementById("zoomInfo"), thicknessInfo=document.getElementById("thicknessInfo"),mobileBackdrop=document.getElementById("mobileBackdrop"),mobileControlsSheet=document.getElementById("mobileControlsSheet"),mobileIsolate=document.getElementById("mobileIsolate"),mobileTimeInfo=document.getElementById("mobileTimeInfo"),mobileDetailInfo=document.getElementById("mobileDetailInfo"),mobileThicknessInfo=document.getElementById("mobileThicknessInfo"),mobilePeriodTop=document.getElementById("mobilePeriodTop"),mobileRangeSummary=document.getElementById("mobileRangeSummary"),mobileCustomRange=document.getElementById("mobileCustomRange"),mobileRangeStart=document.getElementById("mobileRangeStart"),mobileRangeEnd=document.getElementById("mobileRangeEnd");
+const app=document.getElementById("app"), togglePanelBtn=document.getElementById("togglePanel"), panelResize=document.getElementById("panelResize"), nodeTooltip=document.getElementById("nodeTooltip"), chartScroll=document.getElementById("chartScroll"), chartContent=document.getElementById("chartContent"), chartSvg=document.getElementById("chartSvg"), labelLayer=document.getElementById("labelLayer"), axisInner=document.getElementById("axisInner"), axisContent=document.getElementById("axisContent"), leftInner=document.getElementById("leftInner"), detail=document.getElementById("detail"), subtitle=document.getElementById("subtitle"), zoomInfo=document.getElementById("zoomInfo"), thicknessInfo=document.getElementById("thicknessInfo"),mobileBackdrop=document.getElementById("mobileBackdrop"),mobileControlsSheet=document.getElementById("mobileControlsSheet"),mobileIsolate=document.getElementById("mobileIsolate"),mobileTimeInfo=document.getElementById("mobileTimeInfo"),mobileDetailInfo=document.getElementById("mobileDetailInfo"),mobileThicknessInfo=document.getElementById("mobileThicknessInfo"),mobilePeriodTop=document.getElementById("mobilePeriodTop"),mobileRangeSummary=document.getElementById("mobileRangeSummary"),mobileCustomRange=document.getElementById("mobileCustomRange"),mobileRangeStart=document.getElementById("mobileRangeStart"),mobileRangeEnd=document.getElementById("mobileRangeEnd"),ipadDetailTop=document.getElementById("ipadDetailTop"),ipadZoomOut=document.getElementById("ipadZoomOut"),ipadZoomIn=document.getElementById("ipadZoomIn"),ipadZoomMode=document.getElementById("ipadZoomMode"),ipadFit=document.getElementById("ipadFit"),ipadEmptyState=document.getElementById("ipadEmptyState");
 function panelBounds(){
   const leftWidth=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--leftw'))||320;
   const max=Math.max(360,window.innerWidth-leftWidth-18);
@@ -501,7 +620,7 @@ if(panelResize){
     window.addEventListener('pointerup',stop);
   });
 }
-window.addEventListener('resize',()=>{applyResponsiveMetrics();applyPanelWidth(panelWidth);if(DATA)render();schedulePersistView();});
+let ipadLastW=window.innerWidth,ipadLastH=window.innerHeight;window.addEventListener('resize',()=>{const dw=Math.abs(window.innerWidth-ipadLastW),dh=Math.abs(window.innerHeight-ipadLastH);ipadLastW=window.innerWidth;ipadLastH=window.innerHeight;applyResponsiveMetrics();applyPanelWidth(panelWidth);if(DATA){render();if(dw>120||dh>120)requestAnimationFrame(()=>fitMobileCurrentView());}schedulePersistView();});
 syncPanelWidth();
 
 function totalDaysForData(){
@@ -851,7 +970,7 @@ function renderAxis(){
     layout.rows.forEach(r=>{chartSvg.appendChild(E('line',{x1:0,y1:r.y+14,x2:layout.width,y2:r.y+14,class:'gridH'}));});
   }
 }
-function render(){if(!DATA)return;applyResponsiveMetrics();activityCache.clear();laneActivityCache.clear();computeLayout();clear();setSizes();renderAxis();renderChart();renderSidebar();syncScroll();const isolated=isolatedThreadId?threadById(isolatedThreadId):null;subtitle.textContent=`${DATA.meta.title||'Poste de pilotage'} · ${rangeLabel()} · ${dateLabel(start())} → ${dateLabel(end())}${focusLane?' · focus : '+focusLane:''}${isolated?' · isolé : '+isolated.title:''}`;zoomInfo.textContent=(zoomMode==='time'?Math.round(pxPerDay/54*100):Math.round(rowH/34*100))+'%';if(thicknessInfo)thicknessInfo.textContent='Épaisseur '+Math.round(strokeScale*100)+'%';updateMobileIndicators();updateMobileIsolateButton();}
+function render(){if(!DATA)return;applyResponsiveMetrics();activityCache.clear();laneActivityCache.clear();computeLayout();clear();setSizes();renderAxis();renderChart();renderSidebar();syncScroll();const isolated=isolatedThreadId?threadById(isolatedThreadId):null;subtitle.textContent=`${DATA.meta.title||'Poste de pilotage'} · ${rangeLabel()} · ${dateLabel(start())} → ${dateLabel(end())}${focusLane?' · focus : '+focusLane:''}${isolated?' · isolé : '+isolated.title:''}`;zoomInfo.textContent=(zoomMode==='time'?Math.round(pxPerDay/54*100):Math.round(rowH/34*100))+'%';if(thicknessInfo)thicknessInfo.textContent='Épaisseur '+Math.round(strokeScale*100)+'%';if(ipadEmptyState)ipadEmptyState.classList.toggle('visible',visibleThreads().length===0);if(ipadZoomMode){ipadZoomMode.textContent=zoomMode==='time'?'Temps':'Détail';ipadZoomMode.classList.toggle('active',zoomMode==='time');}updateMobileIndicators();updateMobileIsolateButton();}
 function rootY(){if(focusLane) return layout.roleMid[focusLane]||72; return layout.rows.length?layout.rows[Math.floor(layout.rows.length/2)].y:300;}
 function curveSpan(mult=1){
   const base=currentView()==='overview'?250:210;
@@ -1262,6 +1381,13 @@ function rolesForLane(lane){
   });
   return (DATA.roles||[]).filter(r=>ids.has(r.id));
 }
+
+function ipadResetFilter(){
+  filter='all';
+  document.querySelectorAll('button[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter==='all'));
+  document.querySelectorAll('[data-mobile-filter]').forEach(b=>b.classList.toggle('active',b.dataset.mobileFilter==='all'));
+}
+
 function renderSidebar(){
   leftInner.innerHTML='';
   leftInner.classList.remove('mobileRoot');
@@ -1294,14 +1420,14 @@ function renderSidebar(){
     head.appendChild(back);head.appendChild(H('strong','',lane));leftInner.appendChild(head);
     const all=H('div','mobileRoleChoice'+(focusLane===lane&&!subRoleFocus?' selected':''),'Tous les rôles / fils');
     all.appendChild(H('span','count',String(DATA.threads.filter(t=>t.lane===lane).length)));
-    all.onclick=()=>{isolatedThreadId=null;focusLane=lane;subRoleFocus=null;render();mobileAfterSelection();};
+    all.onclick=()=>{isolatedThreadId=null;ipadResetFilter();focusLane=lane;subRoleFocus=null;render();mobileAfterSelection();};
     leftInner.appendChild(all);
     rolesForLane(lane).forEach(role=>{
       const count=DATA.threads.filter(t=>t.lane===lane&&(t.rolePrimary===role.id||(t.roleSecondary||[]).includes(role.id))).length;
       if(!count)return;
       const item=H('div','mobileRoleChoice'+(focusLane===lane&&subRoleFocus===role.id?' selected':''),role.name);
       item.appendChild(H('span','count',String(count)));
-      item.onclick=()=>{isolatedThreadId=null;focusLane=lane;subRoleFocus=role.id;render();mobileAfterSelection();};
+      item.onclick=()=>{isolatedThreadId=null;ipadResetFilter();focusLane=lane;subRoleFocus=role.id;render();mobileAfterSelection();};
       leftInner.appendChild(item);
     });
     return;
@@ -1395,7 +1521,7 @@ function showThread(id){const t=DATA.threads.find(x=>x.id===id);if(!t)return;sel
 function showHistory(id){const h=(DATA.history||[]).find(x=>x.id===id);if(!h)return;const t=DATA.threads.find(x=>x.id===h.threadId);selectedId=t?.id||null; detail.innerHTML=`<div class="card"><div class="kicker">Historique</div><h2>${fmt(h.date)}</h2><p><strong>Fil :</strong> ${t?t.title:'—'}</p><div class="agenda"><strong>${h.summary||''}</strong><br>${h.effect||''}</div><p class="small">Type : ${h.type||'—'}</p></div>`;updateMobileIsolateButton();if(isMobileMode())openMobilePanel('detail'); }
 function showNode(id){const n=(DATA.nodes||[]).find(x=>x.id===id);if(!n)return;const t=DATA.threads.find(x=>x.id===n.threadId);selectedId=t?.id||null; detail.innerHTML=`<div class="card"><div class="kicker">Nœud</div><h2>${n.symbol||'•'} ${n.title}</h2><div class="meta"><div class="pill">Type<strong>${n.type||'—'}</strong></div><div class="pill">Statut<strong>${n.status||'—'}</strong></div><div class="pill">Énergie<strong>${n.energy||'—'}</strong></div><div class="pill">Temps<strong>${n.duration||'—'}</strong></div></div><p><strong>Fil :</strong> ${t?t.title:'—'}</p><div class="agenda"><strong>Date / échéance</strong><br>${fmt(n.date||n.deadline)}</div></div>`;updateMobileIsolateButton();if(isMobileMode())openMobilePanel('detail'); }
 function validateData(obj){if(!obj||typeof obj!=='object')throw new Error('JSON vide ou invalide');if(!obj.meta||!obj.meta.period)throw new Error('meta.period absent');if(!Array.isArray(obj.threads))throw new Error('threads absent');obj.roles=Array.isArray(obj.roles)?obj.roles:[];obj.history=Array.isArray(obj.history)?obj.history:[];obj.nodes=Array.isArray(obj.nodes)?obj.nodes:[];obj.threadLinks=Array.isArray(obj.threadLinks)?obj.threadLinks:[];obj.visualConfig=obj.visualConfig||{};return obj}
-function loadData(obj,options={}){DATA=validateData(obj);if(options.persist!==false)persistJsonObject(DATA);const stored=options.restoreView===false?null:readStoredView();if(stored){applyStoredView(stored);return;}focusLane=null;subRoleFocus=null;isolatedThreadId=null;selectedId=null;mobileRolesRoot=true;mobileRolesBrowseLane=null;showSecondary=!!DATA.visualConfig?.defaultShowSecondary;const secBtn=document.getElementById('toggleSecondary');if(secBtn)secBtn.textContent=showSecondary?'Masquer secondaires':'Afficher secondaires';strokeScale=1;filter='all';document.querySelectorAll('button[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter==='all'));applyTimeRangeState(isMobileMode()?'3m':'all');if(isMobileMode())fitMobileCurrentView();else fitFullPeriod();const firstLane=visibleLaneNames()[0];if(firstLane)showLaneSummary(firstLane);schedulePersistView();}
+function loadData(obj,options={}){DATA=validateData(obj);if(options.persist!==false)persistJsonObject(DATA);const stored=options.restoreView===false?null:readStoredView();if(stored){applyStoredView(stored);return;}focusLane=null;subRoleFocus=null;isolatedThreadId=null;selectedId=null;mobileRolesRoot=true;mobileRolesBrowseLane=null;showSecondary=!!DATA.visualConfig?.defaultShowSecondary;const secBtn=document.getElementById('toggleSecondary');if(secBtn)secBtn.textContent=showSecondary?'Masquer secondaires':'Afficher secondaires';strokeScale=1;filter='all';document.querySelectorAll('button[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter==='all'));applyTimeRangeState(isMobileMode()?'3m':'all');if(isMobileMode())fitMobileCurrentView();else fitFullPeriod();detail.innerHTML=`<div class="card primary"><div class="kicker">iPad V1</div><h2>Vue d’ensemble</h2><p class="empty">Touche une ligne ou un fil pour ouvrir son détail.</p></div>`;schedulePersistView();}
 function showLoadError(err){console.error(err);detail.innerHTML=`<div class="card primary"><div class="kicker">Erreur JSON</div><h2>Le fichier n'a pas pu être chargé</h2><p class="empty">${String(err&&err.message?err.message:err)}</p></div>`}
 function loadText(txt){try{loadData(JSON.parse(txt),{persist:true,restoreView:true})}catch(err){showLoadError(err)}}
 document.getElementById('fileInput').addEventListener('change',e=>{const input=e.currentTarget;const f=input.files&&input.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{loadText(String(r.result||''));input.value=''};r.onerror=()=>{showLoadError(r.error||new Error('Lecture impossible'));input.value=''};r.readAsText(f,'UTF-8')}); const mobileFileInput=document.getElementById('mobileFileInput');if(mobileFileInput)mobileFileInput.addEventListener('change',e=>{const input=e.currentTarget;const f=input.files&&input.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{loadText(String(r.result||''));input.value=''};r.onerror=()=>{showLoadError(r.error||new Error('Lecture impossible'));input.value=''};r.readAsText(f,'UTF-8')}); document.querySelectorAll('button[data-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.filter; subRoleFocus=null; isolatedThreadId=null; document.querySelectorAll('button[data-filter]').forEach(x=>x.classList.remove('active')); b.classList.add('active'); render(); schedulePersistView();}); document.getElementById('allRoles').onclick=()=>{isolatedThreadId=null;focusLane=null; subRoleFocus=null; render(); schedulePersistView();}; const secondaryBtn=document.getElementById('toggleSecondary'); if(secondaryBtn){secondaryBtn.onclick=()=>{showSecondary=!showSecondary;secondaryBtn.textContent=showSecondary?'Masquer secondaires':'Afficher secondaires';isolatedThreadId=null;render();schedulePersistView();};secondaryBtn.textContent=showSecondary?'Masquer secondaires':'Afficher secondaires';} document.getElementById('modeTime').onclick=()=>{zoomMode='time'; document.getElementById('modeTime').classList.add('active'); document.getElementById('modeDetail').classList.remove('active'); schedulePersistView();}; document.getElementById('modeDetail').onclick=()=>{zoomMode='detail'; document.getElementById('modeDetail').classList.add('active'); document.getElementById('modeTime').classList.remove('active'); schedulePersistView();};
@@ -1426,6 +1552,24 @@ function scaleThickness(f){
   render();
   schedulePersistView();
 }
+
+
+ipadDetailTop?.addEventListener('click',()=>{
+  const open=document.getElementById('right').classList.contains('mobileOpen');
+  if(open)closeMobilePanels();else openMobilePanel('detail');
+});
+ipadZoomMode?.addEventListener('click',()=>{
+  zoomMode=zoomMode==='time'?'detail':'time';
+  document.getElementById('modeTime')?.classList.toggle('active',zoomMode==='time');
+  document.getElementById('modeDetail')?.classList.toggle('active',zoomMode==='detail');
+  render();schedulePersistView();
+});
+ipadZoomOut?.addEventListener('click',()=>zoomMode==='time'?zoomTimeAt(1/1.28):zoomDetailAt(1/1.18));
+ipadZoomIn?.addEventListener('click',()=>zoomMode==='time'?zoomTimeAt(1.28):zoomDetailAt(1.18));
+ipadFit?.addEventListener('click',()=>{fitMobileCurrentView();schedulePersistView();});
+document.getElementById('ipadShowAll')?.addEventListener('click',()=>{
+  isolatedThreadId=null;focusLane=null;subRoleFocus=null;ipadResetFilter();showSecondary=false;fitMobileCurrentView();
+});
 
 document.querySelectorAll('#mobileNav button').forEach(b=>b.addEventListener('click',()=>openMobilePanel(b.dataset.mobileView)));
 document.getElementById('mobileRolesTop')?.addEventListener('click',()=>openMobilePanel('roles'));
@@ -1487,7 +1631,7 @@ function applyPendingTouch(){
 }
 function queueTouch(p){pendingTouch=p;if(!touchRAF)touchRAF=requestAnimationFrame(applyPendingTouch)}
 chartScroll.addEventListener('pointerdown',e=>{
-  if(!isMobileMode()||e.pointerType!=='touch')return;
+  if(IPAD_NATIVE_TOUCH||!isMobileMode()||e.pointerType!=='touch')return;
   chartScroll.setPointerCapture?.(e.pointerId);
   touchPoints.set(e.pointerId,{x:e.clientX,y:e.clientY});
   touchMoved=false;
@@ -1505,7 +1649,7 @@ chartScroll.addEventListener('pointerdown',e=>{
   }
 },{passive:false});
 chartScroll.addEventListener('pointermove',e=>{
-  if(!isMobileMode()||e.pointerType!=='touch'||!touchPoints.has(e.pointerId))return;
+  if(IPAD_NATIVE_TOUCH||!isMobileMode()||e.pointerType!=='touch'||!touchPoints.has(e.pointerId))return;
   touchPoints.set(e.pointerId,{x:e.clientX,y:e.clientY});
   if(touchMode==='pan'&&touchPoints.size===1&&touchStart){
     const p=[...touchPoints.values()][0],dx=p.x-touchStart.x,dy=p.y-touchStart.y;
@@ -1540,6 +1684,56 @@ chartScroll.addEventListener('pointercancel',finishTouch);
 chartScroll.addEventListener('click',e=>{
   if(Date.now()<suppressClickUntil){e.preventDefault();e.stopPropagation()}
 },true);
+
+
+// Gestes iPad natifs : un doigt déplace, deux doigts zooment autour du point de contact.
+let ipadTouchState=null,ipadTouchFrame=0,ipadPending=null,ipadTouchMoved=false;
+const ipadDistance=t=>Math.hypot(t[1].clientX-t[0].clientX,t[1].clientY-t[0].clientY);
+const ipadCenter=t=>({x:(t[0].clientX+t[1].clientX)/2,y:(t[0].clientY+t[1].clientY)/2});
+function ipadApplyTouch(){
+  ipadTouchFrame=0;if(!ipadPending)return;const p=ipadPending;ipadPending=null;
+  if(p.kind==='pan'){chartScroll.scrollLeft=p.left;chartScroll.scrollTop=p.top;syncScroll();return;}
+  pxPerDay=Math.max(minPxPerDay(),Math.min(380,p.px));
+  rowH=Math.max(22,Math.min(80,p.row));
+  render();
+  chartScroll.scrollLeft=Math.max(0,branchW+p.worldDays*pxPerDay-p.localX);
+  chartScroll.scrollTop=Math.max(0,p.worldRows*rowH-p.localY);
+  syncScroll();
+}
+function ipadQueueTouch(p){ipadPending=p;if(!ipadTouchFrame)ipadTouchFrame=requestAnimationFrame(ipadApplyTouch)}
+chartScroll.addEventListener('touchstart',e=>{
+  ipadTouchMoved=false;
+  if(e.touches.length===1){
+    const t=e.touches[0];ipadTouchState={kind:'pan',x:t.clientX,y:t.clientY,left:chartScroll.scrollLeft,top:chartScroll.scrollTop};
+  }else if(e.touches.length===2){
+    const c=ipadCenter(e.touches),rect=chartScroll.getBoundingClientRect(),localX=c.x-rect.left,localY=c.y-rect.top;
+    ipadTouchState={kind:'pinch',dist:Math.max(10,ipadDistance(e.touches)),px:pxPerDay,row:rowH,localX,localY,worldDays:(chartScroll.scrollLeft+localX-branchW)/pxPerDay,worldRows:(chartScroll.scrollTop+localY)/rowH};
+  }
+},{passive:true});
+chartScroll.addEventListener('touchmove',e=>{
+  if(!ipadTouchState)return;
+  if(e.touches.length===1&&ipadTouchState.kind==='pan'){
+    const t=e.touches[0],dx=t.clientX-ipadTouchState.x,dy=t.clientY-ipadTouchState.y;
+    if(Math.hypot(dx,dy)>4)ipadTouchMoved=true;
+    ipadQueueTouch({kind:'pan',left:ipadTouchState.left-dx,top:ipadTouchState.top-dy});
+    e.preventDefault();
+  }else if(e.touches.length===2){
+    if(ipadTouchState.kind!=='pinch'){
+      const c=ipadCenter(e.touches),rect=chartScroll.getBoundingClientRect(),localX=c.x-rect.left,localY=c.y-rect.top;
+      ipadTouchState={kind:'pinch',dist:Math.max(10,ipadDistance(e.touches)),px:pxPerDay,row:rowH,localX,localY,worldDays:(chartScroll.scrollLeft+localX-branchW)/pxPerDay,worldRows:(chartScroll.scrollTop+localY)/rowH};
+    }
+    const factor=Math.max(.45,Math.min(2.2,ipadDistance(e.touches)/ipadTouchState.dist));
+    ipadTouchMoved=true;
+    ipadQueueTouch({kind:'pinch',px:ipadTouchState.px*factor,row:ipadTouchState.row*Math.pow(factor,.62),localX:ipadTouchState.localX,localY:ipadTouchState.localY,worldDays:ipadTouchState.worldDays,worldRows:ipadTouchState.worldRows});
+    e.preventDefault();
+  }
+},{passive:false});
+chartScroll.addEventListener('touchend',e=>{
+  if(e.touches.length===1){
+    const t=e.touches[0];ipadTouchState={kind:'pan',x:t.clientX,y:t.clientY,left:chartScroll.scrollLeft,top:chartScroll.scrollTop};
+  }else if(e.touches.length===0){ipadTouchState=null;schedulePersistView();}
+},{passive:true});
+chartScroll.addEventListener('touchcancel',()=>{ipadTouchState=null;schedulePersistView()},{passive:true});
 
 chartScroll.addEventListener('wheel',e=>{
   const shiftOn=e.shiftKey||(e.getModifierState&&e.getModifierState('Shift'));
