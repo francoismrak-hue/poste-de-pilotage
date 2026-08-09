@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Pilotage">
-<title>Poste de pilotage — iPhone V1</title>
+<title>Poste de pilotage — iPhone V1.1.1</title>
 <style>
 :root{--bg:#000;--panel:#080808;--panel2:#111;--text:#fff;--muted:#a9a9a9;--yellow:#ffd400;--yellow2:#ffea61;--yellowSoft:rgba(255,212,0,.18);--grid:#252525;--grid2:#141414;--leftw:320px;--rightw:420px;--rightwDynamic:420px;--headerh:126px;--axish:92px;}
 *{box-sizing:border-box;-webkit-user-select:none;user-select:none}
@@ -267,7 +267,7 @@ ul{padding-left:18px;margin:10px 0 0} li{margin:8px 0}
 </head>
 <body>
 <div id="app">
-<header id="header"><h1>Poste de pilotage V1</h1><div class="sub" id="subtitle">3 semaines de Contrôle / Revue</div>
+<header id="header"><h1>Poste de pilotage V1</h1><div class="sub" id="subtitle">iPhone V1.1 · navigation inertielle + zoom directionnel</div>
 <div id="mobileQuickBar">
   <label class="mobileFileLabel">JSON<input id="mobileFileInput" type="file" accept=".json,application/json"></label>
   <button id="mobilePeriodTop">3 mois</button>
@@ -276,7 +276,7 @@ ul{padding-left:18px;margin:10px 0 0} li{margin:8px 0}
 </div><div class="toolbar"><label class="fileLabel">Charger JSON<input id="fileInput" type="file" accept=".json,application/json"></label><button id="modeTime" class="active">Zoom temps</button><button id="modeDetail">Zoom détail</button><button id="zoomOut">−</button><span id="zoomInfo" class="small">100%</span><button id="zoomIn">+</button><span id="thicknessInfo" class="small" title="MAJ + molette">Épaisseur 100%</span><button id="reset">Reset vue</button><div class="sep"></div><button id="allRoles">Tous les rôles</button><button id="toggleSecondary">Afficher secondaires</button><button data-filter="all" class="active">Tout</button><button data-filter="hot">Chaud</button><button data-filter="active">Actif</button><button data-filter="watch">Veille</button><button data-filter="dormant">Dormant</button></div></header>
 <aside id="left"><div class="mobileDrawerHead"><strong>Rôles et fils</strong><button id="mobileCloseLeft">×</button></div><div id="leftInner"></div></aside>
 <main id="center"><div id="axisWrap"><div id="axisInner"><div id="axisContent"></div></div></div><div id="chartScroll"><div id="chartContent"><svg id="chartSvg"></svg><div id="labelLayer"></div></div></div><div class="hint">CTRL + molette = zoom temps · ALT + molette = zoom détail · MAJ + molette = épaisseur · glisser = déplacer · double-clic fil = parent + enfants directs / restaurer</div></main>
-<div id="nodeTooltip"></div><div id="panelResize" title="Glisser pour redimensionner le panneau"></div><aside id="right"><div class="detailHead"><div><div class="kicker">Panneau</div><strong>Détail / synthèse</strong></div><button id="togglePanel" title="Alterner entre largeur normale et 50 %">Panneau 50%</button><div class="mobileDetailActions mobileOnly"><button id="mobileIsolate">Isoler</button><button id="mobileCloseRight">×</button></div></div><div id="detail"><div class="card primary"><div class="kicker">iPhone V1</div><h2>Chargement</h2><p class="empty">Les données sont intégrées. Tu peux aussi charger un autre JSON.</p></div></div></aside>
+<div id="nodeTooltip"></div><div id="panelResize" title="Glisser pour redimensionner le panneau"></div><aside id="right"><div class="detailHead"><div><div class="kicker">Panneau</div><strong>Détail / synthèse</strong></div><button id="togglePanel" title="Alterner entre largeur normale et 50 %">Panneau 50%</button><div class="mobileDetailActions mobileOnly"><button id="mobileIsolate">Isoler</button><button id="mobileCloseRight">×</button></div></div><div id="detail"><div class="card primary"><div class="kicker">iPhone V1.1</div><h2>Chargement</h2><p class="empty">Les données sont intégrées. Tu peux aussi charger un autre JSON.</p></div></div></aside>
 
 <div id="mobileBackdrop"></div>
 <section id="mobileControlsSheet" aria-label="Réglages d’affichage">
@@ -297,7 +297,7 @@ ul{padding-left:18px;margin:10px 0 0} li{margin:8px 0}
   <div class="mobileControlGroup"><strong>Épaisseur</strong><div class="mobileStepper"><button id="mobileThicknessOut">−</button><span id="mobileThicknessInfo">100 %</span><button id="mobileThicknessIn">+</button></div></div>
   <div class="mobileControlGroup"><strong>Filtre</strong><div class="mobileFilterGrid"><button data-mobile-filter="all" class="active">Tout</button><button data-mobile-filter="hot">Chaud</button><button data-mobile-filter="active">Actif</button><button data-mobile-filter="watch">Veille</button><button data-mobile-filter="dormant">Dormant</button></div></div>
   <div class="mobileControlGroup"><strong>Navigation</strong><div class="mobileActionGrid"><button id="mobileAllRoles">Tous les rôles</button><button id="mobileSecondary">Secondaires</button><button id="mobileCenterToday">Centrer aujourd’hui</button><button id="mobileReset">Reset vue</button></div></div>
-  <p class="small">Un doigt : déplacer · deux doigts : zoomer la carte · toucher un fil ou un point : ouvrir le détail.</p>
+  <p class="small">1 doigt : déplacer avec inertie · 2 doigts horizontal : zoom temps · vertical : zoom détail · oblique : zoom combiné.</p>
 </section>
 <nav id="mobileNav" aria-label="Navigation mobile">
   <button data-mobile-view="chart" class="active">Carte</button>
@@ -317,7 +317,7 @@ let timeRangeMode="all", viewStartOverride=null, viewEndOverride=null;
 let mobileRolesRoot=true, mobileRolesBrowseLane=null;
 
 const STORAGE_DATA_KEY='postePilotage:lastJson:v1';
-const STORAGE_VIEW_KEY='postePilotage:viewState:IPHONE:v1';
+const STORAGE_VIEW_KEY='postePilotage:viewState:IPHONE:v1.1';
 let restoringView=false;
 let saveTimer=null;
 
@@ -1415,76 +1415,307 @@ document.getElementById('mobileReset')?.addEventListener('click',()=>{document.g
 
 const touchPoints=new Map();
 let touchMode=null,touchStart=null,pinchStart=null,touchMoved=false,suppressClickUntil=0,touchRAF=0,pendingTouch=null;
-function touchCenter(points){const a=[...points.values()];return{x:a.reduce((s,p)=>s+p.x,0)/a.length,y:a.reduce((s,p)=>s+p.y,0)/a.length}}
-function touchDistance(points){const a=[...points.values()];if(a.length<2)return 0;return Math.hypot(a[1].x-a[0].x,a[1].y-a[0].y)}
+
+// Inertie du déplacement à un doigt.
+let inertiaRAF=0,inertiaVX=0,inertiaVY=0,inertiaLastT=0;
+let panSample=null;
+
+function stopInertia(){
+  if(inertiaRAF) cancelAnimationFrame(inertiaRAF);
+  inertiaRAF=0;inertiaVX=0;inertiaVY=0;inertiaLastT=0;
+}
+function clampScroll(){
+  const maxX=Math.max(0,chartScroll.scrollWidth-chartScroll.clientWidth);
+  const maxY=Math.max(0,chartScroll.scrollHeight-chartScroll.clientHeight);
+  const oldX=chartScroll.scrollLeft, oldY=chartScroll.scrollTop;
+  chartScroll.scrollLeft=Math.max(0,Math.min(maxX,chartScroll.scrollLeft));
+  chartScroll.scrollTop=Math.max(0,Math.min(maxY,chartScroll.scrollTop));
+  return {
+    hitX:(chartScroll.scrollLeft===0&&oldX<0)||(chartScroll.scrollLeft===maxX&&oldX>maxX),
+    hitY:(chartScroll.scrollTop===0&&oldY<0)||(chartScroll.scrollTop===maxY&&oldY>maxY)
+  };
+}
+function startInertia(vx,vy){
+  stopInertia();
+
+  // px/ms : geste iPhone volontairement assez "libre".
+  const maxV=3.6;
+  const speed=Math.hypot(vx,vy);
+  if(speed<0.16) return;
+
+  if(speed>maxV){
+    const k=maxV/speed;vx*=k;vy*=k;
+  }
+  inertiaVX=vx;inertiaVY=vy;
+  inertiaLastT=performance.now();
+
+  const tick=(now)=>{
+    const dt=Math.min(32,Math.max(8,now-inertiaLastT));
+    inertiaLastT=now;
+
+    chartScroll.scrollLeft += inertiaVX*dt;
+    chartScroll.scrollTop  += inertiaVY*dt;
+
+    const maxX=Math.max(0,chartScroll.scrollWidth-chartScroll.clientWidth);
+    const maxY=Math.max(0,chartScroll.scrollHeight-chartScroll.clientHeight);
+
+    if(chartScroll.scrollLeft<=0){
+      chartScroll.scrollLeft=0;
+      if(inertiaVX<0) inertiaVX=0;
+    }else if(chartScroll.scrollLeft>=maxX){
+      chartScroll.scrollLeft=maxX;
+      if(inertiaVX>0) inertiaVX=0;
+    }
+    if(chartScroll.scrollTop<=0){
+      chartScroll.scrollTop=0;
+      if(inertiaVY<0) inertiaVY=0;
+    }else if(chartScroll.scrollTop>=maxY){
+      chartScroll.scrollTop=maxY;
+      if(inertiaVY>0) inertiaVY=0;
+    }
+
+    syncScroll();
+
+    // Décélération indépendante du framerate.
+    const decay=Math.pow(0.935,dt/16.67);
+    inertiaVX*=decay;
+    inertiaVY*=decay;
+
+    if(Math.hypot(inertiaVX,inertiaVY)>0.025){
+      inertiaRAF=requestAnimationFrame(tick);
+    }else{
+      stopInertia();
+      schedulePersistView();
+    }
+  };
+  inertiaRAF=requestAnimationFrame(tick);
+}
+
+function touchArray(points){return [...points.values()]}
+function touchCenter(points){
+  const a=touchArray(points);
+  return{x:a.reduce((s,p)=>s+p.x,0)/a.length,y:a.reduce((s,p)=>s+p.y,0)/a.length};
+}
+function pairMetrics(points){
+  const a=touchArray(points);
+  if(a.length<2) return null;
+  const p1=a[0],p2=a[1];
+  return{
+    center:{x:(p1.x+p2.x)/2,y:(p1.y+p2.y)/2},
+    sepX:Math.abs(p2.x-p1.x),
+    sepY:Math.abs(p2.y-p1.y),
+    p1:{x:p1.x,y:p1.y},
+    p2:{x:p2.x,y:p2.y}
+  };
+}
+
 function applyPendingTouch(){
-  touchRAF=0;if(!pendingTouch)return;
-  const p=pendingTouch;pendingTouch=null;
+  touchRAF=0;
+  if(!pendingTouch)return;
+  const p=pendingTouch;
+  pendingTouch=null;
+
   if(p.type==='pan'){
-    chartScroll.scrollLeft=p.left;chartScroll.scrollTop=p.top;syncScroll();
-  }else if(p.type==='pinch'){
-    pxPerDay=Math.max(minPxPerDay(),Math.min(380,p.px));
-    rowH=Math.max(22,Math.min(80,p.row));
+    chartScroll.scrollLeft=p.left;
+    chartScroll.scrollTop=p.top;
+    syncScroll();
+    return;
+  }
+
+  if(p.type==='pinch'){
+    if(p.zoomTime) pxPerDay=Math.max(minPxPerDay(),Math.min(380,p.px));
+    if(p.zoomDetail) rowH=Math.max(22,Math.min(80,p.row));
+
     render();
-    chartScroll.scrollLeft=Math.max(0,branchW+p.worldDays*pxPerDay-p.center.x);
-    chartScroll.scrollTop=Math.max(0,p.worldRows*rowH-p.center.y);
+
+    // Le point entre les deux doigts reste l’ancre du zoom.
+    if(p.zoomTime){
+      chartScroll.scrollLeft=Math.max(0,branchW+p.worldDays*pxPerDay-p.center.x);
+    }
+    if(p.zoomDetail){
+      chartScroll.scrollTop=Math.max(0,p.worldRows*rowH-p.center.y);
+    }
     syncScroll();
   }
 }
-function queueTouch(p){pendingTouch=p;if(!touchRAF)touchRAF=requestAnimationFrame(applyPendingTouch)}
+function queueTouch(p){
+  pendingTouch=p;
+  if(!touchRAF)touchRAF=requestAnimationFrame(applyPendingTouch);
+}
+
 chartScroll.addEventListener('pointerdown',e=>{
   if(!isMobileMode()||e.pointerType!=='touch')return;
+
+  stopInertia();
   chartScroll.setPointerCapture?.(e.pointerId);
-  touchPoints.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  touchPoints.set(e.pointerId,{x:e.clientX,y:e.clientY,startX:e.clientX,startY:e.clientY});
   touchMoved=false;
+
   if(touchPoints.size===1){
     touchMode='pan';
-    touchStart={x:e.clientX,y:e.clientY,left:chartScroll.scrollLeft,top:chartScroll.scrollTop};
+    touchStart={
+      x:e.clientX,y:e.clientY,
+      left:chartScroll.scrollLeft,top:chartScroll.scrollTop
+    };
+    panSample={
+      x:e.clientX,y:e.clientY,
+      left:chartScroll.scrollLeft,top:chartScroll.scrollTop,
+      t:performance.now(),
+      vx:0,vy:0
+    };
   }else if(touchPoints.size===2){
     touchMode='pinch';
-    const c=touchCenter(touchPoints),rect=chartScroll.getBoundingClientRect(),local={x:c.x-rect.left,y:c.y-rect.top};
+    panSample=null;
+
+    const m=pairMetrics(touchPoints);
+    const rect=chartScroll.getBoundingClientRect();
+    const local={x:m.center.x-rect.left,y:m.center.y-rect.top};
+
     pinchStart={
-      distance:Math.max(12,touchDistance(touchPoints)),px:pxPerDay,row:rowH,center:local,
+      sepX:Math.max(26,m.sepX),
+      sepY:Math.max(26,m.sepY),
+      px:pxPerDay,row:rowH,
+      center:local,
       worldDays:(chartScroll.scrollLeft+local.x-branchW)/pxPerDay,
-      worldRows:(chartScroll.scrollTop+local.y)/rowH
+      worldRows:(chartScroll.scrollTop+local.y)/rowH,
+      p1:m.p1,p2:m.p2,
+      mode:null
     };
   }
+
+  e.preventDefault();
 },{passive:false});
+
 chartScroll.addEventListener('pointermove',e=>{
   if(!isMobileMode()||e.pointerType!=='touch'||!touchPoints.has(e.pointerId))return;
-  touchPoints.set(e.pointerId,{x:e.clientX,y:e.clientY});
+
+  const old=touchPoints.get(e.pointerId);
+  touchPoints.set(e.pointerId,{...old,x:e.clientX,y:e.clientY});
+
   if(touchMode==='pan'&&touchPoints.size===1&&touchStart){
-    const p=[...touchPoints.values()][0],dx=p.x-touchStart.x,dy=p.y-touchStart.y;
-    if(Math.hypot(dx,dy)>5)touchMoved=true;
-    queueTouch({type:'pan',left:touchStart.left-dx,top:touchStart.top-dy});
+    const p=touchArray(touchPoints)[0];
+    const dx=p.x-touchStart.x,dy=p.y-touchStart.y;
+    if(Math.hypot(dx,dy)>4)touchMoved=true;
+
+    const newLeft=touchStart.left-dx;
+    const newTop=touchStart.top-dy;
+    queueTouch({type:'pan',left:newLeft,top:newTop});
+
+    // Vitesse de scroll lissée : positive = déplacement du contenu vers la droite/bas.
+    const now=performance.now();
+    if(panSample){
+      const dt=Math.max(8,now-panSample.t);
+      const instVX=(newLeft-panSample.left)/dt;
+      const instVY=(newTop-panSample.top)/dt;
+      panSample.vx=panSample.vx*0.62+instVX*0.38;
+      panSample.vy=panSample.vy*0.62+instVY*0.38;
+      panSample.x=p.x;panSample.y=p.y;
+      panSample.left=newLeft;panSample.top=newTop;panSample.t=now;
+    }
+
     e.preventDefault();
-  }else if(touchPoints.size>=2&&pinchStart){
+    return;
+  }
+
+  if(touchPoints.size>=2&&pinchStart){
     touchMoved=true;
-    const factor=Math.max(.55,Math.min(1.8,touchDistance(touchPoints)/pinchStart.distance));
+
+    const m=pairMetrics(touchPoints);
+    const rect=chartScroll.getBoundingClientRect();
+    const center={x:m.center.x-rect.left,y:m.center.y-rect.top};
+
+    // Mesure de l’ouverture/fermeture réellement produite par les doigts.
+    const move1={
+      x:m.p1.x-pinchStart.p1.x,
+      y:m.p1.y-pinchStart.p1.y
+    };
+    const move2={
+      x:m.p2.x-pinchStart.p2.x,
+      y:m.p2.y-pinchStart.p2.y
+    };
+
+    // Énergie différentielle : un déplacement parallèle des 2 doigts ne compte pas comme zoom.
+    const energyX=Math.abs(move2.x-move1.x);
+    const energyY=Math.abs(move2.y-move1.y);
+
+    // Verrouillage doux du mode après quelques pixels pour éviter les hésitations.
+    if(!pinchStart.mode && Math.max(energyX,energyY)>8){
+      const ratio=(energyX+1)/(energyY+1);
+      if(ratio>1.55) pinchStart.mode='time';
+      else if(ratio<1/1.55) pinchStart.mode='detail';
+      else pinchStart.mode='both';
+    }
+
+    const mode=pinchStart.mode || 'both';
+
+    // Facteurs indépendants selon l'ouverture horizontale / verticale.
+    // On évite les divisions instables quand les doigts sont presque alignés.
+    const fx=Math.max(.45,Math.min(2.4,Math.max(18,m.sepX)/pinchStart.sepX));
+    const fy=Math.max(.45,Math.min(2.4,Math.max(18,m.sepY)/pinchStart.sepY));
+
+    const zoomTime=(mode==='time'||mode==='both');
+    const zoomDetail=(mode==='detail'||mode==='both');
+
+    // Détail volontairement un peu moins sensible que le temps.
+    const nextPx=pinchStart.px*fx;
+    const nextRow=pinchStart.row*Math.pow(fy,.78);
+
     queueTouch({
-      type:'pinch',px:pinchStart.px*factor,row:pinchStart.row*Math.pow(factor,.72),
-      center:pinchStart.center,worldDays:pinchStart.worldDays,worldRows:pinchStart.worldRows
+      type:'pinch',
+      px:nextPx,row:nextRow,
+      zoomTime,zoomDetail,
+      center,
+      worldDays:pinchStart.worldDays,
+      worldRows:pinchStart.worldRows
     });
+
     e.preventDefault();
   }
 },{passive:false});
+
 function finishTouch(e){
   if(!touchPoints.has(e.pointerId))return;
+
   touchPoints.delete(e.pointerId);
-  if(touchMoved)suppressClickUntil=Date.now()+260;
+  if(touchMoved)suppressClickUntil=Date.now()+280;
+
   if(touchPoints.size===1){
-    const p=[...touchPoints.values()][0];
+    // Si un doigt reste après un pinch, on repart sur un pan propre.
+    const p=touchArray(touchPoints)[0];
     touchMode='pan';
-    touchStart={x:p.x,y:p.y,left:chartScroll.scrollLeft,top:chartScroll.scrollTop};
+    touchStart={
+      x:p.x,y:p.y,
+      left:chartScroll.scrollLeft,top:chartScroll.scrollTop
+    };
+    panSample={
+      x:p.x,y:p.y,
+      left:chartScroll.scrollLeft,top:chartScroll.scrollTop,
+      t:performance.now(),vx:0,vy:0
+    };
     pinchStart=null;
   }else if(touchPoints.size===0){
-    touchMode=null;touchStart=null;pinchStart=null;schedulePersistView();
+    const shouldInertia=(touchMode==='pan'&&panSample&&touchMoved);
+    const vx=shouldInertia?panSample.vx:0;
+    const vy=shouldInertia?panSample.vy:0;
+
+    touchMode=null;touchStart=null;pinchStart=null;panSample=null;
+
+    if(shouldInertia) startInertia(vx,vy);
+    else schedulePersistView();
   }
 }
+
 chartScroll.addEventListener('pointerup',finishTouch);
-chartScroll.addEventListener('pointercancel',finishTouch);
+chartScroll.addEventListener('pointercancel',e=>{
+  stopInertia();
+  finishTouch(e);
+});
+
 chartScroll.addEventListener('click',e=>{
-  if(Date.now()<suppressClickUntil){e.preventDefault();e.stopPropagation()}
+  if(Date.now()<suppressClickUntil){
+    e.preventDefault();
+    e.stopPropagation();
+  }
 },true);
 
 chartScroll.addEventListener('wheel',e=>{
