@@ -2,12 +2,13 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Pilotage">
-<title>Poste de pilotage — iPhone V1.2 paysage.1</title>
+<title>Poste de pilotage — iPhone V1.3 plein écran.1</title>
+<meta name="format-detection" content="telephone=no">
 <style>
 :root{--bg:#000;--panel:#080808;--panel2:#111;--text:#fff;--muted:#a9a9a9;--yellow:#ffd400;--yellow2:#ffea61;--yellowSoft:rgba(255,212,0,.18);--grid:#252525;--grid2:#141414;--leftw:320px;--rightw:420px;--rightwDynamic:420px;--headerh:126px;--axish:92px;}
 *{box-sizing:border-box;-webkit-user-select:none;user-select:none}
@@ -434,11 +435,102 @@ ul{padding-left:18px;margin:10px 0 0} li{margin:8px 0}
   }
 }
 
+
+/* ---------- iPhone V1.3 : plein écran + gestes propriétaires ---------- */
+html,body{
+  width:100%;
+  height:100%;
+  margin:0;
+  padding:0;
+  overflow:hidden;
+  overscroll-behavior:none;
+  touch-action:none;
+  -webkit-text-size-adjust:100%;
+}
+body{
+  position:fixed;
+  inset:0;
+  background:#000;
+}
+#app,#center,#chartScroll,#chartContent,#chartSvg{
+  touch-action:none;
+}
+#chartScroll{
+  -webkit-overflow-scrolling:auto !important;
+  overscroll-behavior:none;
+}
+
+/* La classe est pilotée par JS : pas de dépendance à pointer/coarse ou à un seuil de hauteur. */
+body.iphoneLandscape #landscapeControls{
+  display:flex !important;
+  position:fixed !important;
+  z-index:9999 !important;
+  right:max(10px,env(safe-area-inset-right)) !important;
+  top:max(10px,env(safe-area-inset-top)) !important;
+  gap:7px !important;
+  pointer-events:auto !important;
+}
+body.iphoneLandscape #landscapeControls button{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:44px !important;
+  height:40px !important;
+  min-width:44px !important;
+  min-height:40px !important;
+  padding:0 !important;
+  border-radius:12px !important;
+  background:rgba(8,8,8,.92) !important;
+  border:1px solid #555 !important;
+  color:#fff !important;
+  font-size:18px !important;
+  line-height:1 !important;
+  backdrop-filter:blur(10px) !important;
+  -webkit-backdrop-filter:blur(10px) !important;
+}
+body.iphoneLandscape #landscapeControls button.active{
+  background:var(--yellow) !important;
+  border-color:var(--yellow) !important;
+  color:#000 !important;
+}
+
+/* Mode carte totale : les boutons restent accessibles même si menus/panneaux sont masqués. */
+body.iphoneLandscape.hideMenus #landscapeControls{
+  display:flex !important;
+}
+
+/* En standalone, occupe réellement tout l'écran utile, y compris les safe areas. */
+@media (display-mode:standalone){
+  body{padding:0}
+  #app{height:100dvh !important}
+}
+
+/* Petit indicateur uniquement quand Safari n'est pas lancé en standalone. */
+#standaloneHint{
+  display:none;
+  position:fixed;
+  z-index:10000;
+  left:50%;
+  bottom:calc(12px + env(safe-area-inset-bottom));
+  transform:translateX(-50%);
+  max-width:min(92vw,520px);
+  padding:9px 12px;
+  border:1px solid #333;
+  border-radius:12px;
+  background:rgba(8,8,8,.94);
+  color:#bbb;
+  font-size:11px;
+  line-height:1.3;
+  pointer-events:none;
+  backdrop-filter:blur(10px);
+}
+body.showStandaloneHint #standaloneHint{display:block}
+
 </style>
 </head>
 <body>
 <div id="app">
-<header id="header"><h1>Poste de pilotage V1</h1><div class="sub" id="subtitle">iPhone V1.2 paysage · navigation inertielle + zoom directionnel</div>
+<header id="header"><h1>Poste de pilotage V1</h1><div class="sub" id="subtitle">iPhone V1.3 plein écran · navigation inertielle + zoom directionnel</div>
 <div id="mobileQuickBar">
   <label class="mobileFileLabel">JSON<input id="mobileFileInput" type="file" accept=".json,application/json"></label>
   <button id="mobilePeriodTop">3 mois</button>
@@ -447,7 +539,7 @@ ul{padding-left:18px;margin:10px 0 0} li{margin:8px 0}
 </div><div class="toolbar"><label class="fileLabel">Charger JSON<input id="fileInput" type="file" accept=".json,application/json"></label><button id="modeTime" class="active">Zoom temps</button><button id="modeDetail">Zoom détail</button><button id="zoomOut">−</button><span id="zoomInfo" class="small">100%</span><button id="zoomIn">+</button><span id="thicknessInfo" class="small" title="MAJ + molette">Épaisseur 100%</span><button id="reset">Reset vue</button><div class="sep"></div><button id="allRoles">Tous les rôles</button><button id="toggleSecondary">Afficher secondaires</button><button data-filter="all" class="active">Tout</button><button data-filter="hot">Chaud</button><button data-filter="active">Actif</button><button data-filter="watch">Veille</button><button data-filter="dormant">Dormant</button></div></header>
 <aside id="left"><div class="mobileDrawerHead"><strong>Rôles et fils</strong><button id="mobileCloseLeft">×</button></div><div id="leftInner"></div></aside>
 <main id="center"><div id="axisWrap"><div id="axisInner"><div id="axisContent"></div></div></div><div id="chartScroll"><div id="chartContent"><svg id="chartSvg"></svg><div id="labelLayer"></div></div></div><div class="hint">CTRL + molette = zoom temps · ALT + molette = zoom détail · MAJ + molette = épaisseur · glisser = déplacer · double-clic fil = parent + enfants directs / restaurer</div></main>
-<div id="nodeTooltip"></div><div id="panelResize" title="Glisser pour redimensionner le panneau"></div><aside id="right"><div class="detailHead"><div><div class="kicker">Panneau</div><strong>Détail / synthèse</strong></div><button id="togglePanel" title="Alterner entre largeur normale et 50 %">Panneau 50%</button><div class="mobileDetailActions mobileOnly"><button id="mobileIsolate">Isoler</button><button id="mobileCloseRight">×</button></div></div><div id="detail"><div class="card primary"><div class="kicker">iPhone V1.2 paysage</div><h2>Chargement</h2><p class="empty">Les données sont intégrées. Tu peux aussi charger un autre JSON.</p></div></div></aside>
+<div id="nodeTooltip"></div><div id="panelResize" title="Glisser pour redimensionner le panneau"></div><aside id="right"><div class="detailHead"><div><div class="kicker">Panneau</div><strong>Détail / synthèse</strong></div><button id="togglePanel" title="Alterner entre largeur normale et 50 %">Panneau 50%</button><div class="mobileDetailActions mobileOnly"><button id="mobileIsolate">Isoler</button><button id="mobileCloseRight">×</button></div></div><div id="detail"><div class="card primary"><div class="kicker">iPhone V1.3 plein écran</div><h2>Chargement</h2><p class="empty">Les données sont intégrées. Tu peux aussi charger un autre JSON.</p></div></div></aside>
 
 
 <div id="landscapeControls" aria-label="Contrôles paysage">
@@ -456,6 +548,7 @@ ul{padding-left:18px;margin:10px 0 0} li{margin:8px 0}
   <button id="landscapeToggleRight" title="Afficher / masquer le panneau droit">▶︎</button>
 </div>
 
+<div id="standaloneHint">Pour le vrai plein écran : Safari → Partager → Ajouter à l’écran d’accueil, puis ouvrir “Pilotage” depuis l’icône.</div>
 <div id="mobileBackdrop"></div>
 <section id="mobileControlsSheet" aria-label="Réglages d’affichage">
   <div class="mobileSheetHead"><strong>Réglages et période</strong><button id="mobileCloseControls">×</button></div>
@@ -495,7 +588,7 @@ let timeRangeMode="all", viewStartOverride=null, viewEndOverride=null;
 let mobileRolesRoot=true, mobileRolesBrowseLane=null;
 
 const STORAGE_DATA_KEY='postePilotage:lastJson:v1';
-const STORAGE_VIEW_KEY='postePilotage:viewState:IPHONE:v1.2';
+const STORAGE_VIEW_KEY='postePilotage:viewState:IPHONE:v1.3';
 let restoringView=false;
 let saveTimer=null;
 
@@ -626,7 +719,8 @@ if(panelResize){
   });
 }
 window.addEventListener('resize',()=>{applyResponsiveMetrics();
-applyLandscapeMode();applyPanelWidth(panelWidth);if(DATA)render();schedulePersistView();});
+applyLandscapeMode();
+updateStandaloneHint();applyPanelWidth(panelWidth);if(DATA)render();schedulePersistView();});
 syncPanelWidth();
 
 function totalDaysForData(){
@@ -1501,9 +1595,37 @@ function closeMobilePanels(keepNav=false){
   if(!keepNav){
     mobilePanel='chart';
     
+
+function isStandaloneMode(){
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+function updateStandaloneHint(){
+  const show=!isStandaloneMode() && !sessionStorage.getItem('pilotageStandaloneHintSeen');
+  document.body.classList.toggle('showStandaloneHint',show);
+  if(show){
+    setTimeout(()=>{
+      document.body.classList.remove('showStandaloneHint');
+      try{sessionStorage.setItem('pilotageStandaloneHintSeen','1')}catch(e){}
+    },4500);
+  }
+}
+
+// Empêche le zoom natif Safari (double-tap / gesture pinch), car le viewer possède son propre zoom.
+document.addEventListener('gesturestart',e=>e.preventDefault(),{passive:false});
+document.addEventListener('gesturechange',e=>e.preventDefault(),{passive:false});
+document.addEventListener('gestureend',e=>e.preventDefault(),{passive:false});
+
+let lastTouchEnd=0;
+document.addEventListener('touchend',e=>{
+  const now=Date.now();
+  if(now-lastTouchEnd<=280)e.preventDefault();
+  lastTouchEnd=now;
+},{passive:false});
+
 const landscapeState={left:true,right:true,menus:true};
 function isIPhoneLandscape(){
-  return window.matchMedia('(orientation:landscape) and (max-height:520px) and (pointer:coarse)').matches;
+  // Détection volontairement simple : iPhone/iOS tactile + écran en paysage.
+  return window.innerWidth > window.innerHeight && navigator.maxTouchPoints > 0;
 }
 function applyLandscapeMode(){
   const active=isIPhoneLandscape();
@@ -1539,6 +1661,12 @@ document.getElementById('landscapeToggleMenus')?.addEventListener('click',()=>{
 });
 window.addEventListener('orientationchange',()=>setTimeout(applyLandscapeMode,180));
 window.addEventListener('resize',()=>applyLandscapeMode());
+
+
+document.addEventListener('touchmove',e=>{
+  if(e.target.closest('input,textarea,select')) return;
+  e.preventDefault();
+},{passive:false});
 
 document.querySelectorAll('#mobileNav button').forEach(b=>b.classList.toggle('active',b.dataset.mobileView==='chart'));
   }
@@ -1797,8 +1925,7 @@ chartScroll.addEventListener('pointerdown',e=>{
       center:local,
       worldDays:(chartScroll.scrollLeft+local.x-branchW)/pxPerDay,
       worldRows:(chartScroll.scrollTop+local.y)/rowH,
-      p1:m.p1,p2:m.p2,
-      mode:null
+      p1:m.p1,p2:m.p2
     };
   }
 
@@ -1843,41 +1970,30 @@ chartScroll.addEventListener('pointermove',e=>{
     const rect=chartScroll.getBoundingClientRect();
     const center={x:m.center.x-rect.left,y:m.center.y-rect.top};
 
-    // Mesure de l’ouverture/fermeture réellement produite par les doigts.
-    const move1={
-      x:m.p1.x-pinchStart.p1.x,
-      y:m.p1.y-pinchStart.p1.y
-    };
-    const move2={
-      x:m.p2.x-pinchStart.p2.x,
-      y:m.p2.y-pinchStart.p2.y
-    };
+    // Zoom anisotrope : l'écartement horizontal pilote le temps,
+    // l'écartement vertical pilote le détail.
+    const dx=Math.max(24,m.sepX);
+    const dy=Math.max(24,m.sepY);
+    const fx=Math.max(.55,Math.min(1.85,dx/pinchStart.sepX));
+    const fy=Math.max(.55,Math.min(1.85,dy/pinchStart.sepY));
 
-    // Énergie différentielle : un déplacement parallèle des 2 doigts ne compte pas comme zoom.
-    const energyX=Math.abs(move2.x-move1.x);
-    const energyY=Math.abs(move2.y-move1.y);
+    // Intensité réelle de chaque axe autour de 1.
+    const ex=Math.abs(Math.log(fx));
+    const ey=Math.abs(Math.log(fy));
 
-    // Verrouillage doux du mode après quelques pixels pour éviter les hésitations.
-    if(!pinchStart.mode && Math.max(energyX,energyY)>8){
-      const ratio=(energyX+1)/(energyY+1);
-      if(ratio>1.55) pinchStart.mode='time';
-      else if(ratio<1/1.55) pinchStart.mode='detail';
-      else pinchStart.mode='both';
-    }
-
-    const mode=pinchStart.mode || 'both';
-
-    // Facteurs indépendants selon l'ouverture horizontale / verticale.
-    // On évite les divisions instables quand les doigts sont presque alignés.
-    const fx=Math.max(.45,Math.min(2.4,Math.max(18,m.sepX)/pinchStart.sepX));
-    const fy=Math.max(.45,Math.min(2.4,Math.max(18,m.sepY)/pinchStart.sepY));
+    // Le mode est recalculé en continu, avec une zone diagonale assez large.
+    // Horizontal : temps ; Vertical : détail ; proche diagonale : les deux.
+    let mode='both';
+    if(ex > ey*1.45) mode='time';
+    else if(ey > ex*1.45) mode='detail';
 
     const zoomTime=(mode==='time'||mode==='both');
     const zoomDetail=(mode==='detail'||mode==='both');
 
-    // Détail volontairement un peu moins sensible que le temps.
-    const nextPx=pinchStart.px*fx;
-    const nextRow=pinchStart.row*Math.pow(fy,.78);
+    // Sensibilité volontairement différente :
+    // temps plus ample, détail un peu amorti.
+    const nextPx=pinchStart.px*Math.pow(fx,1.08);
+    const nextRow=pinchStart.row*Math.pow(fy,.72);
 
     queueTouch({
       type:'pinch',
