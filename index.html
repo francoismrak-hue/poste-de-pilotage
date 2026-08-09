@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Pilotage">
-<title>Poste de pilotage — iPhone V1.1.1</title>
+<title>Poste de pilotage — iPhone V1.2 paysage.1</title>
 <style>
 :root{--bg:#000;--panel:#080808;--panel2:#111;--text:#fff;--muted:#a9a9a9;--yellow:#ffd400;--yellow2:#ffea61;--yellowSoft:rgba(255,212,0,.18);--grid:#252525;--grid2:#141414;--leftw:320px;--rightw:420px;--rightwDynamic:420px;--headerh:126px;--axish:92px;}
 *{box-sizing:border-box;-webkit-user-select:none;user-select:none}
@@ -263,11 +263,182 @@ ul{padding-left:18px;margin:10px 0 0} li{margin:8px 0}
   .mobileOnly{display:flex!important}
 }
 
+
+/* ---------- iPhone paysage : mode carte plein écran ---------- */
+#landscapeControls{display:none}
+
+@media (orientation:landscape) and (max-height:520px) and (pointer:coarse){
+  :root{
+    --landLeft:320px;
+    --landRight:420px;
+    --landHeader:126px;
+  }
+
+  body.iphoneLandscape #landscapeControls{
+    display:flex;
+    position:fixed;
+    z-index:220;
+    right:10px;
+    top:calc(8px + env(safe-area-inset-top));
+    gap:6px;
+  }
+  body.iphoneLandscape #landscapeControls button{
+    width:42px;
+    height:36px;
+    min-width:42px;
+    padding:0;
+    border-radius:10px;
+    background:rgba(10,10,10,.88);
+    border:1px solid #3b3b3b;
+    color:#fff;
+    font-size:16px;
+    backdrop-filter:blur(8px);
+  }
+  body.iphoneLandscape #landscapeControls button.active{
+    background:var(--yellow);
+    color:#000;
+    border-color:var(--yellow);
+  }
+
+  /* En paysage, on réutilise la géométrie large, mais on la rend pilotable. */
+  body.iphoneLandscape #app{
+    display:grid !important;
+    grid-template-columns:var(--leftw) minmax(0,1fr) var(--rightwDynamic) !important;
+    grid-template-rows:var(--headerh) 1fr !important;
+    height:100dvh !important;
+  }
+  body.iphoneLandscape #header{
+    display:block !important;
+    position:relative !important;
+    grid-column:1/4 !important;
+    grid-row:1 !important;
+    height:auto !important;
+    padding:14px 22px !important;
+    border-bottom:1px solid #222 !important;
+    background:#000 !important;
+  }
+  body.iphoneLandscape .toolbar{display:flex !important}
+  body.iphoneLandscape #mobileQuickBar{display:none !important}
+  body.iphoneLandscape #mobileNav{display:none !important}
+  body.iphoneLandscape #mobileControlsSheet{display:none !important}
+  body.iphoneLandscape #mobileBackdrop{display:none !important}
+
+  body.iphoneLandscape #left{
+    display:block !important;
+    position:relative !important;
+    z-index:1 !important;
+    transform:none !important;
+    width:auto !important;
+    height:auto !important;
+    top:auto !important;
+    bottom:auto !important;
+    left:auto !important;
+    padding-top:0 !important;
+    grid-column:1 !important;
+    grid-row:2 !important;
+    border-right:1px solid #222 !important;
+    box-shadow:none !important;
+    overflow:hidden !important;
+    background:#050505 !important;
+  }
+  body.iphoneLandscape #leftInner{
+    position:relative !important;
+    width:100% !important;
+    padding:0 !important;
+  }
+  body.iphoneLandscape .mobileDrawerHead{display:none !important}
+
+  body.iphoneLandscape #center{
+    position:relative !important;
+    grid-column:2 !important;
+    grid-row:2 !important;
+    left:auto !important;
+    right:auto !important;
+    top:auto !important;
+    bottom:auto !important;
+    width:auto !important;
+    height:auto !important;
+  }
+
+  body.iphoneLandscape #right{
+    display:block !important;
+    position:relative !important;
+    z-index:1 !important;
+    grid-column:3 !important;
+    grid-row:2 !important;
+    width:auto !important;
+    height:auto !important;
+    min-height:0 !important;
+    max-height:none !important;
+    left:auto !important;
+    right:auto !important;
+    top:auto !important;
+    bottom:auto !important;
+    padding:0 14px 18px !important;
+    border:0 !important;
+    border-left:1px solid #222 !important;
+    border-radius:0 !important;
+    transform:none !important;
+    box-shadow:none !important;
+    overflow:auto !important;
+    background:#080808 !important;
+  }
+  body.iphoneLandscape #right .detailHead{
+    position:sticky !important;
+    top:0 !important;
+    margin:0 -14px 12px !important;
+    padding:14px !important;
+    border-radius:0 !important;
+  }
+  body.iphoneLandscape .mobileDetailActions{display:none !important}
+
+  body.iphoneLandscape #axisWrap{height:var(--axish) !important}
+  body.iphoneLandscape #chartScroll{top:var(--axish) !important;bottom:0 !important}
+
+  /* panneau gauche masqué */
+  body.iphoneLandscape.hideLeft{
+    --leftw:0px;
+  }
+  body.iphoneLandscape.hideLeft #left{
+    display:none !important;
+  }
+
+  /* panneau droit masqué */
+  body.iphoneLandscape.hideRight{
+    --rightwDynamic:0px !important;
+  }
+  body.iphoneLandscape.hideRight #right{
+    display:none !important;
+  }
+
+  /* menus supérieurs masqués */
+  body.iphoneLandscape.hideMenus{
+    --headerh:0px;
+  }
+  body.iphoneLandscape.hideMenus #header{
+    display:none !important;
+  }
+  body.iphoneLandscape.hideMenus #app{
+    grid-template-rows:0 1fr !important;
+  }
+
+  /* Quand tout est masqué, carte seule. */
+  body.iphoneLandscape.hideLeft.hideRight #center{
+    grid-column:1/4 !important;
+  }
+  body.iphoneLandscape.hideLeft:not(.hideRight) #center{
+    grid-column:1/3 !important;
+  }
+  body.iphoneLandscape.hideRight:not(.hideLeft) #center{
+    grid-column:2/4 !important;
+  }
+}
+
 </style>
 </head>
 <body>
 <div id="app">
-<header id="header"><h1>Poste de pilotage V1</h1><div class="sub" id="subtitle">iPhone V1.1 · navigation inertielle + zoom directionnel</div>
+<header id="header"><h1>Poste de pilotage V1</h1><div class="sub" id="subtitle">iPhone V1.2 paysage · navigation inertielle + zoom directionnel</div>
 <div id="mobileQuickBar">
   <label class="mobileFileLabel">JSON<input id="mobileFileInput" type="file" accept=".json,application/json"></label>
   <button id="mobilePeriodTop">3 mois</button>
@@ -276,7 +447,14 @@ ul{padding-left:18px;margin:10px 0 0} li{margin:8px 0}
 </div><div class="toolbar"><label class="fileLabel">Charger JSON<input id="fileInput" type="file" accept=".json,application/json"></label><button id="modeTime" class="active">Zoom temps</button><button id="modeDetail">Zoom détail</button><button id="zoomOut">−</button><span id="zoomInfo" class="small">100%</span><button id="zoomIn">+</button><span id="thicknessInfo" class="small" title="MAJ + molette">Épaisseur 100%</span><button id="reset">Reset vue</button><div class="sep"></div><button id="allRoles">Tous les rôles</button><button id="toggleSecondary">Afficher secondaires</button><button data-filter="all" class="active">Tout</button><button data-filter="hot">Chaud</button><button data-filter="active">Actif</button><button data-filter="watch">Veille</button><button data-filter="dormant">Dormant</button></div></header>
 <aside id="left"><div class="mobileDrawerHead"><strong>Rôles et fils</strong><button id="mobileCloseLeft">×</button></div><div id="leftInner"></div></aside>
 <main id="center"><div id="axisWrap"><div id="axisInner"><div id="axisContent"></div></div></div><div id="chartScroll"><div id="chartContent"><svg id="chartSvg"></svg><div id="labelLayer"></div></div></div><div class="hint">CTRL + molette = zoom temps · ALT + molette = zoom détail · MAJ + molette = épaisseur · glisser = déplacer · double-clic fil = parent + enfants directs / restaurer</div></main>
-<div id="nodeTooltip"></div><div id="panelResize" title="Glisser pour redimensionner le panneau"></div><aside id="right"><div class="detailHead"><div><div class="kicker">Panneau</div><strong>Détail / synthèse</strong></div><button id="togglePanel" title="Alterner entre largeur normale et 50 %">Panneau 50%</button><div class="mobileDetailActions mobileOnly"><button id="mobileIsolate">Isoler</button><button id="mobileCloseRight">×</button></div></div><div id="detail"><div class="card primary"><div class="kicker">iPhone V1.1</div><h2>Chargement</h2><p class="empty">Les données sont intégrées. Tu peux aussi charger un autre JSON.</p></div></div></aside>
+<div id="nodeTooltip"></div><div id="panelResize" title="Glisser pour redimensionner le panneau"></div><aside id="right"><div class="detailHead"><div><div class="kicker">Panneau</div><strong>Détail / synthèse</strong></div><button id="togglePanel" title="Alterner entre largeur normale et 50 %">Panneau 50%</button><div class="mobileDetailActions mobileOnly"><button id="mobileIsolate">Isoler</button><button id="mobileCloseRight">×</button></div></div><div id="detail"><div class="card primary"><div class="kicker">iPhone V1.2 paysage</div><h2>Chargement</h2><p class="empty">Les données sont intégrées. Tu peux aussi charger un autre JSON.</p></div></div></aside>
+
+
+<div id="landscapeControls" aria-label="Contrôles paysage">
+  <button id="landscapeToggleLeft" title="Afficher / masquer le panneau gauche">◀︎</button>
+  <button id="landscapeToggleMenus" title="Afficher / masquer les menus">☰</button>
+  <button id="landscapeToggleRight" title="Afficher / masquer le panneau droit">▶︎</button>
+</div>
 
 <div id="mobileBackdrop"></div>
 <section id="mobileControlsSheet" aria-label="Réglages d’affichage">
@@ -317,7 +495,7 @@ let timeRangeMode="all", viewStartOverride=null, viewEndOverride=null;
 let mobileRolesRoot=true, mobileRolesBrowseLane=null;
 
 const STORAGE_DATA_KEY='postePilotage:lastJson:v1';
-const STORAGE_VIEW_KEY='postePilotage:viewState:IPHONE:v1.1';
+const STORAGE_VIEW_KEY='postePilotage:viewState:IPHONE:v1.2';
 let restoringView=false;
 let saveTimer=null;
 
@@ -447,7 +625,8 @@ if(panelResize){
     window.addEventListener('pointerup',stop);
   });
 }
-window.addEventListener('resize',()=>{applyResponsiveMetrics();applyPanelWidth(panelWidth);if(DATA)render();schedulePersistView();});
+window.addEventListener('resize',()=>{applyResponsiveMetrics();
+applyLandscapeMode();applyPanelWidth(panelWidth);if(DATA)render();schedulePersistView();});
 syncPanelWidth();
 
 function totalDaysForData(){
@@ -1321,7 +1500,47 @@ function closeMobilePanels(keepNav=false){
   mobileBackdrop?.classList.remove('visible');
   if(!keepNav){
     mobilePanel='chart';
-    document.querySelectorAll('#mobileNav button').forEach(b=>b.classList.toggle('active',b.dataset.mobileView==='chart'));
+    
+const landscapeState={left:true,right:true,menus:true};
+function isIPhoneLandscape(){
+  return window.matchMedia('(orientation:landscape) and (max-height:520px) and (pointer:coarse)').matches;
+}
+function applyLandscapeMode(){
+  const active=isIPhoneLandscape();
+  document.body.classList.toggle('iphoneLandscape',active);
+  if(!active){
+    document.body.classList.remove('hideLeft','hideRight','hideMenus');
+    return;
+  }
+  document.body.classList.toggle('hideLeft',!landscapeState.left);
+  document.body.classList.toggle('hideRight',!landscapeState.right);
+  document.body.classList.toggle('hideMenus',!landscapeState.menus);
+
+  document.getElementById('landscapeToggleLeft')?.classList.toggle('active',landscapeState.left);
+  document.getElementById('landscapeToggleRight')?.classList.toggle('active',landscapeState.right);
+  document.getElementById('landscapeToggleMenus')?.classList.toggle('active',landscapeState.menus);
+
+  // La largeur change : recalculer le rendu après la transition.
+  requestAnimationFrame(()=>{
+    if(DATA)render();
+  });
+}
+document.getElementById('landscapeToggleLeft')?.addEventListener('click',()=>{
+  landscapeState.left=!landscapeState.left;
+  applyLandscapeMode();
+});
+document.getElementById('landscapeToggleRight')?.addEventListener('click',()=>{
+  landscapeState.right=!landscapeState.right;
+  applyLandscapeMode();
+});
+document.getElementById('landscapeToggleMenus')?.addEventListener('click',()=>{
+  landscapeState.menus=!landscapeState.menus;
+  applyLandscapeMode();
+});
+window.addEventListener('orientationchange',()=>setTimeout(applyLandscapeMode,180));
+window.addEventListener('resize',()=>applyLandscapeMode());
+
+document.querySelectorAll('#mobileNav button').forEach(b=>b.classList.toggle('active',b.dataset.mobileView==='chart'));
   }
 }
 function openMobilePanel(name){
