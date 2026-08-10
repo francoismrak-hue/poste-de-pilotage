@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Pilotage">
-<title>Poste de pilotage — iPhone V1.7.1</title>
+<title>Poste de pilotage — iPhone V1.8.1</title>
 <meta name="format-detection" content="telephone=no">
 <style>
 :root{--bg:#000;--panel:#080808;--panel2:#111;--text:#fff;--muted:#a9a9a9;--yellow:#ffd400;--yellow2:#ffea61;--yellowSoft:rgba(255,212,0,.18);--grid:#252525;--grid2:#141414;--leftw:320px;--rightw:420px;--rightwDynamic:420px;--headerh:126px;--axish:92px;}
@@ -577,7 +577,7 @@ body.zoomGestureActive #zoomGestureBadge{display:block}
 
 
 /* ==========================================================
-   IPHONE V1.7 — PAYSAGE CARTE
+   IPHONE V1.8 — PAYSAGE CARTE
    ========================================================== */
 body.iphoneLandscape .hint,
 body.iphoneLandscape .desktopOnly,
@@ -682,11 +682,111 @@ body.iphoneLandscape .axisLabel{font-size:9px !important}
 body.iphoneLandscape .axisMonthLabel{font-size:9px !important}
 body.iphoneLandscape .axisYearLabel{font-size:10px !important}
 
+
+/* ==========================================================
+   IPHONE V1.8 — NETTOYAGE UI
+   ========================================================== */
+
+/* Le badge de diagnostic n'existe plus. */
+#buildBadge{display:none!important}
+
+/* PORTRAIT : Rôles + Réglages restent uniquement dans la barre basse. */
+body.iphonePortrait #mobileQuickBar{
+  grid-template-columns:1fr 1.2fr !important;
+}
+body.iphonePortrait #mobileRolesTop,
+body.iphonePortrait #mobileControlsTop{
+  display:none !important;
+}
+
+/* PAYSAGE : une seule ligne temporelle. */
+body.iphoneLandscape{
+  --axish:44px !important;
+}
+body.iphoneLandscape .axisLabel,
+body.iphoneLandscape .axisTick,
+body.iphoneLandscape .axisYearBand,
+body.iphoneLandscape .axisYearLabel,
+body.iphoneLandscape .axisRowLine.year{
+  display:none !important;
+}
+body.iphoneLandscape .axisRowLine.month{
+  top:43px !important;
+}
+body.iphoneLandscape .axisMonthBand{
+  top:0 !important;
+  height:44px !important;
+  border-left:1px solid #343434 !important;
+  border-right:0 !important;
+  background:rgba(255,212,0,.018) !important;
+}
+body.iphoneLandscape .axisMonthBand.alt{
+  background:rgba(255,255,255,.012) !important;
+}
+body.iphoneLandscape .axisMonthLabel{
+  top:0 !important;
+  height:44px !important;
+  display:flex !important;
+  align-items:center !important;
+  padding-left:8px !important;
+  font-size:10px !important;
+  color:#ddd !important;
+  font-weight:800 !important;
+}
+
+/* Détail : scroll tactile natif, même avec le moteur gestuel global. */
+body.iphoneLandscape #right,
+body.iphonePortrait #right{
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  -webkit-overflow-scrolling:touch !important;
+  touch-action:pan-y !important;
+  overscroll-behavior-y:contain !important;
+}
+body.iphoneLandscape #right * ,
+body.iphonePortrait #right *{
+  touch-action:pan-y !important;
+}
+
+/* Idem pour les panneaux de rôles et réglages. */
+#left,#left *,#mobileControlsSheet,#mobileControlsSheet *{
+  touch-action:pan-y !important;
+}
+
+/* Les trois fils les plus chauds de la vue courante. */
+.threadGroup.topHot .threadRibbon,
+.threadGroup.topHot .threadCap{
+  fill:#ff6b5f !important;
+}
+.threadGroup.topHot:nth-of-type(2) .threadRibbon,
+.threadGroup.topHot:nth-of-type(2) .threadCap{
+  fill:#ff7a65 !important;
+}
+.threadLabel.topHot.labelBox{
+  background:#ff6b5f !important;
+  color:#120000 !important;
+  box-shadow:0 0 0 1px rgba(255,107,95,.35),0 2px 8px rgba(0,0,0,.42) !important;
+}
+.threadLabel.topHot.labelPlain{
+  color:#ff8a7c !important;
+}
+
+/* En paysage, branches un peu moins massives. */
+body.iphoneLandscape .threadRibbon{
+  opacity:.96;
+}
+
+/* La carte reste la priorité visuelle en paysage. */
+body.iphoneLandscape.landLeftHidden.landRightHidden.landMenusHidden #center{
+  grid-column:1/4 !important;
+  grid-row:1/3 !important;
+}
+
 </style>
 </head>
 <body>
 <div id="app">
-<header id="header"><h1>Poste de pilotage V1</h1><div class="sub" id="subtitle">iPhone V1.7 · navigation inertielle + zoom directionnel</div>
+<header id="header"><h1>Poste de pilotage V1</h1><div class="sub" id="subtitle">iPhone V1.8 · navigation inertielle + zoom directionnel</div>
 <div id="mobileQuickBar">
   <label class="mobileFileLabel">JSON<input id="mobileFileInput" type="file" accept=".json,application/json"></label>
   <button id="mobilePeriodTop">3 mois</button>
@@ -695,7 +795,7 @@ body.iphoneLandscape .axisYearLabel{font-size:10px !important}
 </div><div class="toolbar"><label class="fileLabel">Charger JSON<input id="fileInput" type="file" accept=".json,application/json"></label><button id="modeTime" class="active">Zoom temps</button><button id="modeDetail">Zoom détail</button><button id="zoomOut">−</button><span id="zoomInfo" class="small">100%</span><button id="zoomIn">+</button><span id="thicknessInfo" class="small" title="MAJ + molette">Épaisseur 100%</span><button id="reset">Reset vue</button><div class="sep"></div><button id="allRoles">Tous les rôles</button><button id="toggleSecondary">Afficher secondaires</button><button data-filter="all" class="active">Tout</button><button data-filter="hot">Chaud</button><button data-filter="active">Actif</button><button data-filter="watch">Veille</button><button data-filter="dormant">Dormant</button></div></header>
 <aside id="left"><div class="mobileDrawerHead"><strong>Rôles et fils</strong><button id="mobileCloseLeft">×</button></div><div id="leftInner"></div></aside>
 <main id="center"><div id="axisWrap"><div id="axisInner"><div id="axisContent"></div></div></div><div id="chartScroll"><div id="chartContent"><svg id="chartSvg"></svg><div id="labelLayer"></div></div></div><div class="hint"></div></main>
-<div id="nodeTooltip"></div><div id="panelResize" title="Glisser pour redimensionner le panneau"></div><aside id="right"><div class="detailHead"><div><div class="kicker">Panneau</div><strong>Détail / synthèse</strong></div><button id="togglePanel" title="Alterner entre largeur normale et 50 %">Panneau 50%</button><div class="mobileDetailActions mobileOnly"><button id="mobileIsolate">Isoler</button><button id="mobileCloseRight">×</button></div></div><div id="detail"><div class="card primary"><div class="kicker">iPhone V1.7</div><h2>Chargement</h2><p class="empty">Les données sont intégrées. Tu peux aussi charger un autre JSON.</p></div></div></aside>
+<div id="nodeTooltip"></div><div id="panelResize" title="Glisser pour redimensionner le panneau"></div><aside id="right"><div class="detailHead"><div><div class="kicker">Panneau</div><strong>Détail / synthèse</strong></div><button id="togglePanel" title="Alterner entre largeur normale et 50 %">Panneau 50%</button><div class="mobileDetailActions mobileOnly"><button id="mobileIsolate">Isoler</button><button id="mobileCloseRight">×</button></div></div><div id="detail"><div class="card primary"><div class="kicker">iPhone V1.8</div><h2>Chargement</h2><p class="empty">Les données sont intégrées. Tu peux aussi charger un autre JSON.</p></div></div></aside>
 
 
 <div id="landscapeControls" aria-label="Contrôles paysage">
@@ -705,7 +805,6 @@ body.iphoneLandscape .axisYearLabel{font-size:10px !important}
 </div>
 
 <div id="standaloneHint">Pour le vrai plein écran : Safari → Partager → Ajouter à l’écran d’accueil, puis ouvrir “Pilotage” depuis l’icône.</div>
-<div id="buildBadge">IPHONE V1.7</div>
 <div id="zoomGestureBadge">ZOOM</div>
 <div id="mobileBackdrop"></div>
 <section id="mobileControlsSheet" aria-label="Réglages d’affichage">
@@ -746,7 +845,7 @@ let timeRangeMode="all", viewStartOverride=null, viewEndOverride=null;
 let mobileRolesRoot=true, mobileRolesBrowseLane=null;
 
 const STORAGE_DATA_KEY='postePilotage:lastJson:v1';
-const STORAGE_VIEW_KEY='postePilotage:viewState:IPHONE:v1.7';
+const STORAGE_VIEW_KEY='postePilotage:viewState:IPHONE:v1.8';
 let restoringView=false;
 let saveTimer=null;
 
@@ -1191,6 +1290,52 @@ function clippedPeriod(startDate,endDate){
   return e>s?[s,e]:null;
 }
 function renderCalendarBands(){
+  const landscape=document.body.classList.contains('iphoneLandscape');
+
+  if(landscape){
+    // Une seule bande mensuelle. L'année est intégrée au libellé
+    // du premier mois visible et à chaque janvier.
+    axisContent.appendChild(H('div','axisRowLine month'));
+
+    let m=new Date(start().getFullYear(),start().getMonth(),1);
+    let monthIndex=0;
+    let firstVisible=true;
+
+    while(m<end()){
+      const next=new Date(m.getFullYear(),m.getMonth()+1,1);
+      const clipped=clippedPeriod(m,next);
+
+      if(clipped){
+        const [s,e]=clipped;
+        const x1=xDate(s),x2=xDate(e),w=Math.max(1,x2-x1);
+
+        const band=H('div','axisMonthBand'+(monthIndex%2?' alt':''));
+        band.style.left=x1+'px';
+        band.style.width=w+'px';
+        axisContent.appendChild(band);
+
+        if(w>=34){
+          const withYear=firstVisible || m.getMonth()===0;
+          const text=monthsShort[m.getMonth()] + (withYear?' '+m.getFullYear():'');
+          const lab=H('div','axisMonthLabel',text);
+          lab.style.left=x1+'px';
+          lab.style.width=Math.max(0,w-3)+'px';
+          axisContent.appendChild(lab);
+        }
+
+        chartSvg.appendChild(E('line',{
+          x1:x1,y1:0,x2:x1,y2:layout.height,class:'gridV'
+        }));
+
+        firstVisible=false;
+      }
+
+      m=next;
+      monthIndex++;
+    }
+    return;
+  }
+
   axisContent.appendChild(H('div','axisRowLine month'));
   axisContent.appendChild(H('div','axisRowLine year'));
 
@@ -1229,6 +1374,14 @@ function renderCalendarBands(){
 }
 function renderAxis(){
   renderCalendarBands();
+  if(document.body.classList.contains('iphoneLandscape')){
+    if(currentView()==='detail'){
+      layout.rows.forEach(r=>{
+        chartSvg.appendChild(E('line',{x1:0,y1:r.y+14,x2:layout.width,y2:r.y+14,class:'gridH'}));
+      });
+    }
+    return;
+  }
   const info=stepInfo();
   const total=(end()-start())/dayMs();
   let prevDate=null;
@@ -1250,7 +1403,7 @@ function renderAxis(){
     layout.rows.forEach(r=>{chartSvg.appendChild(E('line',{x1:0,y1:r.y+14,x2:layout.width,y2:r.y+14,class:'gridH'}));});
   }
 }
-function render(){if(!DATA)return;applyResponsiveMetrics();activityCache.clear();laneActivityCache.clear();computeLayout();clear();setSizes();renderAxis();renderChart();renderSidebar();syncScroll();const isolated=isolatedThreadId?threadById(isolatedThreadId):null;subtitle.textContent=`${DATA.meta.title||'Poste de pilotage'} · ${rangeLabel()} · ${dateLabel(start())} → ${dateLabel(end())}${focusLane?' · focus : '+focusLane:''}${isolated?' · isolé : '+isolated.title:''}`;zoomInfo.textContent=(zoomMode==='time'?Math.round(pxPerDay/54*100):Math.round(rowH/34*100))+'%';if(thicknessInfo)thicknessInfo.textContent='Épaisseur '+Math.round(strokeScale*100)+'%';updateMobileIndicators();updateMobileIsolateButton();}
+function render(){if(!DATA)return;applyResponsiveMetrics();activityCache.clear();laneActivityCache.clear();computeLayout();clear();setSizes();renderAxis();renderChart();renderSidebar();syncScroll();const isolated=isolatedThreadId?threadById(isolatedThreadId):null;subtitle.textContent=`${DATA.meta.title||'Poste de pilotage'} · ${rangeLabel()} · ${dateLabel(start())} → ${dateLabel(end())}${focusLane?' · focus : '+focusLane:''}${isolated?' · isolé : '+isolated.title:''}`;zoomInfo.textContent=(zoomMode==='time'?Math.round(pxPerDay/54*100):Math.round(rowH/34*100))+'%';if(thicknessInfo)thicknessInfo.textContent='Épaisseur '+Math.round(strokeScale*100)+'%';updateMobileIndicators();updateMobileIsolateButton();if(typeof applyIPhoneLayout==='function')applyIPhoneLayout(false);}
 function rootY(){if(focusLane) return layout.roleMid[focusLane]||72; return layout.rows.length?layout.rows[Math.floor(layout.rows.length/2)].y:300;}
 function curveSpan(mult=1){
   const base=currentView()==='overview'?250:210;
@@ -1263,16 +1416,44 @@ function flowSpan(sx,targetX,mult=1,verticalDelta=0){
   const radius=Math.max(34,Math.min(82,vertical*.24+34));
   return radius*mult;
 }
-function organicCurveGeom(sourceX,sourceY,targetY,targetEndX,mult=1){
+function organicCurveGeom(sourceX,sourceY,targetY,targetEndX,mult=1,targetStartX=null){
   const dy=targetY-sourceY;
   const sign=dy>=0?1:-1;
-  const radius=Math.min(Math.abs(dy)/2||42,flowSpan(sourceX,sourceX,mult,dy));
-  const lead=Math.max(18,Math.min(42,radius*.52));
-  const verticalX=sourceX+lead+radius;
-  const childStartX=verticalX+radius;
-  const xEnd=Math.max(childStartX+34,targetEndX);
+
+  const desiredStart=Number.isFinite(targetStartX)
+    ? Math.max(sourceX+18,targetStartX)
+    : Math.max(sourceX+34,Math.min(targetEndX,sourceX+110));
+
+  const horizontal=Math.max(24,desiredStart-sourceX);
+
+  // Plus le temps est comprimé, plus les raccords deviennent courts/plats.
+  const timeScale=Math.max(.12,Math.min(1.15,pxPerDay/54));
+
+  const maxRadiusByTime=10 + 42*timeScale;
+  const maxRadiusBySpace=Math.max(8,horizontal*.24);
+  const radius=Math.max(
+    7,
+    Math.min(
+      Math.abs(dy)/2 || 24,
+      maxRadiusByTime,
+      maxRadiusBySpace
+    )*mult
+  );
+
+  const lead=Math.max(
+    6,
+    Math.min(
+      horizontal*.18,
+      8 + 18*timeScale
+    )
+  );
 
   const topStartX=sourceX+lead;
+  const verticalX=topStartX+radius;
+  const curveEndX=verticalX+radius;
+  const xStart=Math.max(curveEndX,desiredStart);
+  const xEnd=Math.max(xStart+16,targetEndX);
+
   const topEndY=sourceY+sign*radius;
   const bottomStartY=targetY-sign*radius;
 
@@ -1281,20 +1462,23 @@ function organicCurveGeom(sourceX,sourceY,targetY,targetEndX,mult=1){
     `L${topStartX} ${sourceY}`,
     `C${(topStartX+radius*.58).toFixed(2)} ${sourceY}, ${verticalX} ${(sourceY+sign*radius*.42).toFixed(2)}, ${verticalX} ${topEndY}`,
     `L${verticalX} ${bottomStartY}`,
-    `C${verticalX} ${(targetY-sign*radius*.42).toFixed(2)}, ${(verticalX+radius*.42).toFixed(2)} ${targetY}, ${childStartX} ${targetY}`,
+    `C${verticalX} ${(targetY-sign*radius*.42).toFixed(2)}, ${(verticalX+radius*.42).toFixed(2)} ${targetY}, ${curveEndX} ${targetY}`,
+    `L${xStart} ${targetY}`,
     `L${xEnd} ${targetY}`
   ].join(' ');
 
   return {
     sourceX,sourceY,targetY,sign,radius,lead,
-    topStartX,verticalX,topEndY,bottomStartY,
-    xStart:childStartX,yStart:targetY,xEnd,yEnd:targetY,
+    topStartX,verticalX,curveEndX,topEndY,bottomStartY,
+    xStart,yStart:targetY,xEnd,yEnd:targetY,
     rangeStart:sourceX,rangeEnd:xEnd,d
   };
 }
 function pathRootToRole(lane){
-  const y=layout.roleMid[lane],sy=rootY(),c=curveSpan(1);
-  const cp1=leftRootX+c*.62,cp2=roleX-c*.62;
+  const y=layout.roleMid[lane],sy=rootY();
+  const timeScale=Math.max(.14,Math.min(1,pxPerDay/54));
+  const c=Math.max(28,Math.min(150,curveSpan(1)*timeScale));
+  const cp1=leftRootX+c*.48,cp2=roleX-c*.38;
   return `M0 ${sy} L${leftRootX} ${sy} C${cp1} ${sy}, ${cp2} ${y}, ${roleX} ${y}`;
 }
 function roleLabelWidth(text){return currentView()==='detail' ? Math.max(120, text.length*14+34) : Math.max(92, text.length*10+26)}
@@ -1312,9 +1496,10 @@ function roleTimelineGeom(lane,endX){
 
 function xHistMin(t){const d=firstHistoryDate(t);return d||threadOwnStart(t)}
 function pathThreadFromRole(t,y){
-  const sourceX=Math.max(branchW+18,xDate(threadOwnStart(t)));
+  const sourceX=Math.max(roleEndX(t.lane),branchW*.55);
   const sourceY=layout.roleMid[t.lane];
-  return organicCurveGeom(sourceX,sourceY,y,xDate(threadRange(t)[1]),1);
+  const startX=Math.max(sourceX+22,xDate(threadOwnStart(t)));
+  return organicCurveGeom(sourceX,sourceY,y,xDate(threadRange(t)[1]),1,startX);
 }
 function pathChildThread(t,row,y,parentGeom){
   const p=row.parent;
@@ -1323,7 +1508,7 @@ function pathChildThread(t,row,y,parentGeom){
   const rawSource=xDate(threadOwnStart(t));
   const sourceX=Math.max(geom.rangeStart,Math.min(rawSource,geom.rangeEnd));
   const sourceY=pointYOnThread(geom,sourceX);
-  return organicCurveGeom(sourceX,sourceY,y,xDate(threadRange(t)[1]),.92);
+  return organicCurveGeom(sourceX,sourceY,y,xDate(threadRange(t)[1]),.92,Math.max(sourceX+16,rawSource));
 }
 function cubicValue(a,b,c,d,t){
   const u=1-t;
@@ -1332,7 +1517,8 @@ function cubicValue(a,b,c,d,t){
 function pointYOnThread(geom,x){
   if(!geom)return 0;
   if(x<=geom.topStartX)return geom.sourceY;
-  if(x>=geom.xStart)return geom.yStart;
+  const curveEndX=geom.curveEndX??geom.xStart;
+  if(x>=curveEndX)return geom.yStart;
 
   const r=geom.radius,sign=geom.sign;
   if(x<geom.verticalX){
@@ -1341,7 +1527,7 @@ function pointYOnThread(geom,x){
     return geom.sourceY+sign*r*eased;
   }
   if(x===geom.verticalX)return (geom.sourceY+geom.targetY)/2;
-  const t=Math.max(0,Math.min(1,(x-geom.verticalX)/Math.max(1,geom.xStart-geom.verticalX)));
+  const t=Math.max(0,Math.min(1,(x-geom.verticalX)/Math.max(1,curveEndX-geom.verticalX)));
   const eased=t*t*(3-2*t);
   return geom.bottomStartY+sign*r*eased;
 }
@@ -1448,9 +1634,14 @@ function centerlineSamples(geom){
     {x:geom.verticalX,y:geom.bottomStartY},
     {x:geom.verticalX,y:geom.targetY-geom.sign*geom.radius*.42},
     {x:geom.verticalX+geom.radius*.42,y:geom.targetY},
-    {x:geom.xStart,y:geom.targetY},
+    {x:(geom.curveEndX??geom.xStart),y:geom.targetY},
     14,true
   );
+
+  if((geom.curveEndX??geom.xStart)<geom.xStart){
+    lineSamples(geom.curveEndX??geom.xStart,geom.yStart,geom.xStart,geom.yStart,
+      Math.max(2,Math.min(80,Math.ceil((geom.xStart-(geom.curveEndX??geom.xStart))/18))));
+  }
 
   const d0=dateFromX(geom.xStart),d1=dateFromX(geom.xEnd);
   const duration=Math.max(0,(d1-d0)/dayMs());
@@ -1488,9 +1679,9 @@ function buildRibbon(geom,widthFn){
   d+=' Z';
   return {d,maxWidth,last:pts[pts.length-1],lastWidth:widths[widths.length-1]};
 }
-function drawRibbonGroup({geom,state='active',widthFn,onClick,onDblClick,isolated=false}){
+function drawRibbonGroup({geom,state='active',widthFn,onClick,onDblClick,isolated=false,topHot=false}){
   const ribbon=buildRibbon(geom,widthFn);
-  const group=E('g',{class:`threadGroup${isolated?' isolated':''}`});
+  const group=E('g',{class:`threadGroup${isolated?' isolated':''}${topHot?' topHot':''}`});
   const visible=E('path',{d:ribbon.d,class:`threadRibbon ${stateClass(state)}`});
   const cap=E('circle',{cx:ribbon.last.x,cy:ribbon.last.y,r:Math.max(.4,ribbon.lastWidth/2),class:`threadCap ${stateClass(state)}`});
   const hit=E('path',{d:geom.d,class:'threadHit',style:`stroke-width:${Math.max(18,ribbon.maxWidth+12)}`});
@@ -1615,23 +1806,39 @@ function renderChart(){
       addRoleBox(lane,roleLabelX,y,true,()=>{isolatedThreadId=null;focusLane=null;subRoleFocus=null;render()},true);
     });
     const geometryById=new Map();
+    const hotIds=topHotThreadIds();
     layout.rows.forEach(row=>{
       const t=row.thread,y=row.y,parentGeom=row.child&&row.parent?geometryById.get(row.parent.id):null;
       const geom=row.child?pathChildThread(t,row,y,parentGeom):pathThreadFromRole(t,y);
       geometryById.set(t.id,geom);
-      drawRibbonGroup({geom,state:t.state||'active',widthFn:date=>threadWidthAt(t,date),isolated:isolatedThreadId===t.id,onClick:()=>showThread(t.id),onDblClick:()=>toggleThreadIsolation(t.id)});
-      addThreadLabel(t,row,geom,y);
+      const isTopHot=hotIds.has(t.id);
+      drawRibbonGroup({geom,state:t.state||'active',widthFn:date=>threadWidthAt(t,date),isolated:isolatedThreadId===t.id,topHot:isTopHot,onClick:()=>showThread(t.id),onDblClick:()=>toggleThreadIsolation(t.id)});
+      addThreadLabel(t,row,geom,y,isTopHot);
       historyFor(t.id).forEach(h=>{const d=D(h.date);if(!d||d<start()||d>end())return;const rawX=xDate(d);const x=Math.max(geom.xStart,Math.min(rawX,geom.rangeEnd));if(x>=geom.xStart-2&&x<=geom.rangeEnd+2)addHistory(h,x,geom.yStart)});
       nodesFor(t.id).forEach(n=>{const d=D(n.date||n.deadline);if(d&&(d<start()||d>end()))return;const rawX=d?xDate(d):geom.xEnd,x=Math.max(geom.xStart,Math.min(rawX,geom.rangeEnd));if(x>=geom.xStart-2&&x<=geom.rangeEnd+2)addNode(n,x,geom.yStart)});
     });
   }
 }
+
+function topHotThreadIds(){
+  const candidates=visibleThreads()
+    .filter(t=>isPrimaryThread(t))
+    .slice()
+    .sort((a,b)=>{
+      const heat=(b.heat||0)-(a.heat||0);
+      if(heat)return heat;
+      const stateScore=s=>s==='hot'?4:s==='active'?3:s==='watch'?2:1;
+      return stateScore(b.state)-stateScore(a.state);
+    });
+  return new Set(candidates.slice(0,3).map(t=>t.id));
+}
+
 function stateClass(s){return ['hot','active','watch','dormant','closed','fragile'].includes(s)?s:'active'}
 function addRoleBox(text,x,y,active,onClick,big=false){const div=H('div','labelBox',text); div.style.left=x+'px'; div.style.top=(y-(big?18:14))+'px'; div.style.fontSize=(big? (focusLane?22:16) : 16)+'px'; div.onclick=onClick; labelLayer.appendChild(div);}
-function addThreadLabel(t,row,geom,y){
+function addThreadLabel(t,row,geom,y,topHot=false){
   const fs=Math.max(12,Math.min(17,rowH*.4));
   const useBox=(isPrimaryThread(t)&&((t.heat||0)>=3||!t.parentId))||isolatedThreadId===t.id;
-  const cls=(useBox?'labelBox':'labelPlain')+' threadLabel'+(isolatedThreadId===t.id?' isolated':'');
+  const cls=(useBox?'labelBox':'labelPlain')+' threadLabel'+(isolatedThreadId===t.id?' isolated':'')+(topHot?' topHot':'');
   const div=H('div',cls,t.title);
   const naturalX=Math.max(geom.xStart+8,branchW+16);
   div.dataset.naturalX=String(naturalX);
@@ -1860,6 +2067,15 @@ function applyIPhoneLayout(forceRender=false){
     iphoneLayout.landscapeInitialized=true;
   }
 
+  // La vue paysage démarre et reste cohérente en mode carte tant que
+  // l'utilisateur n'a pas explicitement rappelé un panneau.
+  if(landscape && !iphoneLayout.leftVisible && !iphoneLayout.rightVisible && !iphoneLayout.menusVisible){
+    document.getElementById('left')?.classList.remove('mobileOpen');
+    document.getElementById('right')?.classList.remove('mobileOpen');
+    document.getElementById('mobileControlsSheet')?.classList.remove('mobileOpen');
+    document.getElementById('mobileBackdrop')?.classList.remove('visible');
+  }
+
   document.body.classList.toggle('iphoneLandscape',landscape);
   document.body.classList.toggle('iphonePortrait',!landscape);
 
@@ -1934,7 +2150,7 @@ document.addEventListener('visibilitychange',()=>{
 window.addEventListener('pageshow',scheduleLayoutSync);
 
 document.addEventListener('touchmove',e=>{
-  if(e.target.closest('input,textarea,select')) return;
+  if(e.target.closest('input,textarea,select,#right,#left,#mobileControlsSheet')) return;
   e.preventDefault();
 },{passive:false});
 
@@ -2377,7 +2593,7 @@ async function bootViewer(){
   try{local=readStoredJson()}catch(e){}
 
   try{
-    const remoteUrl='../data/current.json?build=IPHONE_V1_6&t='+Date.now();
+    const remoteUrl='../data/current.json?build=IPHONE_V1_8&t='+Date.now();
     const res=await fetch(remoteUrl,{cache:'no-store'});
     if(res.ok){
       const remote=await res.json();
