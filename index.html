@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Pilotage">
-<title>Poste de pilotage — iPhone V1.8.1</title>
+<title>Poste de pilotage — iPhone V1.9.1</title>
 <meta name="format-detection" content="telephone=no">
 <style>
 :root{--bg:#000;--panel:#080808;--panel2:#111;--text:#fff;--muted:#a9a9a9;--yellow:#ffd400;--yellow2:#ffea61;--yellowSoft:rgba(255,212,0,.18);--grid:#252525;--grid2:#141414;--leftw:320px;--rightw:420px;--rightwDynamic:420px;--headerh:126px;--axish:92px;}
@@ -76,8 +76,8 @@ ul{padding-left:18px;margin:10px 0 0} li{margin:8px 0}
 .threadPath.isolated{filter:drop-shadow(0 0 8px rgba(255,212,0,.8)) drop-shadow(0 0 20px rgba(255,212,0,.34));}
 .threadGroup{cursor:pointer}
 .threadRibbon{fill:var(--yellow);opacity:1;transition:filter .14s ease,opacity .14s ease}
-.threadRibbon.watch{opacity:.78}.threadRibbon.dormant,.threadRibbon.closed{opacity:.46}.threadRibbon.fragile{fill:#fff;opacity:.96}
-.threadCap{fill:var(--yellow);pointer-events:none}.threadCap.watch{opacity:.78}.threadCap.dormant,.threadCap.closed{opacity:.46}.threadCap.fragile{fill:#fff;opacity:.96}
+.threadRibbon.watch{opacity:.78}.threadRibbon.dormant,.threadRibbon.closed{opacity:.46}.threadRibbon.fragile{fill:var(--yellow);opacity:.96}
+.threadCap{fill:var(--yellow);pointer-events:none}.threadCap.watch{opacity:.78}.threadCap.dormant,.threadCap.closed{opacity:.46}.threadCap.fragile{fill:var(--yellow);opacity:.96}
 .threadHit{fill:none;stroke:transparent;pointer-events:stroke;stroke-linecap:round;stroke-linejoin:round}
 .threadGroup:hover .threadRibbon,.threadGroup:hover .threadCap{filter:drop-shadow(0 0 7px rgba(255,212,0,.72)) drop-shadow(0 0 16px rgba(255,212,0,.32))}
 .threadGroup.isolated .threadRibbon,.threadGroup.isolated .threadCap{filter:drop-shadow(0 0 8px rgba(255,212,0,.92)) drop-shadow(0 0 22px rgba(255,212,0,.42))}
@@ -577,7 +577,7 @@ body.zoomGestureActive #zoomGestureBadge{display:block}
 
 
 /* ==========================================================
-   IPHONE V1.8 — PAYSAGE CARTE
+   IPHONE V1.9 — PAYSAGE CARTE
    ========================================================== */
 body.iphoneLandscape .hint,
 body.iphoneLandscape .desktopOnly,
@@ -586,7 +586,7 @@ body.iphoneLandscape #buildBadge{
 }
 
 body.iphoneLandscape{
-  --land-left:270px;
+  --land-left:300px;
   --land-right:330px;
   --land-header:78px;
   --axish:64px;
@@ -684,7 +684,7 @@ body.iphoneLandscape .axisYearLabel{font-size:10px !important}
 
 
 /* ==========================================================
-   IPHONE V1.8 — NETTOYAGE UI
+   IPHONE V1.9 — NETTOYAGE UI
    ========================================================== */
 
 /* Le badge de diagnostic n'existe plus. */
@@ -753,25 +753,8 @@ body.iphonePortrait #right *{
   touch-action:pan-y !important;
 }
 
-/* Les trois fils les plus chauds de la vue courante. */
-.threadGroup.topHot .threadRibbon,
-.threadGroup.topHot .threadCap{
-  fill:#ff6b5f !important;
-}
-.threadGroup.topHot:nth-of-type(2) .threadRibbon,
-.threadGroup.topHot:nth-of-type(2) .threadCap{
-  fill:#ff7a65 !important;
-}
-.threadLabel.topHot.labelBox{
-  background:#ff6b5f !important;
-  color:#120000 !important;
-  box-shadow:0 0 0 1px rgba(255,107,95,.35),0 2px 8px rgba(0,0,0,.42) !important;
-}
-.threadLabel.topHot.labelPlain{
-  color:#ff8a7c !important;
-}
+/* Tous les fils restent jaunes. */
 
-/* En paysage, branches un peu moins massives. */
 body.iphoneLandscape .threadRibbon{
   opacity:.96;
 }
@@ -782,11 +765,142 @@ body.iphoneLandscape.landLeftHidden.landRightHidden.landMenusHidden #center{
   grid-row:1/3 !important;
 }
 
+
+/* ---------- V1.9 : panneau Rôles paysage ---------- */
+body.iphoneLandscape #left{
+  padding:0 !important;
+}
+body.iphoneLandscape #leftInner.mobileRoot{
+  display:block !important;
+  width:100% !important;
+  padding:12px 12px 36px !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  -webkit-overflow-scrolling:touch !important;
+}
+body.iphoneLandscape .mobileLaneIntro{
+  display:block !important;
+  margin:0 2px 10px !important;
+  color:#8f8f8f !important;
+  font-size:10px !important;
+  line-height:1.3 !important;
+}
+body.iphoneLandscape .mobileLaneCard{
+  display:flex !important;
+  align-items:center !important;
+  gap:8px !important;
+  min-height:48px !important;
+  margin:0 0 7px !important;
+  padding:8px 9px 8px 11px !important;
+  border:1px solid #303030 !important;
+  border-radius:11px !important;
+  background:#0b0b0b !important;
+}
+body.iphoneLandscape .mobileLaneText{
+  display:block !important;
+  flex:1 1 auto !important;
+  min-width:0 !important;
+}
+body.iphoneLandscape .mobileLaneName{
+  display:block !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  white-space:nowrap !important;
+  font-size:13px !important;
+  line-height:1.15 !important;
+  font-weight:800 !important;
+}
+body.iphoneLandscape .mobileLaneMeta{
+  display:block !important;
+  margin-top:3px !important;
+  color:#858585 !important;
+  font-size:9px !important;
+  line-height:1.15 !important;
+}
+body.iphoneLandscape .mobileLaneCount{
+  flex:0 0 auto !important;
+  min-width:28px !important;
+  padding:4px 6px !important;
+  border:1px solid #393939 !important;
+  border-radius:999px !important;
+  background:#171717 !important;
+  color:#ddd !important;
+  text-align:center !important;
+  font-size:10px !important;
+}
+body.iphoneLandscape .mobileLaneChevron{
+  flex:0 0 auto !important;
+  color:var(--yellow) !important;
+  font-size:17px !important;
+}
+body.iphoneLandscape .mobileRoleDetailHead{
+  display:flex !important;
+  align-items:center !important;
+  gap:8px !important;
+  margin:0 0 12px !important;
+}
+body.iphoneLandscape .mobileRoleDetailHead button{
+  flex:0 0 36px !important;
+  width:36px !important;
+  min-width:36px !important;
+  height:34px !important;
+  min-height:34px !important;
+  padding:0 !important;
+  border-radius:10px !important;
+  font-size:18px !important;
+}
+body.iphoneLandscape .mobileRoleDetailHead strong{
+  min-width:0 !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  white-space:nowrap !important;
+  color:var(--yellow) !important;
+  font-size:18px !important;
+  line-height:1.1 !important;
+}
+body.iphoneLandscape .mobileRoleChoice{
+  display:flex !important;
+  align-items:center !important;
+  gap:8px !important;
+  width:100% !important;
+  min-height:42px !important;
+  margin:0 0 7px !important;
+  padding:8px 9px !important;
+  border:1px solid #303030 !important;
+  border-radius:10px !important;
+  background:#0b0b0b !important;
+  color:#fff !important;
+  font-size:12px !important;
+  font-weight:700 !important;
+  line-height:1.2 !important;
+  white-space:normal !important;
+}
+body.iphoneLandscape .mobileRoleChoice.selected{
+  border-color:rgba(255,212,0,.7) !important;
+  background:rgba(255,212,0,.10) !important;
+  color:var(--yellow) !important;
+}
+body.iphoneLandscape .mobileRoleChoice .count{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  flex:0 0 auto !important;
+  margin-left:auto !important;
+  min-width:28px !important;
+  padding:3px 6px !important;
+  border:1px solid #383838 !important;
+  border-radius:999px !important;
+  background:#1b1b1b !important;
+  color:#d8d8d8 !important;
+  font-size:10px !important;
+  text-align:center !important;
+}
+
 </style>
 </head>
 <body>
 <div id="app">
-<header id="header"><h1>Poste de pilotage V1</h1><div class="sub" id="subtitle">iPhone V1.8 · navigation inertielle + zoom directionnel</div>
+<header id="header"><h1>Poste de pilotage V1</h1><div class="sub" id="subtitle">iPhone V1.9 · navigation inertielle + zoom directionnel</div>
 <div id="mobileQuickBar">
   <label class="mobileFileLabel">JSON<input id="mobileFileInput" type="file" accept=".json,application/json"></label>
   <button id="mobilePeriodTop">3 mois</button>
@@ -795,7 +909,7 @@ body.iphoneLandscape.landLeftHidden.landRightHidden.landMenusHidden #center{
 </div><div class="toolbar"><label class="fileLabel">Charger JSON<input id="fileInput" type="file" accept=".json,application/json"></label><button id="modeTime" class="active">Zoom temps</button><button id="modeDetail">Zoom détail</button><button id="zoomOut">−</button><span id="zoomInfo" class="small">100%</span><button id="zoomIn">+</button><span id="thicknessInfo" class="small" title="MAJ + molette">Épaisseur 100%</span><button id="reset">Reset vue</button><div class="sep"></div><button id="allRoles">Tous les rôles</button><button id="toggleSecondary">Afficher secondaires</button><button data-filter="all" class="active">Tout</button><button data-filter="hot">Chaud</button><button data-filter="active">Actif</button><button data-filter="watch">Veille</button><button data-filter="dormant">Dormant</button></div></header>
 <aside id="left"><div class="mobileDrawerHead"><strong>Rôles et fils</strong><button id="mobileCloseLeft">×</button></div><div id="leftInner"></div></aside>
 <main id="center"><div id="axisWrap"><div id="axisInner"><div id="axisContent"></div></div></div><div id="chartScroll"><div id="chartContent"><svg id="chartSvg"></svg><div id="labelLayer"></div></div></div><div class="hint"></div></main>
-<div id="nodeTooltip"></div><div id="panelResize" title="Glisser pour redimensionner le panneau"></div><aside id="right"><div class="detailHead"><div><div class="kicker">Panneau</div><strong>Détail / synthèse</strong></div><button id="togglePanel" title="Alterner entre largeur normale et 50 %">Panneau 50%</button><div class="mobileDetailActions mobileOnly"><button id="mobileIsolate">Isoler</button><button id="mobileCloseRight">×</button></div></div><div id="detail"><div class="card primary"><div class="kicker">iPhone V1.8</div><h2>Chargement</h2><p class="empty">Les données sont intégrées. Tu peux aussi charger un autre JSON.</p></div></div></aside>
+<div id="nodeTooltip"></div><div id="panelResize" title="Glisser pour redimensionner le panneau"></div><aside id="right"><div class="detailHead"><div><div class="kicker">Panneau</div><strong>Détail / synthèse</strong></div><button id="togglePanel" title="Alterner entre largeur normale et 50 %">Panneau 50%</button><div class="mobileDetailActions mobileOnly"><button id="mobileIsolate">Isoler</button><button id="mobileCloseRight">×</button></div></div><div id="detail"><div class="card primary"><div class="kicker">iPhone V1.9</div><h2>Chargement</h2><p class="empty">Les données sont intégrées. Tu peux aussi charger un autre JSON.</p></div></div></aside>
 
 
 <div id="landscapeControls" aria-label="Contrôles paysage">
@@ -845,7 +959,7 @@ let timeRangeMode="all", viewStartOverride=null, viewEndOverride=null;
 let mobileRolesRoot=true, mobileRolesBrowseLane=null;
 
 const STORAGE_DATA_KEY='postePilotage:lastJson:v1';
-const STORAGE_VIEW_KEY='postePilotage:viewState:IPHONE:v1.8';
+const STORAGE_VIEW_KEY='postePilotage:viewState:IPHONE:v1.9';
 let restoringView=false;
 let saveTimer=null;
 
@@ -1418,68 +1532,67 @@ function flowSpan(sx,targetX,mult=1,verticalDelta=0){
 }
 function organicCurveGeom(sourceX,sourceY,targetY,targetEndX,mult=1,targetStartX=null){
   const dy=targetY-sourceY;
-  const sign=dy>=0?1:-1;
 
   const desiredStart=Number.isFinite(targetStartX)
-    ? Math.max(sourceX+18,targetStartX)
-    : Math.max(sourceX+34,Math.min(targetEndX,sourceX+110));
+    ? Math.max(sourceX+20,targetStartX)
+    : Math.max(sourceX+46,Math.min(targetEndX,sourceX+150));
 
-  const horizontal=Math.max(24,desiredStart-sourceX);
+  const horizontal=Math.max(28,desiredStart-sourceX);
 
-  // Plus le temps est comprimé, plus les raccords deviennent courts/plats.
-  const timeScale=Math.max(.12,Math.min(1.15,pxPerDay/54));
+  // Zoom temps comprimé => tangentes plus courtes, sans casser la forme en accolade.
+  const timeScale=Math.max(.16,Math.min(1.10,pxPerDay/54));
 
-  const maxRadiusByTime=10 + 42*timeScale;
-  const maxRadiusBySpace=Math.max(8,horizontal*.24);
-  const radius=Math.max(
-    7,
+  const lead=Math.max(5,Math.min(18,horizontal*.10));
+  const curveStartX=sourceX+lead;
+  const xStart=Math.max(curveStartX+22,desiredStart);
+  const xEnd=Math.max(xStart+16,targetEndX);
+
+  const curveWidth=Math.max(22,xStart-curveStartX);
+
+  // Tangentes horizontales symétriques : forme en S douce / accolade.
+  // Elles s'aplatissent avec le zoom mais ne disparaissent jamais.
+  const tangent=Math.max(
+    12,
     Math.min(
-      Math.abs(dy)/2 || 24,
-      maxRadiusByTime,
-      maxRadiusBySpace
-    )*mult
-  );
-
-  const lead=Math.max(
-    6,
-    Math.min(
-      horizontal*.18,
-      8 + 18*timeScale
+      curveWidth*.46,
+      (22 + 72*timeScale)*mult
     )
   );
 
-  const topStartX=sourceX+lead;
-  const verticalX=topStartX+radius;
-  const curveEndX=verticalX+radius;
-  const xStart=Math.max(curveEndX,desiredStart);
-  const xEnd=Math.max(xStart+16,targetEndX);
-
-  const topEndY=sourceY+sign*radius;
-  const bottomStartY=targetY-sign*radius;
+  const cp1x=curveStartX+tangent;
+  const cp1y=sourceY;
+  const cp2x=xStart-tangent;
+  const cp2y=targetY;
 
   const d=[
     `M${sourceX} ${sourceY}`,
-    `L${topStartX} ${sourceY}`,
-    `C${(topStartX+radius*.58).toFixed(2)} ${sourceY}, ${verticalX} ${(sourceY+sign*radius*.42).toFixed(2)}, ${verticalX} ${topEndY}`,
-    `L${verticalX} ${bottomStartY}`,
-    `C${verticalX} ${(targetY-sign*radius*.42).toFixed(2)}, ${(verticalX+radius*.42).toFixed(2)} ${targetY}, ${curveEndX} ${targetY}`,
-    `L${xStart} ${targetY}`,
+    `L${curveStartX} ${sourceY}`,
+    `C${cp1x.toFixed(2)} ${cp1y.toFixed(2)}, ${cp2x.toFixed(2)} ${cp2y.toFixed(2)}, ${xStart} ${targetY}`,
     `L${xEnd} ${targetY}`
   ].join(' ');
 
   return {
-    sourceX,sourceY,targetY,sign,radius,lead,
-    topStartX,verticalX,curveEndX,topEndY,bottomStartY,
+    sourceX,sourceY,targetY,
+    lead,curveStartX,cp1x,cp1y,cp2x,cp2y,
     xStart,yStart:targetY,xEnd,yEnd:targetY,
-    rangeStart:sourceX,rangeEnd:xEnd,d
+    rangeStart:sourceX,rangeEnd:xEnd,
+    d
   };
 }
 function pathRootToRole(lane){
   const y=layout.roleMid[lane],sy=rootY();
-  const timeScale=Math.max(.14,Math.min(1,pxPerDay/54));
-  const c=Math.max(28,Math.min(150,curveSpan(1)*timeScale));
-  const cp1=leftRootX+c*.48,cp2=roleX-c*.38;
-  return `M0 ${sy} L${leftRootX} ${sy} C${cp1} ${sy}, ${cp2} ${y}, ${roleX} ${y}`;
+
+  const timeScale=Math.max(.18,Math.min(1.05,pxPerDay/54));
+  const startX=leftRootX;
+  const endX=roleX;
+  const width=Math.max(24,endX-startX);
+
+  const tangent=Math.max(12,Math.min(width*.48,26+58*timeScale));
+
+  const cp1x=startX+tangent;
+  const cp2x=endX-tangent;
+
+  return `M0 ${sy} L${startX} ${sy} C${cp1x} ${sy}, ${cp2x} ${y}, ${endX} ${y}`;
 }
 function roleLabelWidth(text){return currentView()==='detail' ? Math.max(120, text.length*14+34) : Math.max(92, text.length*10+26)}
 function roleEndX(lane){return roleLabelX + roleLabelWidth(lane)}
@@ -1516,20 +1629,16 @@ function cubicValue(a,b,c,d,t){
 }
 function pointYOnThread(geom,x){
   if(!geom)return 0;
-  if(x<=geom.topStartX)return geom.sourceY;
-  const curveEndX=geom.curveEndX??geom.xStart;
-  if(x>=curveEndX)return geom.yStart;
+  if(x<=geom.curveStartX)return geom.sourceY;
+  if(x>=geom.xStart)return geom.yStart;
 
-  const r=geom.radius,sign=geom.sign;
-  if(x<geom.verticalX){
-    const t=Math.max(0,Math.min(1,(x-geom.topStartX)/Math.max(1,geom.verticalX-geom.topStartX)));
-    const eased=t*t*(3-2*t);
-    return geom.sourceY+sign*r*eased;
-  }
-  if(x===geom.verticalX)return (geom.sourceY+geom.targetY)/2;
-  const t=Math.max(0,Math.min(1,(x-geom.verticalX)/Math.max(1,curveEndX-geom.verticalX)));
-  const eased=t*t*(3-2*t);
-  return geom.bottomStartY+sign*r*eased;
+  // Pour les branchements enfants, une interpolation smoothstep donne
+  // un point stable visuellement sur la courbe en S.
+  const t=Math.max(0,Math.min(1,
+    (x-geom.curveStartX)/Math.max(1,geom.xStart-geom.curveStartX)
+  ));
+  const s=t*t*(3-2*t);
+  return geom.sourceY+(geom.targetY-geom.sourceY)*s;
 }
 
 
@@ -1603,49 +1712,49 @@ function laneWidthAt(lane,date){return widthFromActivity(laneActivityEvents(lane
 function centerlineSamples(geom){
   const pts=[];
   const add=(x,y)=>pts.push({x,y});
+
   const lineSamples=(x1,y1,x2,y2,n)=>{
-    for(let i=0;i<=n;i++){const t=i/n;add(x1+(x2-x1)*t,y1+(y2-y1)*t);}
-  };
-  if(!Number.isFinite(geom.topStartX)||!Number.isFinite(geom.radius)){
-    lineSamples(geom.sourceX,geom.sourceY,geom.xEnd,geom.yEnd,Math.max(4,Math.min(240,Math.ceil(Math.abs(geom.xEnd-geom.sourceX)/18))));
-    return pts;
-  }
-  const cubicSamples=(p0,p1,p2,p3,n,skipFirst=false)=>{
-    for(let i=skipFirst?1:0;i<=n;i++){
+    for(let i=0;i<=n;i++){
       const t=i/n;
-      add(cubicValue(p0.x,p1.x,p2.x,p3.x,t),cubicValue(p0.y,p1.y,p2.y,p3.y,t));
+      add(x1+(x2-x1)*t,y1+(y2-y1)*t);
     }
   };
 
-  lineSamples(geom.sourceX,geom.sourceY,geom.topStartX,geom.sourceY,4);
+  const cubicSamples=(p0,p1,p2,p3,n,skipFirst=false)=>{
+    for(let i=0;i<=n;i++){
+      if(skipFirst&&i===0)continue;
+      const t=i/n,u=1-t;
+      add(
+        u*u*u*p0.x+3*u*u*t*p1.x+3*u*t*t*p2.x+t*t*t*p3.x,
+        u*u*u*p0.y+3*u*u*t*p1.y+3*u*t*t*p2.y+t*t*t*p3.y
+      );
+    }
+  };
 
-  cubicSamples(
-    {x:geom.topStartX,y:geom.sourceY},
-    {x:geom.topStartX+geom.radius*.58,y:geom.sourceY},
-    {x:geom.verticalX,y:geom.sourceY+geom.sign*geom.radius*.42},
-    {x:geom.verticalX,y:geom.topEndY},
-    14,true
+  lineSamples(
+    geom.sourceX,geom.sourceY,
+    geom.curveStartX,geom.sourceY,
+    Math.max(2,Math.min(30,Math.ceil((geom.curveStartX-geom.sourceX)/8)))
   );
 
-  const verticalDistance=Math.abs(geom.bottomStartY-geom.topEndY);
-  lineSamples(geom.verticalX,geom.topEndY,geom.verticalX,geom.bottomStartY,Math.max(2,Math.ceil(verticalDistance/12)));
-
   cubicSamples(
-    {x:geom.verticalX,y:geom.bottomStartY},
-    {x:geom.verticalX,y:geom.targetY-geom.sign*geom.radius*.42},
-    {x:geom.verticalX+geom.radius*.42,y:geom.targetY},
-    {x:(geom.curveEndX??geom.xStart),y:geom.targetY},
-    14,true
+    {x:geom.curveStartX,y:geom.sourceY},
+    {x:geom.cp1x,y:geom.cp1y},
+    {x:geom.cp2x,y:geom.cp2y},
+    {x:geom.xStart,y:geom.targetY},
+    34,true
   );
-
-  if((geom.curveEndX??geom.xStart)<geom.xStart){
-    lineSamples(geom.curveEndX??geom.xStart,geom.yStart,geom.xStart,geom.yStart,
-      Math.max(2,Math.min(80,Math.ceil((geom.xStart-(geom.curveEndX??geom.xStart))/18))));
-  }
 
   const d0=dateFromX(geom.xStart),d1=dateFromX(geom.xEnd);
-  const duration=Math.max(0,(d1-d0)/dayMs());
-  lineSamples(geom.xStart,geom.yStart,geom.xEnd,geom.yEnd,Math.max(2,Math.min(240,Math.ceil(duration/2))));
+  const spanDays=Math.max(1,(d1-d0)/86400000);
+  const n=Math.max(8,Math.min(260,Math.ceil(spanDays/2)));
+
+  for(let i=1;i<=n;i++){
+    const t=i/n;
+    const date=new Date(d0.getTime()+(d1-d0)*t);
+    add(xDate(date),geom.yStart);
+  }
+
   return pts;
 }
 function catmullRomPath(points,move=true){
@@ -1679,9 +1788,9 @@ function buildRibbon(geom,widthFn){
   d+=' Z';
   return {d,maxWidth,last:pts[pts.length-1],lastWidth:widths[widths.length-1]};
 }
-function drawRibbonGroup({geom,state='active',widthFn,onClick,onDblClick,isolated=false,topHot=false}){
+function drawRibbonGroup({geom,state='active',widthFn,onClick,onDblClick,isolated=false}){
   const ribbon=buildRibbon(geom,widthFn);
-  const group=E('g',{class:`threadGroup${isolated?' isolated':''}${topHot?' topHot':''}`});
+  const group=E('g',{class:`threadGroup${isolated?' isolated':''}`});
   const visible=E('path',{d:ribbon.d,class:`threadRibbon ${stateClass(state)}`});
   const cap=E('circle',{cx:ribbon.last.x,cy:ribbon.last.y,r:Math.max(.4,ribbon.lastWidth/2),class:`threadCap ${stateClass(state)}`});
   const hit=E('path',{d:geom.d,class:'threadHit',style:`stroke-width:${Math.max(18,ribbon.maxWidth+12)}`});
@@ -1806,39 +1915,24 @@ function renderChart(){
       addRoleBox(lane,roleLabelX,y,true,()=>{isolatedThreadId=null;focusLane=null;subRoleFocus=null;render()},true);
     });
     const geometryById=new Map();
-    const hotIds=topHotThreadIds();
     layout.rows.forEach(row=>{
       const t=row.thread,y=row.y,parentGeom=row.child&&row.parent?geometryById.get(row.parent.id):null;
       const geom=row.child?pathChildThread(t,row,y,parentGeom):pathThreadFromRole(t,y);
       geometryById.set(t.id,geom);
-      const isTopHot=hotIds.has(t.id);
-      drawRibbonGroup({geom,state:t.state||'active',widthFn:date=>threadWidthAt(t,date),isolated:isolatedThreadId===t.id,topHot:isTopHot,onClick:()=>showThread(t.id),onDblClick:()=>toggleThreadIsolation(t.id)});
-      addThreadLabel(t,row,geom,y,isTopHot);
+      drawRibbonGroup({geom,state:t.state||'active',widthFn:date=>threadWidthAt(t,date),isolated:isolatedThreadId===t.id,onClick:()=>showThread(t.id),onDblClick:()=>toggleThreadIsolation(t.id)});
+      addThreadLabel(t,row,geom,y);
       historyFor(t.id).forEach(h=>{const d=D(h.date);if(!d||d<start()||d>end())return;const rawX=xDate(d);const x=Math.max(geom.xStart,Math.min(rawX,geom.rangeEnd));if(x>=geom.xStart-2&&x<=geom.rangeEnd+2)addHistory(h,x,geom.yStart)});
       nodesFor(t.id).forEach(n=>{const d=D(n.date||n.deadline);if(d&&(d<start()||d>end()))return;const rawX=d?xDate(d):geom.xEnd,x=Math.max(geom.xStart,Math.min(rawX,geom.rangeEnd));if(x>=geom.xStart-2&&x<=geom.rangeEnd+2)addNode(n,x,geom.yStart)});
     });
   }
 }
 
-function topHotThreadIds(){
-  const candidates=visibleThreads()
-    .filter(t=>isPrimaryThread(t))
-    .slice()
-    .sort((a,b)=>{
-      const heat=(b.heat||0)-(a.heat||0);
-      if(heat)return heat;
-      const stateScore=s=>s==='hot'?4:s==='active'?3:s==='watch'?2:1;
-      return stateScore(b.state)-stateScore(a.state);
-    });
-  return new Set(candidates.slice(0,3).map(t=>t.id));
-}
-
 function stateClass(s){return ['hot','active','watch','dormant','closed','fragile'].includes(s)?s:'active'}
 function addRoleBox(text,x,y,active,onClick,big=false){const div=H('div','labelBox',text); div.style.left=x+'px'; div.style.top=(y-(big?18:14))+'px'; div.style.fontSize=(big? (focusLane?22:16) : 16)+'px'; div.onclick=onClick; labelLayer.appendChild(div);}
-function addThreadLabel(t,row,geom,y,topHot=false){
+function addThreadLabel(t,row,geom,y){
   const fs=Math.max(12,Math.min(17,rowH*.4));
   const useBox=(isPrimaryThread(t)&&((t.heat||0)>=3||!t.parentId))||isolatedThreadId===t.id;
-  const cls=(useBox?'labelBox':'labelPlain')+' threadLabel'+(isolatedThreadId===t.id?' isolated':'')+(topHot?' topHot':'');
+  const cls=(useBox?'labelBox':'labelPlain')+' threadLabel'+(isolatedThreadId===t.id?' isolated':'');
   const div=H('div',cls,t.title);
   const naturalX=Math.max(geom.xStart+8,branchW+16);
   div.dataset.naturalX=String(naturalX);
@@ -2593,7 +2687,7 @@ async function bootViewer(){
   try{local=readStoredJson()}catch(e){}
 
   try{
-    const remoteUrl='../data/current.json?build=IPHONE_V1_8&t='+Date.now();
+    const remoteUrl='../data/current.json?build=IPHONE_V1_9&t='+Date.now();
     const res=await fetch(remoteUrl,{cache:'no-store'});
     if(res.ok){
       const remote=await res.json();
