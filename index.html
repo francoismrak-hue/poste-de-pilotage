@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Pilotage">
-<title>Poste de pilotage — iPhone V1.9.1</title>
+<title>Poste de pilotage — PILOT v2.0.1</title>
 <meta name="format-detection" content="telephone=no">
 <style>
 :root{--bg:#000;--panel:#080808;--panel2:#111;--text:#fff;--muted:#a9a9a9;--yellow:#ffd400;--yellow2:#ffea61;--yellowSoft:rgba(255,212,0,.18);--grid:#252525;--grid2:#141414;--leftw:320px;--rightw:420px;--rightwDynamic:420px;--headerh:126px;--axish:92px;}
@@ -577,7 +577,7 @@ body.zoomGestureActive #zoomGestureBadge{display:block}
 
 
 /* ==========================================================
-   IPHONE V1.9 — PAYSAGE CARTE
+   PILOT v2.0 — PAYSAGE CARTE
    ========================================================== */
 body.iphoneLandscape .hint,
 body.iphoneLandscape .desktopOnly,
@@ -684,7 +684,7 @@ body.iphoneLandscape .axisYearLabel{font-size:10px !important}
 
 
 /* ==========================================================
-   IPHONE V1.9 — NETTOYAGE UI
+   PILOT v2.0 — NETTOYAGE UI
    ========================================================== */
 
 /* Le badge de diagnostic n'existe plus. */
@@ -896,11 +896,64 @@ body.iphoneLandscape .mobileRoleChoice .count{
   text-align:center !important;
 }
 
+
+/* ==========================================================
+   PILOT v2.0 — SAFE AREAS + COMPOSITION PAYSAGE
+   ========================================================== */
+#safeLeftMask,#safeRightMask,#pilotTopDecor,#pilotBottomDecor{
+  display:none;pointer-events:none;
+}
+body.iphoneLandscape #safeLeftMask,
+body.iphoneLandscape #safeRightMask{
+  display:block;position:fixed;z-index:2147482500;
+  top:0;bottom:0;background:#000;
+}
+body.iphoneLandscape #safeLeftMask{
+  left:0;width:max(env(safe-area-inset-left),10px);
+  border-right:1px solid rgba(255,212,0,.16);
+}
+body.iphoneLandscape #safeRightMask{
+  right:0;width:max(env(safe-area-inset-right),6px);
+}
+body.iphoneLandscape #pilotTopDecor,
+body.iphoneLandscape #pilotBottomDecor{
+  display:block;position:fixed;z-index:2147482400;
+  left:max(env(safe-area-inset-left),10px);
+  right:max(env(safe-area-inset-right),6px);
+  height:7px;
+  background:linear-gradient(90deg,
+    rgba(255,212,0,0) 0%,
+    rgba(255,212,0,.42) 12%,
+    rgba(255,212,0,.10) 38%,
+    rgba(255,212,0,.04) 72%,
+    rgba(255,212,0,0) 100%);
+}
+body.iphoneLandscape #pilotTopDecor{
+  top:0;border-bottom:1px solid rgba(255,212,0,.10);
+}
+body.iphoneLandscape #pilotBottomDecor{
+  bottom:0;transform:scaleX(-1);
+  border-top:1px solid rgba(255,212,0,.10);
+}
+body.iphoneLandscape #app{
+  padding-left:max(env(safe-area-inset-left),10px)!important;
+  padding-right:max(env(safe-area-inset-right),6px)!important;
+}
+body.iphoneLandscape #landscapeControls{
+  right:calc(max(env(safe-area-inset-right),6px) + 6px)!important;
+  top:9px!important;
+}
+
+/* Epaisseur variable désactivée pour cette version. */
+#thicknessInfo,#mobileThicknessOut,#mobileThicknessIn,#mobileThicknessInfo{
+  display:none!important;
+}
+
 </style>
 </head>
 <body>
 <div id="app">
-<header id="header"><h1>Poste de pilotage V1</h1><div class="sub" id="subtitle">iPhone V1.9 · navigation inertielle + zoom directionnel</div>
+<header id="header"><h1>PILOT v2.0</h1><div class="sub" id="subtitle">PILOT v2.0 · navigation inertielle + zoom directionnel</div>
 <div id="mobileQuickBar">
   <label class="mobileFileLabel">JSON<input id="mobileFileInput" type="file" accept=".json,application/json"></label>
   <button id="mobilePeriodTop">3 mois</button>
@@ -909,9 +962,13 @@ body.iphoneLandscape .mobileRoleChoice .count{
 </div><div class="toolbar"><label class="fileLabel">Charger JSON<input id="fileInput" type="file" accept=".json,application/json"></label><button id="modeTime" class="active">Zoom temps</button><button id="modeDetail">Zoom détail</button><button id="zoomOut">−</button><span id="zoomInfo" class="small">100%</span><button id="zoomIn">+</button><span id="thicknessInfo" class="small" title="MAJ + molette">Épaisseur 100%</span><button id="reset">Reset vue</button><div class="sep"></div><button id="allRoles">Tous les rôles</button><button id="toggleSecondary">Afficher secondaires</button><button data-filter="all" class="active">Tout</button><button data-filter="hot">Chaud</button><button data-filter="active">Actif</button><button data-filter="watch">Veille</button><button data-filter="dormant">Dormant</button></div></header>
 <aside id="left"><div class="mobileDrawerHead"><strong>Rôles et fils</strong><button id="mobileCloseLeft">×</button></div><div id="leftInner"></div></aside>
 <main id="center"><div id="axisWrap"><div id="axisInner"><div id="axisContent"></div></div></div><div id="chartScroll"><div id="chartContent"><svg id="chartSvg"></svg><div id="labelLayer"></div></div></div><div class="hint"></div></main>
-<div id="nodeTooltip"></div><div id="panelResize" title="Glisser pour redimensionner le panneau"></div><aside id="right"><div class="detailHead"><div><div class="kicker">Panneau</div><strong>Détail / synthèse</strong></div><button id="togglePanel" title="Alterner entre largeur normale et 50 %">Panneau 50%</button><div class="mobileDetailActions mobileOnly"><button id="mobileIsolate">Isoler</button><button id="mobileCloseRight">×</button></div></div><div id="detail"><div class="card primary"><div class="kicker">iPhone V1.9</div><h2>Chargement</h2><p class="empty">Les données sont intégrées. Tu peux aussi charger un autre JSON.</p></div></div></aside>
+<div id="nodeTooltip"></div><div id="panelResize" title="Glisser pour redimensionner le panneau"></div><aside id="right"><div class="detailHead"><div><div class="kicker">Panneau</div><strong>Détail / synthèse</strong></div><button id="togglePanel" title="Alterner entre largeur normale et 50 %">Panneau 50%</button><div class="mobileDetailActions mobileOnly"><button id="mobileIsolate">Isoler</button><button id="mobileCloseRight">×</button></div></div><div id="detail"><div class="card primary"><h2>Chargement</h2><p class="empty">Les données sont intégrées. Tu peux aussi charger un autre JSON.</p></div></div></aside>
 
 
+<div id="safeLeftMask" aria-hidden="true"></div>
+<div id="safeRightMask" aria-hidden="true"></div>
+<div id="pilotTopDecor" aria-hidden="true"></div>
+<div id="pilotBottomDecor" aria-hidden="true"></div>
 <div id="landscapeControls" aria-label="Contrôles paysage">
   <button id="landscapeToggleLeft" title="Afficher / masquer le panneau gauche">◀︎</button>
   <button id="landscapeToggleMenus" title="Afficher / masquer les menus">☰</button>
@@ -959,7 +1016,7 @@ let timeRangeMode="all", viewStartOverride=null, viewEndOverride=null;
 let mobileRolesRoot=true, mobileRolesBrowseLane=null;
 
 const STORAGE_DATA_KEY='postePilotage:lastJson:v1';
-const STORAGE_VIEW_KEY='postePilotage:viewState:IPHONE:v1.9';
+const STORAGE_VIEW_KEY='pilot:viewState:IPHONE:v2.0';
 let restoringView=false;
 let saveTimer=null;
 
@@ -1020,7 +1077,7 @@ function applyStoredView(state){
   applyTimeRangeState(state.timeRangeMode|| (isMobileMode()?"3m":"all"),state.viewStart,state.viewEnd);
   if(Number.isFinite(state.pxPerDay)) pxPerDay=Math.max(minPxPerDay(),Math.min(380,state.pxPerDay));
   if(Number.isFinite(state.rowH)) rowH=Math.max(22,Math.min(80,state.rowH));
-  if(Number.isFinite(state.strokeScale)) strokeScale=Math.max(.4,Math.min(2.5,state.strokeScale));
+  if(Number.isFinite(state.strokeScale)) strokeScale=1;
   if(['time','detail'].includes(state.zoomMode)) zoomMode=state.zoomMode;
   if(['all','hot','active','watch','dormant'].includes(state.filter)) filter=state.filter;
   focusLane=state.focusLane && laneNames().includes(state.focusLane) ? state.focusLane : null;
@@ -1130,7 +1187,7 @@ function minPxPerDay(){
 function fitFullPeriod(){
   if(!DATA) return;
   pxPerDay = fitPxPerDay();
-  rowH = Math.max(22, Math.min(rowH || 34, 34));
+  rowH = Math.max(34, Math.min(rowH || 42, 46));
   render();
   chartScroll.scrollLeft = 0;
   chartScroll.scrollTop = 0;
@@ -1335,17 +1392,21 @@ function computeLayout(){
       byParent.get(key).push(t);
     });
 
-    const sortThreads=list=>list.sort((a,b)=>threadOwnStart(a)-threadOwnStart(b)||String(a.title).localeCompare(String(b.title),'fr'));
+    const stateRank=s=>s==='hot'?4:s==='active'?3:s==='watch'?2:s==='dormant'?1:0;
+    const sortThreads=list=>list.sort((a,b)=>
+      (b.heat||0)-(a.heat||0) ||
+      stateRank(b.state)-stateRank(a.state) ||
+      threadOwnStart(a)-threadOwnStart(b) ||
+      String(a.title).localeCompare(String(b.title),'fr')
+    );
 
+    // Lecture simple : parent au-dessus, puis enfants dessous.
     const treeRows=(t,lane,depth,parent)=>{
+      const out=[
+        {type:'thread',thread:t,lane,child:depth>0,parent:parent||null,depth}
+      ];
       const children=sortThreads([...(byParent.get(t.id)||[])]);
-      const upper=children.filter((_,i)=>i%2===0);
-      const lower=children.filter((_,i)=>i%2===1);
-      const out=[];
-
-      [...upper].reverse().forEach(c=>out.push(...treeRows(c,lane,depth+1,t)));
-      out.push({type:'thread',thread:t,lane,child:depth>0,parent:parent||null,depth});
-      lower.forEach(c=>out.push(...treeRows(c,lane,depth+1,t)));
+      children.forEach(c=>out.push(...treeRows(c,lane,depth+1,t)));
       return out;
     };
 
@@ -1360,7 +1421,7 @@ function computeLayout(){
           yByThread[row.thread.id]=y;
           y+=rowH;
         });
-        y+=rowH*.35;
+        y+=rowH*.48;
       });
       y+=rowH*.45;
     });
@@ -1707,8 +1768,8 @@ function widthFromActivity(events,date,heat=1,state='active'){
   if(state==='fragile')semantic=Math.max(semantic,2.2);
   return scaledWidth(Math.min(20,semantic));
 }
-function threadWidthAt(t,date){return widthFromActivity(activityEventsForThread(t),date,t.heat||1,t.state||'active')}
-function laneWidthAt(lane,date){return widthFromActivity(laneActivityEvents(lane),date,roleHeat(lane),'active')}
+function threadWidthAt(t,date){return 3.2}
+function laneWidthAt(lane,date){return 4.2}
 function centerlineSamples(geom){
   const pts=[];
   const add=(x,y)=>pts.push({x,y});
@@ -2322,11 +2383,7 @@ function zoomDetailAt(f, clientY){
   chartScroll.scrollTop=ratio*layout.height - localY;
   schedulePersistView();
 }
-function scaleThickness(f){
-  strokeScale=Math.max(.4,Math.min(2.5,strokeScale*f));
-  render();
-  schedulePersistView();
-}
+function scaleThickness(f){strokeScale=1;updateMobileIndicators();}
 
 document.querySelectorAll('#mobileNav button').forEach(b=>b.addEventListener('click',()=>openMobilePanel(b.dataset.mobileView)));
 document.getElementById('mobileRolesTop')?.addEventListener('click',()=>openMobilePanel('roles'));
@@ -2518,7 +2575,8 @@ chartScroll.addEventListener('pointerdown',e=>{
     touchMode='pan';
     touchStart={
       x:e.clientX,y:e.clientY,
-      left:chartScroll.scrollLeft,top:chartScroll.scrollTop
+      left:chartScroll.scrollLeft,top:chartScroll.scrollTop,
+      axis:null,lockThreshold:8
     };
     panSample={
       x:e.clientX,y:e.clientY,
@@ -2556,18 +2614,26 @@ chartScroll.addEventListener('pointermove',e=>{
   if(touchMode==='pan'&&touchPoints.size===1&&touchStart){
     const p=touchArray(touchPoints)[0];
     const dx=p.x-touchStart.x,dy=p.y-touchStart.y;
+    const ax=Math.abs(dx),ay=Math.abs(dy);
     if(Math.hypot(dx,dy)>4)touchMoved=true;
 
-    const newLeft=touchStart.left-dx;
-    const newTop=touchStart.top-dy;
+    if(!touchStart.axis && Math.max(ax,ay)>=touchStart.lockThreshold){
+      touchStart.axis=ax>=ay?'x':'y';
+    }
+
+    const lockedX=touchStart.axis==='y'?0:dx;
+    const lockedY=touchStart.axis==='x'?0:dy;
+
+    const newLeft=touchStart.left-lockedX;
+    const newTop=touchStart.top-lockedY;
     queueTouch({type:'pan',left:newLeft,top:newTop});
 
     // Vitesse de scroll lissée : positive = déplacement du contenu vers la droite/bas.
     const now=performance.now();
     if(panSample){
       const dt=Math.max(8,now-panSample.t);
-      const instVX=(newLeft-panSample.left)/dt;
-      const instVY=(newTop-panSample.top)/dt;
+      const instVX=touchStart.axis==='y'?0:(newLeft-panSample.left)/dt;
+      const instVY=touchStart.axis==='x'?0:(newTop-panSample.top)/dt;
       panSample.vx=panSample.vx*0.62+instVX*0.38;
       panSample.vy=panSample.vy*0.62+instVY*0.38;
       panSample.x=p.x;panSample.y=p.y;
@@ -2687,7 +2753,7 @@ async function bootViewer(){
   try{local=readStoredJson()}catch(e){}
 
   try{
-    const remoteUrl='../data/current.json?build=IPHONE_V1_9&t='+Date.now();
+    const remoteUrl='../data/current.json?build=PILOT_V2_0&t='+Date.now();
     const res=await fetch(remoteUrl,{cache:'no-store'});
     if(res.ok){
       const remote=await res.json();
