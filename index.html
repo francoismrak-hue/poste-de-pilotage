@@ -949,6 +949,23 @@ body.iphoneLandscape #landscapeControls{
   display:none!important;
 }
 
+
+/* ==========================================================
+   PILOT — TEST ROUTAGE ORTHOGONAL
+   Segments droits, angles 90°, un couloir par fil.
+   ========================================================== */
+.lifePath,.rolePath,.threadPath{
+  stroke-linecap:butt !important;
+  stroke-linejoin:miter !important;
+}
+.threadPath{
+  stroke:var(--yellow) !important;
+  fill:none !important;
+}
+.threadRibbon,.threadCap{
+  display:none !important;
+}
+
 </style>
 </head>
 <body>
@@ -1642,47 +1659,125 @@ function organicCurveGeom(sourceX,sourceY,targetY,targetEndX,mult=1,targetStartX
 }
 function pathRootToRole(lane){
   const y=layout.roleMid[lane],sy=rootY();
+  const lanes=layout.lanes||[];
+  const idx=Math.max(0,lanes.indexOf(lane));
 
-  const timeScale=Math.max(.18,Math.min(1.05,pxPerDay/54));
-  const startX=leftRootX;
-  const endX=roleX;
-  const width=Math.max(24,endX-startX);
+  const base=leftRootX+8;
+  const end=Math.max(base+6,roleX-7);
+  const step=(end-base)/Math.max(2,lanes.length+1);
+  const routeX=Math.min(end,base+step*(idx+1));
 
-  const tangent=Math.max(12,Math.min(width*.48,26+58*timeScale));
-
-  const cp1x=startX+tangent;
-  const cp2x=endX-tangent;
-
-  return `M0 ${sy} L${startX} ${sy} C${cp1x} ${sy}, ${cp2x} ${y}, ${endX} ${y}`;
+  return `M0 ${sy} L${routeX} ${sy} L${routeX} ${y} L${roleX} ${y}`;
 }
 function roleLabelWidth(text){return currentView()==='detail' ? Math.max(120, text.length*14+34) : Math.max(92, text.length*10+26)}
 function roleEndX(lane){return roleLabelX + roleLabelWidth(lane)}
 function laneRange(lane){let ds=[]; visibleThreads().filter(t=>t.lane===lane).forEach(t=>{const[a,b]=threadRange(t); ds.push(a,b)}); return [new Date(Math.min(...ds)),new Date(Math.max(...ds))]}
 function pathRoleToTimeline(lane,endX){const y=layout.roleMid[lane], sx=roleEndX(lane), c=curveSpan(.9), ex=Math.max(sx+c,endX); return `M${sx} ${y} C${sx+c*0.35} ${y}, ${sx+c*0.7} ${y}, ${sx+c} ${y} L${ex} ${y}`;}
 function roleTimelineGeom(lane,endX){
-  const y=layout.roleMid[lane],sourceX=roleEndX(lane),c=curveSpan(.9),xStart=sourceX+c,xEnd=Math.max(xStart,endX);
+  const y=layout.roleMid[lane];
+  const sourceX=roleEndX(lane);
+  const xStart=Math.max(sourceX+8,sourceX);
+  const xEnd=Math.max(xStart,endX);
   return {
-    d:`M${sourceX} ${y} C${sourceX+c*.35} ${y}, ${sourceX+c*.70} ${y}, ${xStart} ${y} L${xEnd} ${y}`,
-    sourceX,sourceY:y,cp1X:sourceX+c*.35,cp1Y:y,cp2X:sourceX+c*.70,cp2Y:y,
-    xStart,yStart:y,xEnd,yEnd:y,rangeStart:sourceX,rangeEnd:xEnd
+    d:`M${sourceX} ${y} L${xEnd} ${y}`,
+    sourceX,sourceY:y,
+    routeX:sourceX,
+    xStart,yStart:y,xEnd,yEnd:y,
+    rangeStart:sourceX,rangeEnd:xEnd,
+    points:[{x:sourceX,y},{x:xEnd,y}]
   };
 }
 
 function xHistMin(t){const d=firstHistoryDate(t);return d||threadOwnStart(t)}
+
+function routeColumnForThread(t,sourceX,xStart){
+  const rows=(layout.rows||[]).filter(r=>r.lane===t.lane);
+  const idx=Math.max(0,rows.findIndex(r=>r.thread?.id===t.id));
+  const count=Math.max(1,rows.length);
+
+  const laneBase=Math.max(roleEndX(t.lane),branchW*.42);
+  const minX=Math.max(sourceX+7,laneBase+5);
+
+  // Keep the routing area before the actual beginning of the thread.
+  // If the thread starts very early, columns compress rather than crossing its date.
+  const maxX=Math.max(
+    minX+1,
+    Math.min(xStart-8,laneBase+175)
+  );
+
+  if(maxX<=minX+2){
+    return Math.max(sourceX+3,(sourceX+xStart)/2);
+  }
+
+  const step=(maxX-minX)/(count+1);
+  const candidate=minX+step*(idx+1);
+
+  return Math.max(
+    sourceX+4,
+    Math.min(xStart-6,candidate)
+  );
+}
+
+function orthogonalGeom(sourceX,sourceY,targetY,targetEndX,xStart,routeX){
+  xStart=Math.max(sourceX+12,xStart);
+  routeX=Math.max(sourceX+3,Math.min(xStart-5,routeX));
+  const xEnd=Math.max(xStart+14,targetEndX);
+
+  const points=[
+    {x:sourceX,y:sourceY},
+    {x:routeX,y:sourceY},
+    {x:routeX,y:targetY},
+    {x:xStart,y:targetY},
+    {x:xEnd,y:targetY}
+  ];
+
+  const d=[
+    `M${sourceX} ${sourceY}`,
+    `L${routeX} ${sourceY}`,
+    `L${routeX} ${targetY}`,
+    `L${xStart} ${targetY}`,
+    `L${xEnd} ${targetY}`
+  ].join(' ');
+
+  return {
+    sourceX,sourceY,targetY,
+    routeX,
+    xStart,yStart:targetY,xEnd,yEnd:targetY,
+    rangeStart:sourceX,rangeEnd:xEnd,
+    points,d
+  };
+}
+
 function pathThreadFromRole(t,y){
-  const sourceX=Math.max(roleEndX(t.lane),branchW*.55);
+  const sourceX=Math.max(roleEndX(t.lane),branchW*.42);
   const sourceY=layout.roleMid[t.lane];
-  const startX=Math.max(sourceX+22,xDate(threadOwnStart(t)));
-  return organicCurveGeom(sourceX,sourceY,y,xDate(threadRange(t)[1]),1,startX);
+  const actualStart=xDate(threadOwnStart(t));
+  const xStart=Math.max(sourceX+18,actualStart);
+  const routeX=routeColumnForThread(t,sourceX,xStart);
+
+  return orthogonalGeom(
+    sourceX,sourceY,y,
+    xDate(threadRange(t)[1]),
+    xStart,routeX
+  );
 }
 function pathChildThread(t,row,y,parentGeom){
   const p=row.parent;
   const fallbackY=layout.yByThread[p.id]??layout.roleMid[t.lane];
-  const geom=parentGeom||pathThreadFromRole(p,fallbackY);
-  const rawSource=xDate(threadOwnStart(t));
-  const sourceX=Math.max(geom.rangeStart,Math.min(rawSource,geom.rangeEnd));
-  const sourceY=pointYOnThread(geom,sourceX);
-  return organicCurveGeom(sourceX,sourceY,y,xDate(threadRange(t)[1]),.92,Math.max(sourceX+16,rawSource));
+  const parent=parentGeom||pathThreadFromRole(p,fallbackY);
+
+  const sourceX=Number.isFinite(parent.routeX)?parent.routeX:parent.xStart;
+  const sourceY=parent.targetY;
+
+  const actualStart=xDate(threadOwnStart(t));
+  const xStart=Math.max(sourceX+18,actualStart);
+  const routeX=routeColumnForThread(t,sourceX,xStart);
+
+  return orthogonalGeom(
+    sourceX,sourceY,y,
+    xDate(threadRange(t)[1]),
+    xStart,routeX
+  );
 }
 function cubicValue(a,b,c,d,t){
   const u=1-t;
@@ -1690,16 +1785,8 @@ function cubicValue(a,b,c,d,t){
 }
 function pointYOnThread(geom,x){
   if(!geom)return 0;
-  if(x<=geom.curveStartX)return geom.sourceY;
-  if(x>=geom.xStart)return geom.yStart;
-
-  // Pour les branchements enfants, une interpolation smoothstep donne
-  // un point stable visuellement sur la courbe en S.
-  const t=Math.max(0,Math.min(1,
-    (x-geom.curveStartX)/Math.max(1,geom.xStart-geom.curveStartX)
-  ));
-  const s=t*t*(3-2*t);
-  return geom.sourceY+(geom.targetY-geom.sourceY)*s;
+  if(x<=(geom.routeX??geom.xStart))return geom.sourceY;
+  return geom.targetY;
 }
 
 
@@ -1771,51 +1858,27 @@ function widthFromActivity(events,date,heat=1,state='active'){
 function threadWidthAt(t,date){return 3.2}
 function laneWidthAt(lane,date){return 4.2}
 function centerlineSamples(geom){
+  const source=Array.isArray(geom.points)&&geom.points.length
+    ? geom.points
+    : [
+        {x:geom.sourceX,y:geom.sourceY},
+        {x:geom.xStart,y:geom.yStart},
+        {x:geom.xEnd,y:geom.yEnd}
+      ];
+
   const pts=[];
   const add=(x,y)=>pts.push({x,y});
 
-  const lineSamples=(x1,y1,x2,y2,n)=>{
-    for(let i=0;i<=n;i++){
+  for(let s=0;s<source.length-1;s++){
+    const a=source[s],b=source[s+1];
+    const len=Math.hypot(b.x-a.x,b.y-a.y);
+    const n=Math.max(1,Math.min(120,Math.ceil(len/10)));
+
+    for(let i=(s===0?0:1);i<=n;i++){
       const t=i/n;
-      add(x1+(x2-x1)*t,y1+(y2-y1)*t);
+      add(a.x+(b.x-a.x)*t,a.y+(b.y-a.y)*t);
     }
-  };
-
-  const cubicSamples=(p0,p1,p2,p3,n,skipFirst=false)=>{
-    for(let i=0;i<=n;i++){
-      if(skipFirst&&i===0)continue;
-      const t=i/n,u=1-t;
-      add(
-        u*u*u*p0.x+3*u*u*t*p1.x+3*u*t*t*p2.x+t*t*t*p3.x,
-        u*u*u*p0.y+3*u*u*t*p1.y+3*u*t*t*p2.y+t*t*t*p3.y
-      );
-    }
-  };
-
-  lineSamples(
-    geom.sourceX,geom.sourceY,
-    geom.curveStartX,geom.sourceY,
-    Math.max(2,Math.min(30,Math.ceil((geom.curveStartX-geom.sourceX)/8)))
-  );
-
-  cubicSamples(
-    {x:geom.curveStartX,y:geom.sourceY},
-    {x:geom.cp1x,y:geom.cp1y},
-    {x:geom.cp2x,y:geom.cp2y},
-    {x:geom.xStart,y:geom.targetY},
-    34,true
-  );
-
-  const d0=dateFromX(geom.xStart),d1=dateFromX(geom.xEnd);
-  const spanDays=Math.max(1,(d1-d0)/86400000);
-  const n=Math.max(8,Math.min(260,Math.ceil(spanDays/2)));
-
-  for(let i=1;i<=n;i++){
-    const t=i/n;
-    const date=new Date(d0.getTime()+(d1-d0)*t);
-    add(xDate(date),geom.yStart);
   }
-
   return pts;
 }
 function catmullRomPath(points,move=true){
@@ -1850,15 +1913,40 @@ function buildRibbon(geom,widthFn){
   return {d,maxWidth,last:pts[pts.length-1],lastWidth:widths[widths.length-1]};
 }
 function drawRibbonGroup({geom,state='active',widthFn,onClick,onDblClick,isolated=false}){
-  const ribbon=buildRibbon(geom,widthFn);
+  const sampleDate=dateFromX(geom.xStart??geom.sourceX);
+  const width=Math.max(2,widthFn?widthFn(sampleDate):3.2);
+
   const group=E('g',{class:`threadGroup${isolated?' isolated':''}`});
-  const visible=E('path',{d:ribbon.d,class:`threadRibbon ${stateClass(state)}`});
-  const cap=E('circle',{cx:ribbon.last.x,cy:ribbon.last.y,r:Math.max(.4,ribbon.lastWidth/2),class:`threadCap ${stateClass(state)}`});
-  const hit=E('path',{d:geom.d,class:'threadHit',style:`stroke-width:${Math.max(18,ribbon.maxWidth+12)}`});
-  group.appendChild(visible);group.appendChild(cap);group.appendChild(hit);
-  group.onclick=e=>{e.stopPropagation();if(onClick)onClick(e)};
-  if(onDblClick)group.ondblclick=e=>{e.preventDefault();e.stopPropagation();onDblClick(e)};
-  chartSvg.appendChild(group);return group;
+
+  const visible=E('path',{
+    d:geom.d,
+    class:`threadPath ${stateClass(state)}`,
+    style:`stroke-width:${width};stroke-linecap:butt;stroke-linejoin:miter`
+  });
+
+  const hit=E('path',{
+    d:geom.d,
+    class:'threadHit',
+    style:`stroke-width:${Math.max(18,width+13)};stroke-linecap:butt;stroke-linejoin:miter`
+  });
+
+  group.appendChild(visible);
+  group.appendChild(hit);
+
+  group.onclick=e=>{
+    e.stopPropagation();
+    if(onClick)onClick(e);
+  };
+  if(onDblClick){
+    group.ondblclick=e=>{
+      e.preventDefault();
+      e.stopPropagation();
+      onDblClick(e);
+    };
+  }
+
+  chartSvg.appendChild(group);
+  return group;
 }
 
 function laneThreads(lane){
@@ -2753,7 +2841,7 @@ async function bootViewer(){
   try{local=readStoredJson()}catch(e){}
 
   try{
-    const remoteUrl='../data/current.json?build=PILOT_V2_0&t='+Date.now();
+    const remoteUrl='../data/current.json?build=PILOT_V2_0_ORTHO&t='+Date.now();
     const res=await fetch(remoteUrl,{cache:'no-store'});
     if(res.ok){
       const remote=await res.json();
