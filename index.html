@@ -966,6 +966,80 @@ body.iphoneLandscape #landscapeControls{
   display:none !important;
 }
 
+
+/* ==========================================================
+   PILOT v2.2 — PORTRAIT + TIME
+   ========================================================== */
+body.iphonePortrait #header{
+  text-align:center !important;
+  padding-left:12px !important;
+  padding-right:12px !important;
+}
+body.iphonePortrait #header h1{
+  width:100% !important;
+  text-align:center !important;
+  margin:0 !important;
+}
+body.iphonePortrait #header .sub{display:none !important}
+
+/* Plus de hauteur utile */
+body.iphonePortrait{
+  --mobileNavH:calc(52px + env(safe-area-inset-bottom)) !important;
+  --axish:48px !important;
+}
+body.iphonePortrait #mobileNav{
+  bottom:0 !important;
+  height:var(--mobileNavH) !important;
+  padding:3px 4px max(2px,env(safe-area-inset-bottom)) !important;
+}
+body.iphonePortrait #mobileNav button{
+  min-height:39px !important;
+  font-size:9px !important;
+}
+body.iphonePortrait #center{
+  bottom:var(--mobileNavH) !important;
+}
+
+/* Chronologie portrait = une seule ligne */
+body.iphonePortrait .axisLabel,
+body.iphonePortrait .axisTick,
+body.iphonePortrait .axisYearBand,
+body.iphonePortrait .axisYearLabel,
+body.iphonePortrait .axisRowLine.year{
+  display:none !important;
+}
+body.iphonePortrait .axisRowLine.month{top:47px !important}
+body.iphonePortrait .axisMonthBand{
+  top:0 !important;height:48px !important;
+  border-left:1px solid #343434 !important;
+  background:rgba(255,212,0,.018) !important;
+}
+body.iphonePortrait .axisMonthBand.alt{
+  background:rgba(255,255,255,.012) !important;
+}
+body.iphonePortrait .axisMonthLabel{
+  top:0 !important;height:48px !important;
+  display:flex !important;align-items:center !important;
+  padding-left:8px !important;
+  font-size:11px !important;font-weight:800 !important;color:#ddd !important;
+}
+
+/* TIME OFF = la notion de calendrier disparaît */
+body.timeOff{--axish:0px !important}
+body.timeOff #axisWrap{display:none !important}
+body.timeOff #chartScroll{top:0 !important}
+body.timeOff .gridV{display:none !important}
+
+/* Bouton TIME */
+#mobileNav button[data-mobile-view="time"]::before{
+  content:"⏱";
+  font-size:16px;
+}
+#mobileNav button[data-mobile-view="time"].active{
+  background:rgba(255,212,0,.12) !important;
+  color:var(--yellow) !important;
+}
+
 </style>
 </head>
 <body>
@@ -1018,6 +1092,7 @@ body.iphoneLandscape #landscapeControls{
 <nav id="mobileNav" aria-label="Navigation mobile">
   <button data-mobile-view="chart" class="active">Carte</button>
   <button data-mobile-view="roles">Rôles</button>
+  <button data-mobile-view="time" class="active" aria-pressed="true">Time</button>
   <button data-mobile-view="detail">Détail</button>
   <button data-mobile-view="controls">Réglages</button>
 </nav>
@@ -1482,11 +1557,11 @@ function clippedPeriod(startDate,endDate){
   return e>s?[s,e]:null;
 }
 function renderCalendarBands(){
-  const landscape=document.body.classList.contains('iphoneLandscape');
+  const singleLine=
+    document.body.classList.contains('iphoneLandscape') ||
+    document.body.classList.contains('iphonePortrait');
 
-  if(landscape){
-    // Une seule bande mensuelle. L'année est intégrée au libellé
-    // du premier mois visible et à chaque janvier.
+  if(singleLine){
     axisContent.appendChild(H('div','axisRowLine month'));
 
     let m=new Date(start().getFullYear(),start().getMonth(),1);
@@ -1508,8 +1583,8 @@ function renderCalendarBands(){
 
         if(w>=34){
           const withYear=firstVisible || m.getMonth()===0;
-          const text=monthsShort[m.getMonth()] + (withYear?' '+m.getFullYear():'');
-          const lab=H('div','axisMonthLabel',text);
+          const txt=monthsShort[m.getMonth()] + (withYear?' '+m.getFullYear():'');
+          const lab=H('div','axisMonthLabel',txt);
           lab.style.left=x1+'px';
           lab.style.width=Math.max(0,w-3)+'px';
           axisContent.appendChild(lab);
@@ -1518,7 +1593,6 @@ function renderCalendarBands(){
         chartSvg.appendChild(E('line',{
           x1:x1,y1:0,x2:x1,y2:layout.height,class:'gridV'
         }));
-
         firstVisible=false;
       }
 
@@ -1565,34 +1639,54 @@ function renderCalendarBands(){
   }
 }
 function renderAxis(){
+  if(document.body.classList.contains('timeOff'))return;
+
   renderCalendarBands();
-  if(document.body.classList.contains('iphoneLandscape')){
+
+  const singleLine=
+    document.body.classList.contains('iphoneLandscape') ||
+    document.body.classList.contains('iphonePortrait');
+
+  if(singleLine){
     if(currentView()==='detail'){
       layout.rows.forEach(r=>{
-        chartSvg.appendChild(E('line',{x1:0,y1:r.y+14,x2:layout.width,y2:r.y+14,class:'gridH'}));
+        chartSvg.appendChild(E('line',{
+          x1:0,y1:r.y+14,x2:layout.width,y2:r.y+14,class:'gridH'
+        }));
       });
     }
     return;
   }
+
   const info=stepInfo();
   const total=(end()-start())/dayMs();
   let prevDate=null;
+
   for(let i=0;i<=total+0.001;i+=info.days){
     const d=new Date(start().getTime()+i*dayMs());
     const x=xDate(d);
     const tick=H('div','axisTick');
     tick.style.left=x+'px';
     axisContent.appendChild(tick);
+
     const labelText=axisLabelText(d,info,prevDate);
     const lab=H('div','axisLabel',labelText);
     lab.style.left=(x+5)+'px';
-    if(info.mode==='fortnight') lab.style.fontSize='10px';
+    if(info.mode==='fortnight')lab.style.fontSize='10px';
     axisContent.appendChild(lab);
-    chartSvg.appendChild(E('line',{x1:x,y1:0,x2:x,y2:layout.height,class:i%1===0?'gridV':'gridVMinor'}));
+
+    chartSvg.appendChild(E('line',{
+      x1:x,y1:0,x2:x,y2:layout.height,class:'gridV'
+    }));
     prevDate=d;
   }
+
   if(currentView()==='detail'){
-    layout.rows.forEach(r=>{chartSvg.appendChild(E('line',{x1:0,y1:r.y+14,x2:layout.width,y2:r.y+14,class:'gridH'}));});
+    layout.rows.forEach(r=>{
+      chartSvg.appendChild(E('line',{
+        x1:0,y1:r.y+14,x2:layout.width,y2:r.y+14,class:'gridH'
+      }));
+    });
   }
 }
 function render(){if(!DATA)return;applyResponsiveMetrics();activityCache.clear();laneActivityCache.clear();computeLayout();clear();setSizes();renderAxis();renderChart();renderSidebar();syncScroll();const isolated=isolatedThreadId?threadById(isolatedThreadId):null;subtitle.textContent=`${DATA.meta.title||'Poste de pilotage'} · ${rangeLabel()} · ${dateLabel(start())} → ${dateLabel(end())}${focusLane?' · focus : '+focusLane:''}${isolated?' · isolé : '+isolated.title:''}`;zoomInfo.textContent=(zoomMode==='time'?Math.round(pxPerDay/54*100):Math.round(rowH/34*100))+'%';if(thicknessInfo)thicknessInfo.textContent='Épaisseur '+Math.round(strokeScale*100)+'%';updateMobileIndicators();updateMobileIsolateButton();if(typeof applyIPhoneLayout==='function')applyIPhoneLayout(false);}
@@ -1751,6 +1845,16 @@ function orthogonalGeom(sourceX,sourceY,targetY,targetEndX,xStart,routeX){
 function pathThreadFromRole(t,y){
   const sourceX=Math.max(roleEndX(t.lane),branchW*.42);
   const sourceY=layout.roleMid[t.lane];
+
+  if(document.body.classList.contains('timeOff')){
+    const rows=(layout.rows||[]).filter(r=>r.lane===t.lane);
+    const idx=Math.max(0,rows.findIndex(r=>r.thread?.id===t.id));
+    const routeX=sourceX+16+Math.min(30,idx*2);
+    const xStart=routeX+34;
+    const xEnd=xStart+Math.max(220,chartScroll.clientWidth*.72);
+    return orthogonalGeom(sourceX,sourceY,y,xEnd,xStart,routeX);
+  }
+
   const actualStart=xDate(threadOwnStart(t));
   const xStart=Math.max(sourceX+18,actualStart);
   const routeX=routeColumnForThread(t,sourceX,xStart);
@@ -1768,6 +1872,13 @@ function pathChildThread(t,row,y,parentGeom){
 
   const sourceX=Number.isFinite(parent.routeX)?parent.routeX:parent.xStart;
   const sourceY=parent.targetY;
+
+  if(document.body.classList.contains('timeOff')){
+    const routeX=sourceX+14;
+    const xStart=Math.max(parent.xStart+24,routeX+30);
+    const xEnd=xStart+Math.max(190,chartScroll.clientWidth*.62);
+    return orthogonalGeom(sourceX,sourceY,y,xEnd,xStart,routeX);
+  }
 
   const actualStart=xDate(threadOwnStart(t));
   const xStart=Math.max(sourceX+18,actualStart);
@@ -2198,6 +2309,39 @@ function refreshThreadLabelPositions(){
     el.style.left=Math.min(Math.max(natural,pinnedLeft),latestX)+'px';
   });
 }
+
+let timeMode=true;
+
+function updateTimeButton(){
+  const btn=document.querySelector('#mobileNav button[data-mobile-view="time"]');
+  if(!btn)return;
+  btn.classList.toggle('active',timeMode);
+  btn.setAttribute('aria-pressed',timeMode?'true':'false');
+  btn.title=timeMode?'Masquer le temps':'Afficher le temps';
+}
+
+function applyTimeMode(){
+  document.body.classList.toggle('timeOff',!timeMode);
+  updateTimeButton();
+  if(!DATA)return;
+
+  applyResponsiveMetrics();
+  render();
+
+  requestAnimationFrame(()=>{
+    if(!timeMode){
+      chartScroll.scrollLeft=0;
+      chartScroll.scrollTop=0;
+    }
+    syncScroll();
+  });
+}
+
+function toggleTimeMode(){
+  timeMode=!timeMode;
+  applyTimeMode();
+}
+
 let mobilePanel='chart';
 function updateMobileIndicators(){
   if(mobilePeriodTop)mobilePeriodTop.textContent=rangeLabel();
@@ -2473,7 +2617,10 @@ function zoomDetailAt(f, clientY){
 }
 function scaleThickness(f){strokeScale=1;updateMobileIndicators();}
 
-document.querySelectorAll('#mobileNav button').forEach(b=>b.addEventListener('click',()=>openMobilePanel(b.dataset.mobileView)));
+document.querySelectorAll('#mobileNav button').forEach(b=>b.addEventListener('click',()=>{
+  if(b.dataset.mobileView==='time'){toggleTimeMode();return;}
+  openMobilePanel(b.dataset.mobileView);
+}));
 document.getElementById('mobileRolesTop')?.addEventListener('click',()=>openMobilePanel('roles'));
 document.getElementById('mobileControlsTop')?.addEventListener('click',()=>openMobilePanel('controls'));
 mobilePeriodTop?.addEventListener('click',()=>{openMobilePanel('controls');setTimeout(()=>document.getElementById('mobilePeriodGroup')?.scrollIntoView({block:'start',behavior:'smooth'}),80);});
@@ -2841,7 +2988,7 @@ async function bootViewer(){
   try{local=readStoredJson()}catch(e){}
 
   try{
-    const remoteUrl='../data/current.json?build=PILOT_V2_0_ORTHO&t='+Date.now();
+    const remoteUrl='../data/current.json?build=PILOT_V2_2_TIME&t='+Date.now();
     const res=await fetch(remoteUrl,{cache:'no-store'});
     if(res.ok){
       const remote=await res.json();
@@ -2866,6 +3013,7 @@ async function bootViewer(){
   detail.innerHTML='<div class="card primary"><h2>JSON introuvable</h2></div>';
 }
 bootViewer();
+requestAnimationFrame(()=>applyTimeMode());
 window.addEventListener('beforeunload',persistViewState);
 </script>
 </body></html>
