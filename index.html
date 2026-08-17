@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Pilotage">
-<title>PILOT v2.1 — PC</title>
+<title>PILOT v2.2 — PC</title>
 <meta name="format-detection" content="telephone=no">
 <style>
 :root{--bg:#000;--panel:#080808;--panel2:#111;--text:#fff;--muted:#a9a9a9;--yellow:#ffd400;--yellow2:#ffea61;--yellowSoft:rgba(255,212,0,.18);--grid:#252525;--grid2:#141414;--leftw:320px;--rightw:420px;--rightwDynamic:420px;--headerh:126px;--axish:92px;}
@@ -1384,11 +1384,227 @@ body.timeOff .gridV{
 }
 .deepNodeLabel strong{color:var(--yellow)}
 
+
+/* ==========================================================
+   PILOT v2.2 — PC / DOMAIN → ROLE → THREADS
+   ========================================================== */
+
+/* Header almost empty: title + Time only */
+#header{
+  height:96px !important;
+  padding:18px 24px !important;
+  border-bottom:1px solid #202020 !important;
+}
+#header h1{
+  margin:0 !important;
+  color:var(--yellow) !important;
+  font-size:42px !important;
+  line-height:1 !important;
+  font-weight:900 !important;
+  letter-spacing:-.02em !important;
+}
+#header .sub{display:none !important}
+#header .toolbar > *{display:none !important}
+#desktopTimeToggle{
+  display:flex !important;
+  position:absolute !important;
+  right:24px !important;
+  top:17px !important;
+  min-width:220px !important;
+  height:62px !important;
+  padding:0 26px !important;
+  justify-content:center !important;
+  align-items:center !important;
+  border-radius:999px !important;
+  border:1px solid var(--yellow) !important;
+  background:var(--yellow) !important;
+  color:#000 !important;
+  font-size:24px !important;
+  font-weight:900 !important;
+}
+#desktopTimeToggle:not(.active){
+  background:#111 !important;
+  color:var(--yellow) !important;
+}
+
+/* Main layout */
+:root{
+  --pcDomainW:150px;
+  --pcRoleW:260px;
+}
+
+#pcDomainRail{
+  left:18px !important;
+  top:64px !important;
+  width:var(--pcDomainW) !important;
+  gap:18px !important;
+}
+.pcDomain{
+  position:relative !important;
+  width:auto !important;
+  max-width:145px !important;
+  padding:10px 14px !important;
+  border-radius:10px !important;
+  font-size:18px !important;
+  background:#4a4a4a !important;
+  color:#080808 !important;
+}
+.pcDomain.active{
+  background:var(--yellow) !important;
+  color:#000 !important;
+}
+.pcDomain.global{
+  background:#262626 !important;
+  color:#bfbfbf !important;
+}
+.pcDomain.global.active{
+  background:var(--yellow) !important;
+  color:#000 !important;
+}
+
+/* Vertical role tree. It replaces the old top chip row. */
+#pcRoleRail{
+  left:190px !important;
+  top:64px !important;
+  right:auto !important;
+  width:var(--pcRoleW) !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:flex-start !important;
+  gap:8px !important;
+  padding-left:26px !important;
+  pointer-events:auto !important;
+}
+#pcRoleRail.hasRoles::before{
+  content:"";
+  position:absolute;
+  left:8px;
+  top:14px;
+  bottom:14px;
+  width:2px;
+  background:var(--yellow);
+}
+.pcRole{
+  position:relative !important;
+  min-width:205px !important;
+  max-width:240px !important;
+  padding:8px 12px !important;
+  border:0 !important;
+  border-radius:9px !important;
+  background:#4b4b4b !important;
+  color:#090909 !important;
+  font-size:13px !important;
+  font-weight:850 !important;
+  text-align:left !important;
+  white-space:normal !important;
+}
+.pcRole::before{
+  content:"";
+  position:absolute;
+  left:-18px;
+  top:50%;
+  width:18px;
+  height:2px;
+  background:var(--yellow);
+}
+.pcRole.active{
+  background:var(--yellow) !important;
+  color:#000 !important;
+}
+.pcRole.active::after{
+  content:"";
+  position:absolute;
+  left:100%;
+  top:50%;
+  width:90px;
+  height:2px;
+  background:var(--yellow);
+}
+
+/* Domain-to-role connector */
+#pcDomainConnector{
+  position:absolute;
+  z-index:58;
+  left:150px;
+  top:0;
+  width:48px;
+  height:100%;
+  pointer-events:none;
+}
+#pcDomainConnector .h{
+  position:absolute;
+  left:0;
+  width:48px;
+  height:2px;
+  background:var(--yellow);
+}
+
+/* The map starts after the role tree, with no duplicate domain label */
+#chartScroll{
+  padding-left:430px !important;
+}
+#axisWrap{
+  padding-left:430px !important;
+}
+#axisContent{
+  margin-left:430px !important;
+}
+
+/* Bottom filter panel ×2 */
+#pcFilters{
+  left:18px !important;
+  bottom:18px !important;
+  gap:10px !important;
+  padding:14px 15px !important;
+  border-radius:16px !important;
+}
+#pcFilters button{
+  padding:10px 16px !important;
+  font-size:17px !important;
+  border-radius:999px !important;
+}
+#pcFilters .sep{
+  height:36px !important;
+  width:2px !important;
+}
+
+/* Bigger cursor hit area, visual line stays 3px */
+#pcTimeCursor{
+  width:19px !important;
+  margin-left:-8px !important;
+  background:linear-gradient(90deg,
+    transparent 0, transparent 8px,
+    #1683ff 8px,#1683ff 11px,
+    transparent 11px,transparent 100%) !important;
+  box-shadow:none !important;
+  cursor:ew-resize !important;
+  z-index:90 !important;
+  touch-action:none !important;
+}
+#pcTimeCursor::before{
+  left:1px !important;
+  top:-8px !important;
+  width:17px !important;
+  height:17px !important;
+}
+#pcCursorLabel{z-index:91 !important}
+
+/* Detail zoom can become extremely deep */
+.deepNodeLabel{font-size:11px !important;max-width:270px !important}
+
+
+/* Remove duplicated labels inside the SVG/map. Navigation tree owns them. */
+body.pcRoleTree .roleLabel,
+body.pcRoleTree .roleBig,
+body.pcRoleTree .roleLabelHit{
+  display:none !important;
+}
+
 </style>
 </head>
 <body>
 <div id="app">
-<header id="header"><h1>PILOT v2.1</h1><div class="sub" id="subtitle">PILOT v2.0 · navigation inertielle + zoom directionnel</div>
+<header id="header"><h1>PILOT v2.2</h1><div class="sub" id="subtitle">PILOT v2.0 · navigation inertielle + zoom directionnel</div>
 <div id="mobileQuickBar">
   <label class="mobileFileLabel">JSON<input id="mobileFileInput" type="file" accept=".json,application/json"></label>
   <button id="mobilePeriodTop">3 mois</button>
@@ -1398,6 +1614,7 @@ body.timeOff .gridV{
 <aside id="left"><div class="mobileDrawerHead"><strong>Rôles et fils</strong><button id="mobileCloseLeft">×</button></div><div id="leftInner"></div></aside>
 <main id="center">
 <div id="pcDomainRail"></div>
+<div id="pcDomainConnector"><span class="h"></span></div>
 <div id="pcRoleRail"></div>
 <div id="pcFilters"></div>
 <div id="pcTodayLine"></div>
@@ -1458,7 +1675,7 @@ let timeRangeMode="all", viewStartOverride=null, viewEndOverride=null;
 let mobileRolesRoot=true, mobileRolesBrowseLane=null;
 
 const STORAGE_DATA_KEY='postePilotage:lastJson:v1';
-const STORAGE_VIEW_KEY='pilot:viewState:PC:v2.1';
+const STORAGE_VIEW_KEY='pilot:viewState:PC:v2.2';
 let restoringView=false;
 let saveTimer=null;
 
@@ -1547,15 +1764,7 @@ function applyStoredView(state){
 
 let branchW=340,leftRootX=24,roleX=130,roleLabelX=170,rightPad=280;
 function isMobileMode(){return false}
-function applyResponsiveMetrics(){branchW=210;leftRootX=145;roleX=180;roleLabelX=194;rightPad=220;}
-const app=document.getElementById("app"), togglePanelBtn=document.getElementById("togglePanel"), panelResize=document.getElementById("panelResize"), nodeTooltip=document.getElementById("nodeTooltip"), chartScroll=document.getElementById("chartScroll"), chartContent=document.getElementById("chartContent"), chartSvg=document.getElementById("chartSvg"), labelLayer=document.getElementById("labelLayer"), axisInner=document.getElementById("axisInner"), axisContent=document.getElementById("axisContent"), leftInner=document.getElementById("leftInner"), detail=document.getElementById("detail"), subtitle=document.getElementById("subtitle"), zoomInfo=document.getElementById("zoomInfo"), thicknessInfo=document.getElementById("thicknessInfo"),mobileBackdrop=document.getElementById("mobileBackdrop"),mobileControlsSheet=document.getElementById("mobileControlsSheet"),mobileIsolate=document.getElementById("mobileIsolate"),mobileTimeInfo=document.getElementById("mobileTimeInfo"),mobileDetailInfo=document.getElementById("mobileDetailInfo"),mobileThicknessInfo=document.getElementById("mobileThicknessInfo"),mobilePeriodTop=document.getElementById("mobilePeriodTop"),mobileRangeSummary=document.getElementById("mobileRangeSummary"),mobileCustomRange=document.getElementById("mobileCustomRange"),mobileRangeStart=document.getElementById("mobileRangeStart"),mobileRangeEnd=document.getElementById("mobileRangeEnd");
-
-function pcClampDate(d){return new Date(Math.max(start().getTime(),Math.min(end().getTime(),d.getTime())))}
-function pcDateLabel(d){return d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short',year:'numeric'})}
-function pcDateFromX(clientX){
-  const rect=chartScroll.getBoundingClientRect();
-  return pcClampDate(dateFromX(clientX-rect.left+chartScroll.scrollLeft));
-}
+function applyResponsiveMetrics(){branchW=465;leftRootX=425;roleX=452;roleLabelX=470;rightPad=220;}
 function updatePCCursor(){
   if(!DATA)return;
   const cursor=document.getElementById('pcTimeCursor');
@@ -1603,13 +1812,38 @@ function setupPCCursor(){
   const c=document.getElementById('pcTimeCursor');
   if(!c)return;
   let dragging=false;
-  c.addEventListener('pointerdown',e=>{dragging=true;c.setPointerCapture?.(e.pointerId);e.preventDefault()});
-  c.addEventListener('pointermove',e=>{
+
+  const move=e=>{
     if(!dragging)return;
-    pcCursorDate=pcDateFromX(e.clientX);updatePCCursor();renderPCCursorPanel();
+    pcCursorDate=pcDateFromX(e.clientX);
+    updatePCCursor();
+    renderPCCursorPanel();
+    e.preventDefault();
+  };
+  const stop=()=>{dragging=false};
+
+  c.addEventListener('pointerdown',e=>{
+    dragging=true;
+    pcCursorDate=pcDateFromX(e.clientX);
+    updatePCCursor();
+    renderPCCursorPanel();
+    e.preventDefault();
+    e.stopPropagation();
   });
-  c.addEventListener('pointerup',e=>{dragging=false;c.releasePointerCapture?.(e.pointerId)});
-  c.addEventListener('pointercancel',()=>dragging=false);
+
+  window.addEventListener('pointermove',move,{passive:false});
+  window.addEventListener('pointerup',stop);
+  window.addEventListener('pointercancel',stop);
+
+  // Alt-click anywhere on the timeline also moves the cursor instantly.
+  chartScroll.addEventListener('pointerdown',e=>{
+    if(!e.altKey)return;
+    pcCursorDate=pcDateFromX(e.clientX);
+    updatePCCursor();
+    renderPCCursorPanel();
+    e.preventDefault();
+  });
+
   chartScroll.addEventListener('scroll',updatePCCursor);
 }
 
@@ -1619,35 +1853,78 @@ let pcSelectedRole=null;
 let pcSelectedThread=null;
 let pcCursorDate=new Date();
 
+const PC_ROLE_TAXONOMY={
+  'Deck 8':[
+    {id:'d8_producer',name:'Producteur visuel',match:t=>t.rolePrimary==='role_deck8_production'},
+    {id:'d8_director',name:'Réalisateur / tournage',match:t=>/(tournage|film|clip|interview|photo)/i.test(t.title)},
+    {id:'d8_post',name:'Montage / post-production',match:t=>/(montage|post-production|post-prod|capsule)/i.test(t.title)},
+    {id:'d8_motion3d',name:'Motion / 3D / IA',match:t=>/(motion|3d| ia|sdx|aziz|unlock)/i.test(t.title)},
+    {id:'d8_business',name:'Dirigeant / commercial',match:t=>t.rolePrimary==='role_deck8_business'||(t.roleSecondary||[]).includes('role_deck8_business')},
+    {id:'d8_prospect',name:'Prospection / CRM',match:t=>/(prospect|crm|relance|axiom|matrix|salon)/i.test(t.title)},
+    {id:'d8_admin',name:'Comptabilité / gestion',match:t=>/(admin|compta|tva|factur|devis|finance)/i.test(t.title)},
+    {id:'d8_com',name:'Communication / site',match:t=>/(site deck|linkedin|communication|mds)/i.test(t.title)}
+  ],
+  'Famille':[
+    {id:'fam_pere',name:'Père',match:t=>t.rolePrimary==='role_pere'||(t.roleSecondary||[]).includes('role_pere')},
+    {id:'fam_conjoint',name:'Conjoint',match:t=>t.rolePrimary==='role_conjoint'||(t.roleSecondary||[]).includes('role_conjoint')},
+    {id:'fam_enfants',name:'Enfants',match:t=>/(hanna|oscar|flore|enfant|scout|guitare)/i.test(t.title)},
+    {id:'fam_elargie',name:'Famille élargie',match:t=>/(sœur|parents|famille élargie)/i.test(t.title)}
+  ],
+  'Admin':[
+    {id:'adm_compta',name:'Comptabilité / TVA',match:t=>/(compta|tva)/i.test(t.title)},
+    {id:'adm_fact',name:'Facturation / devis',match:t=>/(factur|devis)/i.test(t.title)},
+    {id:'adm_fin',name:'Banque / finances',match:t=>/(banque|finance|prêt|urssaf)/i.test(t.title)}
+  ],
+  'Maison':[
+    {id:'house_manage',name:'Gestion maison',match:t=>true},
+    {id:'house_work',name:'Travaux / réparations',match:t=>/(travaux|vitrier|interphone|robinet|jardin|terrasse|pergola)/i.test(t.title)},
+    {id:'house_sort',name:'Rangement / désencombrement',match:t=>/(rangement|poussette|tri|bureau)/i.test(t.title)}
+  ],
+  'École / Collectif':[
+    {id:'school_parent',name:'Parent école / collège',match:t=>t.rolePrimary==='role_ecole'||/(école|collège|parent)/i.test(t.title)},
+    {id:'school_collective',name:'Collectif / AMAP',match:t=>t.rolePrimary==='role_collectif'||/(amap|collectif|scout)/i.test(t.title)}
+  ],
+  'Amitié':[
+    {id:'friends',name:'Ami / gardien des liens',match:t=>true}
+  ],
+  'MRAK':[
+    {id:'mrak_author',name:'Auteur / chercheur',match:t=>true},
+    {id:'mrak_projects',name:'Projets éditoriaux / podcasts',match:t=>/(podcast|amanda|ophélie)/i.test(t.title)}
+  ],
+  'Équilibre':[
+    {id:'eq_health',name:'Santé',match:t=>/(santé|dentiste|dermato|tabac)/i.test(t.title)},
+    {id:'eq_sleep',name:'Sommeil / rythme',match:t=>/(sommeil|rythme)/i.test(t.title)},
+    {id:'eq_sport',name:'Sport / cardio',match:t=>/(sport|cardio|piscine)/i.test(t.title)},
+    {id:'eq_recovery',name:'Récupération / respiration',match:t=>/(équilibre|récupération|repos)/i.test(t.title)}
+  ]
+};
+
 function pcDomainNames(){
   const preferred=['Deck 8','Famille','Admin','Maison','École / Collectif','Amitié','MRAK','Équilibre'];
   const present=new Set((DATA?.threads||[]).map(t=>t.lane));
   return preferred.filter(x=>present.has(x));
 }
 function pcRolesForDomain(domain){
-  if(!domain)return[];
-  return (DATA?.roles||[]).filter(r=>r.lane===domain);
+  return PC_ROLE_TAXONOMY[domain]||[];
 }
-function pcRoleName(r){
-  const short={
-    role_deck8_production:'Producteur visuel',
-    role_deck8_business:'Dirigeant / commercial',
-    role_admin_finance:'Gestionnaire admin-financier',
-    role_pere:'Père',
-    role_conjoint:'Conjoint',
-    role_maison:'Gestionnaire maison',
-    role_ecole:'Parent école / collège',
-    role_collectif:'Collectif',
-    role_ami:'Ami',
-    role_mrak:'Auteur / chercheur',
-    role_equilibre:'Personne à préserver'
-  };
-  return short[r.id]||r.name||r.id;
-}
+function pcRoleName(r){return r.name}
 function pcMatchesRole(t){
-  return !pcSelectedRole ||
-    t.rolePrimary===pcSelectedRole ||
-    (t.roleSecondary||[]).includes(pcSelectedRole);
+  if(!pcSelectedRole)return true;
+  const role=pcRolesForDomain(pcSelectedDomain).find(r=>r.id===pcSelectedRole);
+  return role?!!role.match(t):true;
+}
+
+function updateDomainConnector(){
+  const connector=document.getElementById('pcDomainConnector');
+  const active=document.querySelector('.pcDomain.active:not(.global)');
+  const roleRail=document.getElementById('pcRoleRail');
+  if(!connector||!active||!roleRail){return}
+  const cRect=document.getElementById('center').getBoundingClientRect();
+  const a=active.getBoundingClientRect();
+  const y=(a.top+a.height/2)-cRect.top;
+  connector.style.top='0px';
+  const h=connector.querySelector('.h');
+  h.style.top=y+'px';
 }
 function renderPCDomains(){
   const box=document.getElementById('pcDomainRail');
@@ -1660,7 +1937,8 @@ function renderPCDomains(){
   global.onclick=()=>{
     pcSelectedDomain=null;pcSelectedRole=null;pcSelectedThread=null;
     focusLane=null;subRoleFocus=null;isolatedThreadId=null;
-    render();showLaneSummary?.(pcDomainNames()[0]||'Deck 8');
+    render();
+    detail.innerHTML='<div class="card"><div class="kicker">GLOBAL</div><h2>Vue d’ensemble</h2><p class="small">Tous les domaines sont visibles.</p></div>';
   };
   box.appendChild(global);
 
@@ -1669,9 +1947,14 @@ function renderPCDomains(){
     b.className='pcDomain'+(pcSelectedDomain===domain?' active':'');
     b.textContent=domain;
     b.onclick=()=>{
-      pcSelectedDomain=domain;pcSelectedRole=null;pcSelectedThread=null;
+      pcSelectedDomain=domain;pcSelectedThread=null;
+      const firstRole=pcRolesForDomain(domain)[0];
+      pcSelectedRole=firstRole?firstRole.id:null;
       focusLane=domain;subRoleFocus=null;isolatedThreadId=null;
-      render();showLaneSummary(domain);
+      render();
+      if(firstRole){
+        detail.innerHTML=`<div class="card"><div class="kicker">Rôle</div><h2>${firstRole.name}</h2><p class="small">${visibleThreads().length} fils visibles.</p></div>`;
+      }else showLaneSummary(domain);
     };
     box.appendChild(b);
   });
@@ -1680,23 +1963,30 @@ function renderPCRoles(){
   const box=document.getElementById('pcRoleRail');
   if(!box||!DATA)return;
   box.innerHTML='';
-  pcRolesForDomain(pcSelectedDomain).forEach(role=>{
+
+  const roles=pcRolesForDomain(pcSelectedDomain);
+  box.classList.toggle('hasRoles',roles.length>0);
+
+  if(pcSelectedDomain && roles.length && !roles.some(r=>r.id===pcSelectedRole)){
+    pcSelectedRole=roles[0].id;
+  }
+
+  roles.forEach(role=>{
     const b=document.createElement('button');
     b.className='pcRole'+(pcSelectedRole===role.id?' active':'');
     b.textContent=pcRoleName(role);
     b.onclick=()=>{
-      pcSelectedRole=pcSelectedRole===role.id?null:role.id;
-      subRoleFocus=pcSelectedRole;
+      pcSelectedRole=role.id;
+      subRoleFocus=null;
       isolatedThreadId=null;
+      pcSelectedThread=null;
       render();
-      if(pcSelectedRole){
-        detail.innerHTML=`<div class="card"><div class="kicker">Rôle</div><h2>${pcRoleName(role)}</h2><p class="small">${visibleThreads().length} fil${visibleThreads().length>1?'s':''} visible${visibleThreads().length>1?'s':''}.</p></div>`;
-      }else if(pcSelectedDomain){
-        showLaneSummary(pcSelectedDomain);
-      }
+      detail.innerHTML=`<div class="card"><div class="kicker">Rôle</div><h2>${pcRoleName(role)}</h2><p class="small">${visibleThreads().length} fil${visibleThreads().length>1?'s':''} visible${visibleThreads().length>1?'s':''}.</p></div>`;
     };
     box.appendChild(b);
   });
+
+  requestAnimationFrame(updateDomainConnector);
 }
 function renderPCFilters(){
   const box=document.getElementById('pcFilters');
@@ -1709,7 +1999,6 @@ function renderPCFilters(){
     b.onclick=fn;box.appendChild(b);
   };
 
-  add('Tous les rôles',!pcSelectedRole,()=>{pcSelectedRole=null;subRoleFocus=null;render();});
   add(showSecondary?'Masquer secondaires':'Afficher secondaires',showSecondary,()=>{showSecondary=!showSecondary;render();});
 
   const sep=document.createElement('span');sep.className='sep';box.appendChild(sep);
@@ -1720,7 +2009,7 @@ function renderPCFilters(){
   });
 }
 function renderPCChrome(){
-  renderPCDomains();renderPCRoles();renderPCFilters();updatePCCursor();
+  renderPCDomains();renderPCRoles();renderPCFilters();updatePCCursor();requestAnimationFrame(updateDomainConnector);
 }
 
 function panelBounds(){
@@ -2176,15 +2465,9 @@ function organicCurveGeom(sourceX,sourceY,targetY,targetEndX,mult=1,targetStartX
 }
 function pathRootToRole(lane){
   const y=layout.roleMid[lane],sy=rootY();
-  const lanes=layout.lanes||[];
-  const idx=Math.max(0,lanes.indexOf(lane));
-
-  const base=leftRootX+8;
-  const end=Math.max(base+6,roleX-7);
-  const step=(end-base)/Math.max(2,lanes.length+1);
-  const routeX=Math.min(end,base+step*(idx+1));
-
-  return `M0 ${sy} L${routeX} ${sy} L${routeX} ${y} L${roleX} ${y}`;
+  const x0=405;
+  const x1=448;
+  return `M${x0} ${sy} L${x1} ${sy} L${x1} ${y} L${roleX} ${y}`;
 }
 function roleLabelWidth(text){return currentView()==='detail' ? Math.max(120, text.length*14+34) : Math.max(92, text.length*10+26)}
 function roleEndX(lane){return roleLabelX + roleLabelWidth(lane)}
@@ -2578,7 +2861,7 @@ function openLaneFromPanel(lane){isolatedThreadId=null;focusLane=lane; subRoleFo
 window.openLaneFromPanel=openLaneFromPanel;
 
 function renderDeepNodeDetails(){
-  if(!DATA||rowH<86||currentView()!=='detail')return;
+  if(!DATA||rowH<70||currentView()!=='detail')return;
   layout.rows.forEach(row=>{
     const t=row.thread;
     if(!t)return;
@@ -2976,7 +3259,7 @@ function loadText(txt){try{loadData(JSON.parse(txt),{persist:true,restoreView:tr
 document.getElementById('fileInput').addEventListener('change',e=>{const input=e.currentTarget;const f=input.files&&input.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{loadText(String(r.result||''));input.value=''};r.onerror=()=>{showLoadError(r.error||new Error('Lecture impossible'));input.value=''};r.readAsText(f,'UTF-8')}); const mobileFileInput=document.getElementById('mobileFileInput');if(mobileFileInput)mobileFileInput.addEventListener('change',e=>{const input=e.currentTarget;const f=input.files&&input.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{loadText(String(r.result||''));input.value=''};r.onerror=()=>{showLoadError(r.error||new Error('Lecture impossible'));input.value=''};r.readAsText(f,'UTF-8')}); document.querySelectorAll('button[data-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.filter; subRoleFocus=null; isolatedThreadId=null; document.querySelectorAll('button[data-filter]').forEach(x=>x.classList.remove('active')); b.classList.add('active'); render(); schedulePersistView();}); document.getElementById('allRoles').onclick=()=>{isolatedThreadId=null;focusLane=null; subRoleFocus=null; render(); schedulePersistView();}; const secondaryBtn=document.getElementById('toggleSecondary'); if(secondaryBtn){secondaryBtn.onclick=()=>{showSecondary=!showSecondary;secondaryBtn.textContent=showSecondary?'Masquer secondaires':'Afficher secondaires';isolatedThreadId=null;render();schedulePersistView();};secondaryBtn.textContent=showSecondary?'Masquer secondaires':'Afficher secondaires';} document.getElementById('desktopTimeToggle')?.addEventListener('click',toggleTimeMode);
 document.getElementById('modeTime').onclick=()=>{zoomMode='time'; document.getElementById('modeTime').classList.add('active'); document.getElementById('modeDetail').classList.remove('active'); schedulePersistView();}; document.getElementById('modeDetail').onclick=()=>{zoomMode='detail'; document.getElementById('modeDetail').classList.add('active'); document.getElementById('modeTime').classList.remove('active'); schedulePersistView();};
 function zoomTime(f){const center=(chartScroll.scrollLeft+chartScroll.clientWidth/2-branchW)/pxPerDay; pxPerDay=Math.max(minPxPerDay(),Math.min(380,pxPerDay*f)); render(); chartScroll.scrollLeft=branchW+center*pxPerDay-chartScroll.clientWidth/2;}
-function zoomDetail(f){const center=(chartScroll.scrollTop+chartScroll.clientHeight/2)/rowH; rowH=Math.max(22,Math.min(180,rowH*f)); render(); chartScroll.scrollTop=center*rowH-chartScroll.clientHeight/2;}
+function zoomDetail(f){const center=(chartScroll.scrollTop+chartScroll.clientHeight/2)/rowH; rowH=Math.max(22,Math.min(540,rowH*f)); render(); chartScroll.scrollTop=center*rowH-chartScroll.clientHeight/2;}
 document.getElementById('zoomIn').onclick=()=>zoomMode==='time'?zoomTimeAt(1.25):zoomDetailAt(1.18); document.getElementById('zoomOut').onclick=()=>zoomMode==='time'?zoomTimeAt(1/1.25):zoomDetailAt(1/1.18); document.getElementById('reset').onclick=()=>{isolatedThreadId=null;focusLane=null;subRoleFocus=null;selectedId=null;mobileRolesRoot=true;mobileRolesBrowseLane=null;showSecondary=false;const sb=document.getElementById('toggleSecondary');if(sb)sb.textContent='Afficher secondaires';rowH=isMobileMode()?42:34;strokeScale=1;filter='all';document.querySelectorAll('button[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter==='all'));applyTimeRangeState(isMobileMode()?'3m':'all');if(isMobileMode())fitMobileCurrentView();else fitFullPeriod();schedulePersistView();};
 chartScroll.addEventListener('scroll',()=>{hideNodeTooltip();syncScroll();schedulePersistView();}); chartScroll.addEventListener('mousedown',e=>{dragging=true; last={x:e.clientX,y:e.clientY,l:chartScroll.scrollLeft,t:chartScroll.scrollTop}; chartScroll.style.cursor='grabbing'; e.preventDefault();}); window.addEventListener('mouseup',()=>{dragging=false; chartScroll.style.cursor='grab';}); window.addEventListener('mousemove',e=>{if(!dragging)return; chartScroll.scrollLeft=last.l-(e.clientX-last.x); chartScroll.scrollTop=last.t-(e.clientY-last.y);}); function zoomTimeAt(f, clientX){
   const rect=chartScroll.getBoundingClientRect();
@@ -3365,7 +3648,7 @@ chartScroll.addEventListener('wheel',e=>{
 applyResponsiveMetrics();
 applyIPhoneLayout();
 updateStandaloneHint();
-document.body.classList.remove('iphonePortrait','iphoneLandscape','landLeftHidden','landRightHidden','landMenusHidden');
+document.body.classList.remove('iphonePortrait','iphoneLandscape','landLeftHidden','landRightHidden','landMenusHidden');document.body.classList.add('pcRoleTree');
 
 pcCursorDate=new Date();
 async function bootViewer(){
@@ -3373,7 +3656,7 @@ async function bootViewer(){
   try{local=readStoredJson()}catch(e){}
 
   try{
-    const remoteUrl='data/current.json?build=PILOT_PC_V2_1&t='+Date.now();
+    const remoteUrl='data/current.json?build=PILOT_PC_V2_2&t='+Date.now();
     const res=await fetch(remoteUrl,{cache:'no-store'});
     if(res.ok){
       const remote=await res.json();
