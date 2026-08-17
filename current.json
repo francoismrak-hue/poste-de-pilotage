@@ -1,8 +1,8 @@
 {
   "meta": {
-    "schema": "pilot-2.5",
-    "version": "PILOT_PC_v2.5",
-    "generatedAt": "2026-08-17T17:33:00+02:00",
+    "schema": "pilot-2.6",
+    "version": "PILOT_PC_v2.6",
+    "generatedAt": "2026-08-17T18:19:00+02:00",
     "title": "PILOT v2.5",
     "defaultWindow": {
       "start": "2026-07-01T00:00:00",
@@ -14,7 +14,7 @@
     },
     "defaultDomainId": null,
     "defaultRoleId": null,
-    "note": "Schéma entièrement réécrit : Domaine → Rôle → Fil → Nœud/Tâche → Historique."
+    "note": "Arborescence explicite : Domaine → Rôle → Branches du rôle → Sous-fils / nœuds / historique."
   },
   "domains": [
     {
@@ -80,7 +80,14 @@
       "order": 10,
       "summary": "Pilotage de productions photo, film et contenus visuels.",
       "state": "hot",
-      "currentLoad": "high"
+      "currentLoad": "high",
+      "branchThreadIds": [
+        "thread_anne_claude",
+        "thread_ametis",
+        "thread_flichy",
+        "thread_mds"
+      ],
+      "defaultBranchId": "thread_ametis"
     },
     {
       "id": "d8_realisateur",
@@ -89,7 +96,11 @@
       "order": 20,
       "summary": "Conception, préparation et direction de tournages.",
       "state": "watch",
-      "currentLoad": "low"
+      "currentLoad": "low",
+      "branchThreadIds": [
+        "thread_flichy"
+      ],
+      "defaultBranchId": "thread_flichy"
     },
     {
       "id": "d8_montage",
@@ -98,7 +109,13 @@
       "order": 30,
       "summary": "Montage, finition, étalonnage et livraison.",
       "state": "watch",
-      "currentLoad": "low"
+      "currentLoad": "low",
+      "branchThreadIds": [
+        "thread_flichy",
+        "thread_ex9",
+        "thread_wilfried_vial"
+      ],
+      "defaultBranchId": "thread_flichy"
     },
     {
       "id": "d8_motion3d",
@@ -107,7 +124,9 @@
       "order": 40,
       "summary": "Motion design, 3D, compositing et création assistée par IA.",
       "state": "watch",
-      "currentLoad": "low"
+      "currentLoad": "low",
+      "branchThreadIds": [],
+      "defaultBranchId": null
     },
     {
       "id": "d8_direction",
@@ -116,7 +135,11 @@
       "order": 50,
       "summary": "Clients, offres, stratégie commerciale et arbitrage de capacité.",
       "state": "hot",
-      "currentLoad": "high"
+      "currentLoad": "high",
+      "branchThreadIds": [
+        "thread_anne_claude"
+      ],
+      "defaultBranchId": "thread_anne_claude"
     },
     {
       "id": "d8_prospection",
@@ -125,7 +148,13 @@
       "order": 60,
       "summary": "Relances, CRM, réseau, salons et acquisition.",
       "state": "watch",
-      "currentLoad": "low"
+      "currentLoad": "low",
+      "branchThreadIds": [
+        "thread_axiome",
+        "thread_film_logistique",
+        "thread_unlock_3d"
+      ],
+      "defaultBranchId": "thread_axiome"
     },
     {
       "id": "d8_gestion",
@@ -134,7 +163,13 @@
       "order": 70,
       "summary": "Devis, facturation, trésorerie, TVA et administration de Deck 8.",
       "state": "watch",
-      "currentLoad": "low"
+      "currentLoad": "low",
+      "branchThreadIds": [
+        "thread_admin_global",
+        "thread_compta",
+        "thread_banque"
+      ],
+      "defaultBranchId": "thread_admin_global"
     },
     {
       "id": "d8_communication",
@@ -143,7 +178,12 @@
       "order": 80,
       "summary": "Site Deck 8, LinkedIn, positionnement et présence en ligne.",
       "state": "watch",
-      "currentLoad": "low"
+      "currentLoad": "low",
+      "branchThreadIds": [
+        "thread_site_deck8",
+        "thread_mds"
+      ],
+      "defaultBranchId": "thread_site_deck8"
     },
     {
       "id": "fam_pere",
@@ -152,7 +192,13 @@
       "order": 10,
       "summary": "Présence, accompagnement et décisions concernant les enfants.",
       "state": "active",
-      "currentLoad": "medium"
+      "currentLoad": "medium",
+      "branchThreadIds": [
+        "thread_hanna",
+        "thread_oscar",
+        "thread_flore"
+      ],
+      "defaultBranchId": "thread_flore"
     },
     {
       "id": "fam_conjoint",
@@ -161,7 +207,13 @@
       "order": 20,
       "summary": "Couple, décisions communes et charge familiale partagée.",
       "state": "active",
-      "currentLoad": "medium"
+      "currentLoad": "medium",
+      "branchThreadIds": [
+        "thread_couple_2026_2027",
+        "thread_brs",
+        "thread_bretagne_transition"
+      ],
+      "defaultBranchId": "thread_couple_2026_2027"
     },
     {
       "id": "fam_enfants",
@@ -170,7 +222,13 @@
       "order": 30,
       "summary": "Hanna, Oscar, Flore, activités et accompagnement individuel.",
       "state": "watch",
-      "currentLoad": "low"
+      "currentLoad": "low",
+      "branchThreadIds": [
+        "thread_hanna",
+        "thread_oscar",
+        "thread_flore"
+      ],
+      "defaultBranchId": "thread_flore"
     },
     {
       "id": "fam_elargie",
@@ -179,7 +237,12 @@
       "order": 40,
       "summary": "Parents, sœur, grands-parents et liens familiaux élargis.",
       "state": "watch",
-      "currentLoad": "low"
+      "currentLoad": "low",
+      "branchThreadIds": [
+        "thread_soeur",
+        "thread_normandie"
+      ],
+      "defaultBranchId": "thread_soeur"
     },
     {
       "id": "adm_compta",
@@ -188,7 +251,12 @@
       "order": 10,
       "summary": "Comptabilité, déclarations et TVA.",
       "state": "active",
-      "currentLoad": "medium"
+      "currentLoad": "medium",
+      "branchThreadIds": [
+        "thread_compta",
+        "thread_comptable_2025"
+      ],
+      "defaultBranchId": "thread_compta"
     },
     {
       "id": "adm_facturation",
@@ -197,7 +265,11 @@
       "order": 20,
       "summary": "Factures, devis, facturation électronique et suivi.",
       "state": "watch",
-      "currentLoad": "low"
+      "currentLoad": "low",
+      "branchThreadIds": [
+        "thread_facturation_electronique"
+      ],
+      "defaultBranchId": "thread_facturation_electronique"
     },
     {
       "id": "adm_finances",
@@ -206,7 +278,12 @@
       "order": 30,
       "summary": "Banque, prêt, trésorerie et financement.",
       "state": "watch",
-      "currentLoad": "low"
+      "currentLoad": "low",
+      "branchThreadIds": [
+        "thread_banque",
+        "thread_banque_materiel"
+      ],
+      "defaultBranchId": "thread_banque"
     },
     {
       "id": "adm_obligations",
@@ -215,7 +292,11 @@
       "order": 40,
       "summary": "Pièces, attestations, archivage et obligations diverses.",
       "state": "watch",
-      "currentLoad": "low"
+      "currentLoad": "low",
+      "branchThreadIds": [
+        "thread_admin_global"
+      ],
+      "defaultBranchId": "thread_admin_global"
     },
     {
       "id": "house_gestion",
@@ -224,7 +305,12 @@
       "order": 10,
       "summary": "Organisation générale de la maison et logistique.",
       "state": "active",
-      "currentLoad": "medium"
+      "currentLoad": "medium",
+      "branchThreadIds": [
+        "thread_maison_global",
+        "thread_maison"
+      ],
+      "defaultBranchId": "thread_maison"
     },
     {
       "id": "house_travaux",
@@ -233,7 +319,14 @@
       "order": 20,
       "summary": "Réparations, fenêtres, interphone, jardin et petits travaux.",
       "state": "watch",
-      "currentLoad": "low"
+      "currentLoad": "low",
+      "branchThreadIds": [
+        "thread_vitrier",
+        "thread_terrasse_jardin",
+        "thread_delphine_robinet",
+        "thread_voisin_stephane"
+      ],
+      "defaultBranchId": "thread_terrasse_jardin"
     },
     {
       "id": "house_rangement",
@@ -242,7 +335,12 @@
       "order": 30,
       "summary": "Bureau, tri et désencombrement.",
       "state": "watch",
-      "currentLoad": "low"
+      "currentLoad": "low",
+      "branchThreadIds": [
+        "thread_bureau",
+        "thread_poussettes_local_velo"
+      ],
+      "defaultBranchId": "thread_poussettes_local_velo"
     },
     {
       "id": "house_equipement",
@@ -251,7 +349,13 @@
       "order": 40,
       "summary": "Voiture, matériel, monitoring et équipements.",
       "state": "watch",
-      "currentLoad": "low"
+      "currentLoad": "low",
+      "branchThreadIds": [
+        "thread_temperature_maison",
+        "thread_voiture_vacances",
+        "thread_camping_materiel"
+      ],
+      "defaultBranchId": "thread_temperature_maison"
     },
     {
       "id": "school_parent",
@@ -260,7 +364,13 @@
       "order": 10,
       "summary": "Suivi scolaire, parents d’élèves et rentrée.",
       "state": "watch",
-      "currentLoad": "low"
+      "currentLoad": "low",
+      "branchThreadIds": [
+        "thread_dpe_ecole",
+        "thread_fete_ecole",
+        "thread_ecole_global"
+      ],
+      "defaultBranchId": "thread_dpe_ecole"
     },
     {
       "id": "school_amap",
@@ -269,7 +379,12 @@
       "order": 20,
       "summary": "AMAP et engagements de quartier.",
       "state": "watch",
-      "currentLoad": "low"
+      "currentLoad": "low",
+      "branchThreadIds": [
+        "thread_amap",
+        "thread_amap_2025_2026"
+      ],
+      "defaultBranchId": "thread_amap"
     },
     {
       "id": "school_asso",
@@ -278,7 +393,11 @@
       "order": 30,
       "summary": "Scouts et autres engagements associatifs.",
       "state": "watch",
-      "currentLoad": "low"
+      "currentLoad": "low",
+      "branchThreadIds": [
+        "thread_scouts"
+      ],
+      "defaultBranchId": "thread_scouts"
     },
     {
       "id": "friend_links",
@@ -287,7 +406,17 @@
       "order": 10,
       "summary": "Entretenir les liens amicaux importants.",
       "state": "watch",
-      "currentLoad": "low"
+      "currentLoad": "low",
+      "branchThreadIds": [
+        "thread_fred",
+        "thread_marina",
+        "thread_ludovic",
+        "thread_louja",
+        "thread_aubin",
+        "thread_julien_meuris",
+        "thread_perrine"
+      ],
+      "defaultBranchId": "thread_perrine"
     },
     {
       "id": "mrak_auteur",
@@ -296,7 +425,13 @@
       "order": 10,
       "summary": "Idées, perceptions, lectures et recherche personnelle.",
       "state": "watch",
-      "currentLoad": "low"
+      "currentLoad": "low",
+      "branchThreadIds": [
+        "thread_dormeurs_nuit",
+        "thread_fragilite_climat",
+        "thread_tout_pour_tout_le_monde"
+      ],
+      "defaultBranchId": "thread_dormeurs_nuit"
     },
     {
       "id": "mrak_editorial",
@@ -305,7 +440,12 @@
       "order": 20,
       "summary": "Podcasts et collaborations éditoriales.",
       "state": "watch",
-      "currentLoad": "low"
+      "currentLoad": "low",
+      "branchThreadIds": [
+        "thread_amanda_podcast",
+        "thread_ophelie_montessori"
+      ],
+      "defaultBranchId": "thread_amanda_podcast"
     },
     {
       "id": "mrak_presence",
@@ -314,7 +454,11 @@
       "order": 30,
       "summary": "Site, formes visuelles et expérimentations.",
       "state": "watch",
-      "currentLoad": "low"
+      "currentLoad": "low",
+      "branchThreadIds": [
+        "thread_mrak_site"
+      ],
+      "defaultBranchId": "thread_mrak_site"
     },
     {
       "id": "eq_sante",
@@ -323,7 +467,11 @@
       "order": 10,
       "summary": "Prévention et rendez-vous santé.",
       "state": "watch",
-      "currentLoad": "low"
+      "currentLoad": "low",
+      "branchThreadIds": [
+        "thread_sante_francois"
+      ],
+      "defaultBranchId": "thread_sante_francois"
     },
     {
       "id": "eq_sommeil",
@@ -332,7 +480,11 @@
       "order": 20,
       "summary": "Rituels de lever, coucher et régularité.",
       "state": "watch",
-      "currentLoad": "low"
+      "currentLoad": "low",
+      "branchThreadIds": [
+        "thread_chaleur"
+      ],
+      "defaultBranchId": "thread_chaleur"
     },
     {
       "id": "eq_sport",
@@ -341,7 +493,11 @@
       "order": 30,
       "summary": "Sport régulier et amélioration cardio.",
       "state": "watch",
-      "currentLoad": "low"
+      "currentLoad": "low",
+      "branchThreadIds": [
+        "thread_sport_piscine"
+      ],
+      "defaultBranchId": "thread_sport_piscine"
     },
     {
       "id": "eq_recup",
@@ -350,7 +506,11 @@
       "order": 40,
       "summary": "Repos, récupération et équilibre de charge.",
       "state": "active",
-      "currentLoad": "medium"
+      "currentLoad": "medium",
+      "branchThreadIds": [
+        "thread_equilibre"
+      ],
+      "defaultBranchId": "thread_equilibre"
     },
     {
       "id": "eq_tabac",
@@ -359,7 +519,11 @@
       "order": 50,
       "summary": "Arrêt de la cigarette et prévention des rechutes.",
       "state": "watch",
-      "currentLoad": "low"
+      "currentLoad": "low",
+      "branchThreadIds": [
+        "thread_tabac"
+      ],
+      "defaultBranchId": "thread_tabac"
     },
     {
       "id": "sys_pilot",
@@ -368,7 +532,12 @@
       "order": 10,
       "summary": "Conception et utilisation du Poste de Pilotage.",
       "state": "active",
-      "currentLoad": "low"
+      "currentLoad": "low",
+      "branchThreadIds": [
+        "thread_controle_revue",
+        "thread_mvp_2025"
+      ],
+      "defaultBranchId": "thread_controle_revue"
     },
     {
       "id": "sys_outils",
@@ -377,7 +546,12 @@
       "order": 20,
       "summary": "Notion, Agenda, JSON et systèmes de continuité.",
       "state": "watch",
-      "currentLoad": "low"
+      "currentLoad": "low",
+      "branchThreadIds": [
+        "thread_agenda_google",
+        "thread_notion_base"
+      ],
+      "defaultBranchId": "thread_agenda_google"
     }
   ],
   "threads": [
