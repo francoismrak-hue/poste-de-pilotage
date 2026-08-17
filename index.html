@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Pilotage">
-<title>PILOT v2.2 — PC</title>
+<title>PILOT v2.3 — PC</title>
 <meta name="format-detection" content="telephone=no">
 <style>
 :root{--bg:#000;--panel:#080808;--panel2:#111;--text:#fff;--muted:#a9a9a9;--yellow:#ffd400;--yellow2:#ffea61;--yellowSoft:rgba(255,212,0,.18);--grid:#252525;--grid2:#141414;--leftw:320px;--rightw:420px;--rightwDynamic:420px;--headerh:126px;--axish:92px;}
@@ -1190,7 +1190,7 @@ body.timeOff .gridV{
 
 
 /* ==========================================================
-   PILOT v2.1 — PC
+   PILOT v2.3 — PC
    ========================================================== */
 :root{
   --rightwDynamic:430px;
@@ -1385,226 +1385,96 @@ body.timeOff .gridV{
 .deepNodeLabel strong{color:var(--yellow)}
 
 
-/* ==========================================================
-   PILOT v2.2 — PC / DOMAIN → ROLE → THREADS
-   ========================================================== */
-
-/* Header almost empty: title + Time only */
-#header{
-  height:96px !important;
-  padding:18px 24px !important;
-  border-bottom:1px solid #202020 !important;
-}
-#header h1{
-  margin:0 !important;
-  color:var(--yellow) !important;
-  font-size:42px !important;
-  line-height:1 !important;
-  font-weight:900 !important;
-  letter-spacing:-.02em !important;
-}
-#header .sub{display:none !important}
-#header .toolbar > *{display:none !important}
-#desktopTimeToggle{
-  display:flex !important;
-  position:absolute !important;
-  right:24px !important;
-  top:17px !important;
-  min-width:220px !important;
-  height:62px !important;
-  padding:0 26px !important;
-  justify-content:center !important;
-  align-items:center !important;
-  border-radius:999px !important;
-  border:1px solid var(--yellow) !important;
-  background:var(--yellow) !important;
-  color:#000 !important;
-  font-size:24px !important;
-  font-weight:900 !important;
-}
-#desktopTimeToggle:not(.active){
-  background:#111 !important;
-  color:var(--yellow) !important;
-}
-
-/* Main layout */
-:root{
-  --pcDomainW:150px;
-  --pcRoleW:260px;
-}
-
+/* === PILOT PC v2.3 — arbre domaines / rôles / fils === */
+#header h1{color:var(--yellow)!important;font-size:34px!important;font-weight:900!important}
+#header .sub{opacity:.65}
 #pcDomainRail{
-  left:18px !important;
-  top:64px !important;
-  width:var(--pcDomainW) !important;
-  gap:18px !important;
+  left:10px!important;
+  top:16px!important;
+  width:140px!important;
+  gap:12px!important;
 }
-.pcDomain{
-  position:relative !important;
-  width:auto !important;
-  max-width:145px !important;
-  padding:10px 14px !important;
-  border-radius:10px !important;
-  font-size:18px !important;
-  background:#4a4a4a !important;
-  color:#080808 !important;
-}
-.pcDomain.active{
-  background:var(--yellow) !important;
-  color:#000 !important;
-}
-.pcDomain.global{
-  background:#262626 !important;
-  color:#bfbfbf !important;
-}
-.pcDomain.global.active{
-  background:var(--yellow) !important;
-  color:#000 !important;
-}
-
-/* Vertical role tree. It replaces the old top chip row. */
+.pcDomain{max-width:136px!important;font-size:15px!important;padding:9px 12px!important}
 #pcRoleRail{
-  left:190px !important;
-  top:64px !important;
-  right:auto !important;
-  width:var(--pcRoleW) !important;
-  display:flex !important;
-  flex-direction:column !important;
-  align-items:flex-start !important;
-  gap:8px !important;
-  padding-left:26px !important;
-  pointer-events:auto !important;
+  position:absolute!important;
+  left:162px!important;
+  top:16px!important;
+  width:220px!important;
+  right:auto!important;
+  display:flex!important;
+  flex-direction:column!important;
+  flex-wrap:nowrap!important;
+  gap:8px!important;
+  pointer-events:auto!important;
 }
-#pcRoleRail.hasRoles::before{
+#pcRoleRail::before{
   content:"";
   position:absolute;
-  left:8px;
+  left:-15px;
   top:14px;
   bottom:14px;
   width:2px;
-  background:var(--yellow);
+  background:rgba(255,212,0,.75);
+  border-radius:2px;
 }
 .pcRole{
-  position:relative !important;
-  min-width:205px !important;
-  max-width:240px !important;
-  padding:8px 12px !important;
-  border:0 !important;
-  border-radius:9px !important;
-  background:#4b4b4b !important;
-  color:#090909 !important;
-  font-size:13px !important;
-  font-weight:850 !important;
-  text-align:left !important;
-  white-space:normal !important;
+  position:relative!important;
+  border:0!important;
+  border-radius:10px!important;
+  background:#5b5b5b!important;
+  color:#0d0d0d!important;
+  padding:9px 12px!important;
+  font-size:13px!important;
+  font-weight:850!important;
+  text-align:left!important;
+  white-space:normal!important;
+  min-height:38px!important;
 }
 .pcRole::before{
   content:"";
   position:absolute;
-  left:-18px;
+  left:-15px;
   top:50%;
-  width:18px;
+  width:15px;
   height:2px;
-  background:var(--yellow);
+  background:rgba(255,212,0,.75);
 }
 .pcRole.active{
-  background:var(--yellow) !important;
-  color:#000 !important;
+  background:var(--yellow)!important;
+  color:#000!important;
 }
 .pcRole.active::after{
   content:"";
   position:absolute;
   left:100%;
   top:50%;
-  width:90px;
+  width:20px;
   height:2px;
   background:var(--yellow);
 }
-
-/* Domain-to-role connector */
-#pcDomainConnector{
-  position:absolute;
-  z-index:58;
-  left:150px;
-  top:0;
-  width:48px;
-  height:100%;
-  pointer-events:none;
+#pcFilters{padding:8px 10px!important;border-radius:14px!important}
+#pcFilters button{font-size:13px!important}
+.inlineAction{
+  appearance:none;border:0;background:none;color:var(--yellow);padding:0;cursor:pointer;
+  font:inherit;font-weight:800;text-align:left
 }
-#pcDomainConnector .h{
-  position:absolute;
-  left:0;
-  width:48px;
-  height:2px;
-  background:var(--yellow);
+.inlineAction:hover{text-decoration:underline}
+.listCompact{margin:0;padding-left:18px}
+.listCompact li{margin:0 0 10px 0}
+.miniTree{display:grid;gap:12px}
+.miniTree .branch{
+  border:1px solid #242424;border-radius:14px;padding:12px 14px;background:#0b0b0b
 }
-
-/* The map starts after the role tree, with no duplicate domain label */
-#chartScroll{
-  padding-left:430px !important;
-}
-#axisWrap{
-  padding-left:430px !important;
-}
-#axisContent{
-  margin-left:430px !important;
-}
-
-/* Bottom filter panel ×2 */
-#pcFilters{
-  left:18px !important;
-  bottom:18px !important;
-  gap:10px !important;
-  padding:14px 15px !important;
-  border-radius:16px !important;
-}
-#pcFilters button{
-  padding:10px 16px !important;
-  font-size:17px !important;
-  border-radius:999px !important;
-}
-#pcFilters .sep{
-  height:36px !important;
-  width:2px !important;
-}
-
-/* Bigger cursor hit area, visual line stays 3px */
-#pcTimeCursor{
-  width:19px !important;
-  margin-left:-8px !important;
-  background:linear-gradient(90deg,
-    transparent 0, transparent 8px,
-    #1683ff 8px,#1683ff 11px,
-    transparent 11px,transparent 100%) !important;
-  box-shadow:none !important;
-  cursor:ew-resize !important;
-  z-index:90 !important;
-  touch-action:none !important;
-}
-#pcTimeCursor::before{
-  left:1px !important;
-  top:-8px !important;
-  width:17px !important;
-  height:17px !important;
-}
-#pcCursorLabel{z-index:91 !important}
-
-/* Detail zoom can become extremely deep */
-.deepNodeLabel{font-size:11px !important;max-width:270px !important}
-
-
-/* Remove duplicated labels inside the SVG/map. Navigation tree owns them. */
-body.pcRoleTree .roleLabel,
-body.pcRoleTree .roleBig,
-body.pcRoleTree .roleLabelHit{
-  display:none !important;
-}
+.miniTree .branch strong{display:block;margin-bottom:6px}
+.card .stack{display:grid;gap:12px}
+.cursorScope{margin:6px 0 10px;color:#bdbdbd;font-size:12px}
+.cursorEvent .threadName{display:block;color:#ffd400;font-size:12px;margin-top:4px}
 
 </style>
 </head>
 <body>
 <div id="app">
-<header id="header"><h1>PILOT v2.2</h1><div class="sub" id="subtitle">PILOT v2.0 · navigation inertielle + zoom directionnel</div>
+<header id="header"><h1>PILOT v2.3</h1><div class="sub" id="subtitle">PILOT v2.0 · navigation inertielle + zoom directionnel</div>
 <div id="mobileQuickBar">
   <label class="mobileFileLabel">JSON<input id="mobileFileInput" type="file" accept=".json,application/json"></label>
   <button id="mobilePeriodTop">3 mois</button>
@@ -1614,7 +1484,6 @@ body.pcRoleTree .roleLabelHit{
 <aside id="left"><div class="mobileDrawerHead"><strong>Rôles et fils</strong><button id="mobileCloseLeft">×</button></div><div id="leftInner"></div></aside>
 <main id="center">
 <div id="pcDomainRail"></div>
-<div id="pcDomainConnector"><span class="h"></span></div>
 <div id="pcRoleRail"></div>
 <div id="pcFilters"></div>
 <div id="pcTodayLine"></div>
@@ -1675,7 +1544,7 @@ let timeRangeMode="all", viewStartOverride=null, viewEndOverride=null;
 let mobileRolesRoot=true, mobileRolesBrowseLane=null;
 
 const STORAGE_DATA_KEY='postePilotage:lastJson:v1';
-const STORAGE_VIEW_KEY='pilot:viewState:PC:v2.2';
+const STORAGE_VIEW_KEY='pilot:viewState:PC:v2.3';
 let restoringView=false;
 let saveTimer=null;
 
@@ -1764,7 +1633,15 @@ function applyStoredView(state){
 
 let branchW=340,leftRootX=24,roleX=130,roleLabelX=170,rightPad=280;
 function isMobileMode(){return false}
-function applyResponsiveMetrics(){branchW=465;leftRootX=425;roleX=452;roleLabelX=470;rightPad=220;}
+function applyResponsiveMetrics(){branchW=210;leftRootX=145;roleX=180;roleLabelX=194;rightPad=220;}
+const app=document.getElementById("app"), togglePanelBtn=document.getElementById("togglePanel"), panelResize=document.getElementById("panelResize"), nodeTooltip=document.getElementById("nodeTooltip"), chartScroll=document.getElementById("chartScroll"), chartContent=document.getElementById("chartContent"), chartSvg=document.getElementById("chartSvg"), labelLayer=document.getElementById("labelLayer"), axisInner=document.getElementById("axisInner"), axisContent=document.getElementById("axisContent"), leftInner=document.getElementById("leftInner"), detail=document.getElementById("detail"), subtitle=document.getElementById("subtitle"), zoomInfo=document.getElementById("zoomInfo"), thicknessInfo=document.getElementById("thicknessInfo"),mobileBackdrop=document.getElementById("mobileBackdrop"),mobileControlsSheet=document.getElementById("mobileControlsSheet"),mobileIsolate=document.getElementById("mobileIsolate"),mobileTimeInfo=document.getElementById("mobileTimeInfo"),mobileDetailInfo=document.getElementById("mobileDetailInfo"),mobileThicknessInfo=document.getElementById("mobileThicknessInfo"),mobilePeriodTop=document.getElementById("mobilePeriodTop"),mobileRangeSummary=document.getElementById("mobileRangeSummary"),mobileCustomRange=document.getElementById("mobileCustomRange"),mobileRangeStart=document.getElementById("mobileRangeStart"),mobileRangeEnd=document.getElementById("mobileRangeEnd");
+
+function pcClampDate(d){return new Date(Math.max(start().getTime(),Math.min(end().getTime(),d.getTime())))}
+function pcDateLabel(d){return d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short',year:'numeric'})}
+function pcDateFromX(clientX){
+  const rect=chartScroll.getBoundingClientRect();
+  return pcClampDate(dateFromX(clientX-rect.left+chartScroll.scrollLeft));
+}
 function updatePCCursor(){
   if(!DATA)return;
   const cursor=document.getElementById('pcTimeCursor');
@@ -1780,165 +1657,129 @@ function updatePCCursor(){
   today.style.left=tx+'px';
 }
 function renderPCCursorPanel(){
-  if(!DATA)return;
-  const t=pcSelectedThread?threadById(pcSelectedThread):null;
-  const tids=t?new Set([t.id]):new Set(visibleThreads().map(x=>x.id));
+  if(!DATA) return;
+  const scopeRole=pcSelectedRole?roleById(pcSelectedRole):null;
+  const tids=pcSelectedThread
+    ? new Set([pcSelectedThread])
+    : pcSelectedRole
+      ? roleThreadsSet(pcSelectedRole, pcSelectedDomain)
+      : new Set(visibleThreads().map(x=>x.id));
 
   let items=[];
   items.push(...(DATA.history||[]).filter(h=>tids.has(h.threadId)).map(h=>({
-    date:new Date(h.date),kind:'Historique',text:h.summary||h.effect||h.type
+    date:new Date(h.date), kind:'Historique', text:h.summary||h.effect||h.type||'Historique', thread:threadById(h.threadId)?.title||''
   })));
   items.push(...(DATA.nodes||[]).filter(n=>tids.has(n.threadId)&&(n.date||n.deadline)).map(n=>({
-    date:new Date(n.date||n.deadline),kind:'Nœud',text:n.title||n.type
+    date:new Date(n.date||n.deadline), kind:'Nœud / tâche', text:n.title||n.type||'Point', thread:threadById(n.threadId)?.title||''
   })));
 
-  items=items
-    .filter(x=>Math.abs(x.date-pcCursorDate)<=1000*60*60*24*60)
-    .sort((a,b)=>Math.abs(a.date-pcCursorDate)-Math.abs(b.date-pcCursorDate))
-    .slice(0,10);
+  items=items.filter(x=>Math.abs(x.date-pcCursorDate)<=1000*60*60*24*75)
+             .sort((a,b)=>Math.abs(a.date-pcCursorDate)-Math.abs(b.date-pcCursorDate))
+             .slice(0,12);
 
+  const scopeLabel=pcSelectedThread ? threadById(pcSelectedThread)?.title : (scopeRole?pcRoleName(scopeRole):(pcSelectedDomain||'Global'));
   detail.innerHTML=`
-    <div class="detailHead"><div><div class="kicker">CURSEUR TEMPS</div><strong>${t?.title||pcSelectedDomain||'Global'}</strong></div></div>
-    <div class="cursorSummary">
-      <div class="cursorDate">${pcDateLabel(pcCursorDate)}</div>
-      ${items.length?items.map(it=>`
-        <div class="cursorEvent">
-          <div class="when">${it.date.toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'})} · ${it.kind}</div>
-          <div class="what">${it.text}</div>
-        </div>`).join(''):'<div class="cursorEvent"><div class="what">Aucun élément proche de cette date.</div></div>'}
+    <div class="card primary">
+      <div class="kicker">Curseur temps</div>
+      <h2>${scopeLabel||'Global'}</h2>
+      <div class="cursorScope">${pcDateLabel(pcCursorDate)}</div>
+      <div class="stack">
+        ${items.length?items.map(it=>`
+          <div class="cursorEvent">
+            <div class="when">${it.date.toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'})} · ${it.kind}</div>
+            <div class="what">${it.text}</div>
+            ${it.thread?`<span class="threadName">${it.thread}</span>`:''}
+          </div>`).join(''):'<div class="cursorEvent"><div class="what">Aucun élément proche de cette date.</div></div>'}
+      </div>
     </div>`;
 }
 function setupPCCursor(){
   const c=document.getElementById('pcTimeCursor');
   if(!c)return;
   let dragging=false;
-
-  const move=e=>{
+  c.addEventListener('pointerdown',e=>{dragging=true;c.setPointerCapture?.(e.pointerId);e.preventDefault()});
+  c.addEventListener('pointermove',e=>{
     if(!dragging)return;
-    pcCursorDate=pcDateFromX(e.clientX);
-    updatePCCursor();
-    renderPCCursorPanel();
-    e.preventDefault();
-  };
-  const stop=()=>{dragging=false};
-
-  c.addEventListener('pointerdown',e=>{
-    dragging=true;
-    pcCursorDate=pcDateFromX(e.clientX);
-    updatePCCursor();
-    renderPCCursorPanel();
-    e.preventDefault();
-    e.stopPropagation();
+    pcCursorDate=pcDateFromX(e.clientX);updatePCCursor();renderPCCursorPanel();
   });
-
-  window.addEventListener('pointermove',move,{passive:false});
-  window.addEventListener('pointerup',stop);
-  window.addEventListener('pointercancel',stop);
-
-  // Alt-click anywhere on the timeline also moves the cursor instantly.
-  chartScroll.addEventListener('pointerdown',e=>{
-    if(!e.altKey)return;
-    pcCursorDate=pcDateFromX(e.clientX);
-    updatePCCursor();
-    renderPCCursorPanel();
-    e.preventDefault();
-  });
-
+  c.addEventListener('pointerup',e=>{dragging=false;c.releasePointerCapture?.(e.pointerId)});
+  c.addEventListener('pointercancel',()=>dragging=false);
   chartScroll.addEventListener('scroll',updatePCCursor);
 }
+
 
 
 let pcSelectedDomain=null;
 let pcSelectedRole=null;
 let pcSelectedThread=null;
 let pcCursorDate=new Date();
+const pcRoleThreadCache=new Map();
 
-const PC_ROLE_TAXONOMY={
-  'Deck 8':[
-    {id:'d8_producer',name:'Producteur visuel',match:t=>t.rolePrimary==='role_deck8_production'},
-    {id:'d8_director',name:'Réalisateur / tournage',match:t=>/(tournage|film|clip|interview|photo)/i.test(t.title)},
-    {id:'d8_post',name:'Montage / post-production',match:t=>/(montage|post-production|post-prod|capsule)/i.test(t.title)},
-    {id:'d8_motion3d',name:'Motion / 3D / IA',match:t=>/(motion|3d| ia|sdx|aziz|unlock)/i.test(t.title)},
-    {id:'d8_business',name:'Dirigeant / commercial',match:t=>t.rolePrimary==='role_deck8_business'||(t.roleSecondary||[]).includes('role_deck8_business')},
-    {id:'d8_prospect',name:'Prospection / CRM',match:t=>/(prospect|crm|relance|axiom|matrix|salon)/i.test(t.title)},
-    {id:'d8_admin',name:'Comptabilité / gestion',match:t=>/(admin|compta|tva|factur|devis|finance)/i.test(t.title)},
-    {id:'d8_com',name:'Communication / site',match:t=>/(site deck|linkedin|communication|mds)/i.test(t.title)}
-  ],
-  'Famille':[
-    {id:'fam_pere',name:'Père',match:t=>t.rolePrimary==='role_pere'||(t.roleSecondary||[]).includes('role_pere')},
-    {id:'fam_conjoint',name:'Conjoint',match:t=>t.rolePrimary==='role_conjoint'||(t.roleSecondary||[]).includes('role_conjoint')},
-    {id:'fam_enfants',name:'Enfants',match:t=>/(hanna|oscar|flore|enfant|scout|guitare)/i.test(t.title)},
-    {id:'fam_elargie',name:'Famille élargie',match:t=>/(sœur|parents|famille élargie)/i.test(t.title)}
-  ],
-  'Admin':[
-    {id:'adm_compta',name:'Comptabilité / TVA',match:t=>/(compta|tva)/i.test(t.title)},
-    {id:'adm_fact',name:'Facturation / devis',match:t=>/(factur|devis)/i.test(t.title)},
-    {id:'adm_fin',name:'Banque / finances',match:t=>/(banque|finance|prêt|urssaf)/i.test(t.title)}
-  ],
-  'Maison':[
-    {id:'house_manage',name:'Gestion maison',match:t=>true},
-    {id:'house_work',name:'Travaux / réparations',match:t=>/(travaux|vitrier|interphone|robinet|jardin|terrasse|pergola)/i.test(t.title)},
-    {id:'house_sort',name:'Rangement / désencombrement',match:t=>/(rangement|poussette|tri|bureau)/i.test(t.title)}
-  ],
-  'École / Collectif':[
-    {id:'school_parent',name:'Parent école / collège',match:t=>t.rolePrimary==='role_ecole'||/(école|collège|parent)/i.test(t.title)},
-    {id:'school_collective',name:'Collectif / AMAP',match:t=>t.rolePrimary==='role_collectif'||/(amap|collectif|scout)/i.test(t.title)}
-  ],
-  'Amitié':[
-    {id:'friends',name:'Ami / gardien des liens',match:t=>true}
-  ],
-  'MRAK':[
-    {id:'mrak_author',name:'Auteur / chercheur',match:t=>true},
-    {id:'mrak_projects',name:'Projets éditoriaux / podcasts',match:t=>/(podcast|amanda|ophélie)/i.test(t.title)}
-  ],
-  'Équilibre':[
-    {id:'eq_health',name:'Santé',match:t=>/(santé|dentiste|dermato|tabac)/i.test(t.title)},
-    {id:'eq_sleep',name:'Sommeil / rythme',match:t=>/(sommeil|rythme)/i.test(t.title)},
-    {id:'eq_sport',name:'Sport / cardio',match:t=>/(sport|cardio|piscine)/i.test(t.title)},
-    {id:'eq_recovery',name:'Récupération / respiration',match:t=>/(équilibre|récupération|repos)/i.test(t.title)}
-  ]
-};
-
+function clearPCRoleThreadCache(){ pcRoleThreadCache.clear(); }
+function orderedDomainPreference(){
+  return ['Deck 8','Famille','Admin','Maison','École / Collectif','Amitié','MRAK','Équilibre','Système'];
+}
 function pcDomainNames(){
-  const preferred=['Deck 8','Famille','Admin','Maison','École / Collectif','Amitié','MRAK','Équilibre'];
   const present=new Set((DATA?.threads||[]).map(t=>t.lane));
-  return preferred.filter(x=>present.has(x));
+  const ordered=orderedDomainPreference().filter(x=>present.has(x));
+  [...present].sort().forEach(x=>{ if(!ordered.includes(x)) ordered.push(x); });
+  return ordered;
 }
 function pcRolesForDomain(domain){
-  return PC_ROLE_TAXONOMY[domain]||[];
+  if(!domain) return [];
+  return (DATA?.roles||[]).filter(r=>r.lane===domain);
 }
-function pcRoleName(r){return r.name}
+function pcRoleName(r){
+  const short={
+    role_deck8_production:'Producteur visuel',
+    role_deck8_business:'Dirigeant / commercial',
+    role_admin_finance:'Gestion admin / finance',
+    role_pere:'Père',
+    role_conjoint:'Conjoint',
+    role_maison:'Gestion maison',
+    role_ecole:'Parent école / collège',
+    role_collectif:'Collectif',
+    role_ami:'Ami',
+    role_mrak:'Auteur / chercheur',
+    role_equilibre:'Personne à préserver',
+    role_systeme:'Concepteur système'
+  };
+  return short[r.id]||r.name||r.id;
+}
+function roleById(id){ return (DATA?.roles||[]).find(r=>r.id===id)||null; }
+function roleThreadsSet(roleId, domain=pcSelectedDomain){
+  const key=(domain||'__all__')+'::'+roleId;
+  if(pcRoleThreadCache.has(key)) return pcRoleThreadCache.get(key);
+  const pool=(DATA?.threads||[]).filter(t=>!domain || t.lane===domain);
+  const keep=new Set(pool.filter(t=>t.rolePrimary===roleId || (t.roleSecondary||[]).includes(roleId)).map(t=>t.id));
+  let changed=true;
+  while(changed){
+    changed=false;
+    pool.forEach(t=>{
+      if(t.parentId && keep.has(t.parentId) && !keep.has(t.id)){ keep.add(t.id); changed=true; }
+      if(keep.has(t.id) && t.parentId && !keep.has(t.parentId)){ keep.add(t.parentId); changed=true; }
+    });
+  }
+  pcRoleThreadCache.set(key, keep);
+  return keep;
+}
 function pcMatchesRole(t){
-  if(!pcSelectedRole)return true;
-  const role=pcRolesForDomain(pcSelectedDomain).find(r=>r.id===pcSelectedRole);
-  return role?!!role.match(t):true;
-}
-
-function updateDomainConnector(){
-  const connector=document.getElementById('pcDomainConnector');
-  const active=document.querySelector('.pcDomain.active:not(.global)');
-  const roleRail=document.getElementById('pcRoleRail');
-  if(!connector||!active||!roleRail){return}
-  const cRect=document.getElementById('center').getBoundingClientRect();
-  const a=active.getBoundingClientRect();
-  const y=(a.top+a.height/2)-cRect.top;
-  connector.style.top='0px';
-  const h=connector.querySelector('.h');
-  h.style.top=y+'px';
+  if(!pcSelectedRole) return true;
+  return roleThreadsSet(pcSelectedRole, pcSelectedDomain).has(t.id);
 }
 function renderPCDomains(){
   const box=document.getElementById('pcDomainRail');
-  if(!box||!DATA)return;
+  if(!box||!DATA) return;
   box.innerHTML='';
 
   const global=document.createElement('button');
   global.className='pcDomain global'+(!pcSelectedDomain?' active':'');
   global.textContent='GLOBAL';
   global.onclick=()=>{
-    pcSelectedDomain=null;pcSelectedRole=null;pcSelectedThread=null;
-    focusLane=null;subRoleFocus=null;isolatedThreadId=null;
+    pcSelectedDomain=null; pcSelectedRole=null; pcSelectedThread=null;
+    focusLane=null; subRoleFocus=null; isolatedThreadId=null;
     render();
-    detail.innerHTML='<div class="card"><div class="kicker">GLOBAL</div><h2>Vue d’ensemble</h2><p class="small">Tous les domaines sont visibles.</p></div>';
+    detail.innerHTML='<div class="card"><div class="kicker">GLOBAL</div><h2>Vue d’ensemble</h2><p class="small">Tous les domaines et tous les fils sont visibles.</p></div>';
   };
   box.appendChild(global);
 
@@ -1947,29 +1788,25 @@ function renderPCDomains(){
     b.className='pcDomain'+(pcSelectedDomain===domain?' active':'');
     b.textContent=domain;
     b.onclick=()=>{
-      pcSelectedDomain=domain;pcSelectedThread=null;
-      const firstRole=pcRolesForDomain(domain)[0];
-      pcSelectedRole=firstRole?firstRole.id:null;
-      focusLane=domain;subRoleFocus=null;isolatedThreadId=null;
+      pcSelectedDomain=domain;
+      const roles=pcRolesForDomain(domain);
+      if(!roles.some(r=>r.id===pcSelectedRole)) pcSelectedRole=roles[0]?.id||null;
+      pcSelectedThread=null;
+      focusLane=domain; subRoleFocus=pcSelectedRole; isolatedThreadId=null;
       render();
-      if(firstRole){
-        detail.innerHTML=`<div class="card"><div class="kicker">Rôle</div><h2>${firstRole.name}</h2><p class="small">${visibleThreads().length} fils visibles.</p></div>`;
-      }else showLaneSummary(domain);
+      if(pcSelectedRole) showRoleSummary(pcSelectedRole); else showLaneSummary(domain);
     };
     box.appendChild(b);
   });
 }
 function renderPCRoles(){
   const box=document.getElementById('pcRoleRail');
-  if(!box||!DATA)return;
+  if(!box||!DATA) return;
   box.innerHTML='';
+  if(!pcSelectedDomain) return;
 
   const roles=pcRolesForDomain(pcSelectedDomain);
-  box.classList.toggle('hasRoles',roles.length>0);
-
-  if(pcSelectedDomain && roles.length && !roles.some(r=>r.id===pcSelectedRole)){
-    pcSelectedRole=roles[0].id;
-  }
+  if(roles.length && !roles.some(r=>r.id===pcSelectedRole)) pcSelectedRole=roles[0].id;
 
   roles.forEach(role=>{
     const b=document.createElement('button');
@@ -1977,41 +1814,34 @@ function renderPCRoles(){
     b.textContent=pcRoleName(role);
     b.onclick=()=>{
       pcSelectedRole=role.id;
-      subRoleFocus=null;
-      isolatedThreadId=null;
       pcSelectedThread=null;
+      subRoleFocus=role.id;
+      isolatedThreadId=null;
       render();
-      detail.innerHTML=`<div class="card"><div class="kicker">Rôle</div><h2>${pcRoleName(role)}</h2><p class="small">${visibleThreads().length} fil${visibleThreads().length>1?'s':''} visible${visibleThreads().length>1?'s':''}.</p></div>`;
+      showRoleSummary(role.id);
     };
     box.appendChild(b);
   });
-
-  requestAnimationFrame(updateDomainConnector);
 }
 function renderPCFilters(){
   const box=document.getElementById('pcFilters');
-  if(!box)return;
+  if(!box) return;
   box.innerHTML='';
-
   const add=(label,active,fn)=>{
     const b=document.createElement('button');
-    b.textContent=label;if(active)b.classList.add('active');
-    b.onclick=fn;box.appendChild(b);
+    b.textContent=label; if(active) b.classList.add('active'); b.onclick=fn; box.appendChild(b);
   };
-
-  add(showSecondary?'Masquer secondaires':'Afficher secondaires',showSecondary,()=>{showSecondary=!showSecondary;render();});
-
-  const sep=document.createElement('span');sep.className='sep';box.appendChild(sep);
-
+  add(showSecondary?'Masquer secondaires':'Afficher secondaires',showSecondary,()=>{showSecondary=!showSecondary;render();if(pcSelectedRole)showRoleSummary(pcSelectedRole);});
+  const sep=document.createElement('span'); sep.className='sep'; box.appendChild(sep);
   const labels={all:'Tout',hot:'Chaud',active:'Actif',watch:'Veille',dormant:'Dormant'};
-  ['all','hot','active','watch','dormant'].forEach(k=>{
-    add(labels[k],filter===k,()=>{filter=k;render();});
-  });
+  ['all','hot','active','watch','dormant'].forEach(k=>add(labels[k],filter===k,()=>{filter=k;render(); if(pcSelectedRole)showRoleSummary(pcSelectedRole); else if(pcSelectedDomain)showLaneSummary(pcSelectedDomain);}));
 }
 function renderPCChrome(){
-  renderPCDomains();renderPCRoles();renderPCFilters();updatePCCursor();requestAnimationFrame(updateDomainConnector);
+  renderPCDomains();
+  renderPCRoles();
+  renderPCFilters();
+  updatePCCursor();
 }
-
 function panelBounds(){
   const leftWidth=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--leftw'))||320;
   const max=Math.max(360,window.innerWidth-leftWidth-18);
@@ -2231,7 +2061,7 @@ function visibleThreads(){
     return matchState&&matchDomain&&matchRole&&matchLevel;
   });
 
-  if(timeRangeMode==='all')return base;
+  if(timeRangeMode==='all') return base;
 
   const baseIds=new Set(base.map(t=>t.id));
   const keep=new Set(base.filter(threadIntersectsTimeRange).map(t=>t.id));
@@ -2240,7 +2070,10 @@ function visibleThreads(){
     changed=false;
     base.forEach(t=>{
       if(keep.has(t.id)&&t.parentId&&baseIds.has(t.parentId)&&!keep.has(t.parentId)){
-        keep.add(t.parentId);changed=true;
+        keep.add(t.parentId); changed=true;
+      }
+      if(t.parentId&&keep.has(t.parentId)&&baseIds.has(t.id)&&!keep.has(t.id)){
+        keep.add(t.id); changed=true;
       }
     });
   }
@@ -2401,7 +2234,7 @@ function renderAxis(){
     });
   }
 }
-function render(){if(!DATA)return;applyResponsiveMetrics();activityCache.clear();laneActivityCache.clear();computeLayout();clear();setSizes();renderAxis();renderChart();renderSidebar();syncScroll();const isolated=isolatedThreadId?threadById(isolatedThreadId):null;subtitle.textContent=`${DATA.meta.title||'Poste de pilotage'} · ${rangeLabel()} · ${dateLabel(start())} → ${dateLabel(end())}${focusLane?' · focus : '+focusLane:''}${isolated?' · isolé : '+isolated.title:''}`;zoomInfo.textContent=(zoomMode==='time'?Math.round(pxPerDay/54*100):Math.round(rowH/34*100))+'%';if(thicknessInfo)thicknessInfo.textContent='Épaisseur '+Math.round(strokeScale*100)+'%';updateMobileIndicators();updateMobileIsolateButton();renderPCChrome();updatePCCursor();if(typeof applyIPhoneLayout==='function')applyIPhoneLayout(false);}
+function render(){if(!DATA)return;applyResponsiveMetrics();activityCache.clear();laneActivityCache.clear();clearPCRoleThreadCache();computeLayout();clear();setSizes();renderAxis();renderChart();renderSidebar();syncScroll();const isolated=isolatedThreadId?threadById(isolatedThreadId):null;subtitle.textContent=`${DATA.meta.title||'Poste de pilotage'} · ${rangeLabel()} · ${dateLabel(start())} → ${dateLabel(end())}${focusLane?' · focus : '+focusLane:''}${isolated?' · isolé : '+isolated.title:''}`;zoomInfo.textContent=(zoomMode==='time'?Math.round(pxPerDay/54*100):Math.round(rowH/34*100))+'%';if(thicknessInfo)thicknessInfo.textContent='Épaisseur '+Math.round(strokeScale*100)+'%';updateMobileIndicators();updateMobileIsolateButton();renderPCChrome();updatePCCursor();if(typeof applyIPhoneLayout==='function')applyIPhoneLayout(false);}
 function rootY(){if(focusLane) return layout.roleMid[focusLane]||72; return layout.rows.length?layout.rows[Math.floor(layout.rows.length/2)].y:300;}
 function curveSpan(mult=1){
   const base=currentView()==='overview'?250:210;
@@ -2465,9 +2298,15 @@ function organicCurveGeom(sourceX,sourceY,targetY,targetEndX,mult=1,targetStartX
 }
 function pathRootToRole(lane){
   const y=layout.roleMid[lane],sy=rootY();
-  const x0=405;
-  const x1=448;
-  return `M${x0} ${sy} L${x1} ${sy} L${x1} ${y} L${roleX} ${y}`;
+  const lanes=layout.lanes||[];
+  const idx=Math.max(0,lanes.indexOf(lane));
+
+  const base=leftRootX+8;
+  const end=Math.max(base+6,roleX-7);
+  const step=(end-base)/Math.max(2,lanes.length+1);
+  const routeX=Math.min(end,base+step*(idx+1));
+
+  return `M0 ${sy} L${routeX} ${sy} L${routeX} ${y} L${roleX} ${y}`;
 }
 function roleLabelWidth(text){return currentView()==='detail' ? Math.max(120, text.length*14+34) : Math.max(92, text.length*10+26)}
 function roleEndX(lane){return roleLabelX + roleLabelWidth(lane)}
@@ -2849,19 +2688,63 @@ function addOverviewNode(n,t,x,y,i){
   g.appendChild(tx);
   chartSvg.appendChild(g);
 }
-function showLaneSummary(lane){
-  const threads=laneThreads(lane).sort((a,b)=>(b.heat||0)-(a.heat||0));
-  const hot=threads.filter(t=>(t.heat||0)>=4);
-  const nodes=importantLaneNodes(lane);
-  detail.innerHTML=`<div class="card"><div class="kicker">Rôle / grand fil</div><h2>${lane}</h2><div class="meta"><div class="pill">Fils<strong>${threads.length}</strong></div><div class="pill">Chaleur max<strong>${roleHeat(lane)}/5</strong></div></div><p class="small">Vue large : ce fil agrège les sujets du rôle. Les nœuds visibles sont les rendez-vous, tâches ou vigilances les plus importants.</p><div class="agenda"><strong>Action</strong><br>Clique sur “Ouvrir le rôle” ou sur le nom du rôle à gauche pour voir les sous-fils.</div><p><button onclick="openLaneFromPanel('${lane.replace(/'/g,"\\'")}')">Ouvrir le rôle</button></p></div>
-  <div class="card"><div class="kicker">Fils chauds / actifs</div>${threads.length?'<ul>'+threads.slice(0,10).map(t=>`<li><strong>${t.title}</strong><br><span class="small">${t.summary||''}</span></li>`).join('')+'</ul>':'<p class="empty">Aucun fil.</p>'}</div>
-  <div class="card"><div class="kicker">Nœuds importants</div>${nodes.length?'<ul>'+nodes.map(o=>`<li><strong>${o.node.symbol||'•'} ${o.node.title}</strong><br><span class="small">${fmt(o.node.date||o.node.deadline)} · ${o.thread.title}</span></li>`).join('')+'</ul>':'<p class="empty">Aucun nœud important visible.</p>'}</div>`;
-}
-function openLaneFromPanel(lane){isolatedThreadId=null;focusLane=lane; subRoleFocus=null; render();}
-window.openLaneFromPanel=openLaneFromPanel;
 
+function laneRoles(lane){ return (DATA?.roles||[]).filter(r=>r.lane===lane); }
+function threadsForRole(roleId){
+  const keep=roleThreadsSet(roleId, pcSelectedDomain || roleById(roleId)?.lane || null);
+  return visibleThreads().filter(t=>keep.has(t.id));
+}
+function nodesForThreads(ids){
+  return (DATA.nodes||[]).filter(n=>ids.has(n.threadId));
+}
+function historyForThreads(ids){
+  return (DATA.history||[]).filter(h=>ids.has(h.threadId));
+}
+function showLaneSummary(lane){
+  const roles=laneRoles(lane);
+  const threads=laneThreads(lane).sort((a,b)=>(b.heat||0)-(a.heat||0));
+  const nodes=importantLaneNodes(lane).slice(0,10);
+  detail.innerHTML=`
+    <div class="card primary">
+      <div class="kicker">Domaine</div>
+      <h2>${lane}</h2>
+      <div class="meta"><div class="pill">Rôles<strong>${roles.length}</strong></div><div class="pill">Fils<strong>${threads.length}</strong></div><div class="pill">Chaleur max<strong>${roleHeat(lane)}/5</strong></div></div>
+      <p class="small">Sélectionne un rôle dans l’arborescence de gauche pour afficher ses fils, nœuds, détails et tâches.</p>
+    </div>
+    <div class="card">
+      <div class="kicker">Rôles du domaine</div>
+      <div class="miniTree">
+        ${roles.length?roles.map(r=>`<div class="branch"><strong>${pcRoleName(r)}</strong><span class="small">${r.summary||''}</span><br><button class="inlineAction" onclick="showRoleSummary('${r.id}')">Ouvrir le rôle</button></div>`).join(''):'<p class="empty">Aucun rôle.</p>'}
+      </div>
+    </div>
+    <div class="card"><div class="kicker">Nœuds importants</div>${nodes.length?'<ul class="listCompact">'+nodes.map(o=>`<li><button class="inlineAction" onclick="showNode('${o.node.id}')">${o.node.symbol||'•'} ${o.node.title}</button><br><span class="small">${fmt(o.node.date||o.node.deadline)} · ${o.thread.title}</span></li>`).join('')+'</ul>':'<p class="empty">Aucun nœud important visible.</p>'}</div>`;
+}
+function showRoleSummary(roleId){
+  const role=roleById(roleId); if(!role) return;
+  const threads=threadsForRole(roleId).sort((a,b)=>(b.heat||0)-(a.heat||0) || (D(a.startDate)-D(b.startDate)));
+  const ids=new Set(threads.map(t=>t.id));
+  const nodes=nodesForThreads(ids).sort((a,b)=>(new Date(a.date||a.deadline||0))-(new Date(b.date||b.deadline||0))).slice(0,12);
+  const hist=historyForThreads(ids).sort((a,b)=>(new Date(b.date||0))-(new Date(a.date||0))).slice(0,8);
+  detail.innerHTML=`
+    <div class="card primary">
+      <div class="kicker">Rôle</div>
+      <h2>${pcRoleName(role)}</h2>
+      <div class="meta"><div class="pill">Domaine<strong>${role.lane}</strong></div><div class="pill">Fils<strong>${threads.length}</strong></div><div class="pill">État<strong>${role.state||'—'}</strong></div></div>
+      <p>${role.summary||''}</p>
+    </div>
+    <div class="card"><div class="kicker">Fils</div>${threads.length?'<ul class="listCompact">'+threads.map(t=>`<li><button class="inlineAction" onclick="showThread('${t.id}')">${t.title}</button><br><span class="small">${t.summary||''}</span></li>`).join('')+'</ul>':'<p class="empty">Aucun fil visible pour ce rôle.</p>'}</div>
+    <div class="card"><div class="kicker">Nœuds / tâches</div>${nodes.length?'<ul class="listCompact">'+nodes.map(n=>`<li><button class="inlineAction" onclick="showNode('${n.id}')">${n.symbol||'•'} ${n.title}</button><br><span class="small">${fmt(n.date||n.deadline)} · ${threadById(n.threadId)?.title||''}</span></li>`).join('')+'</ul>':'<p class="empty">Aucun nœud visible.</p>'}</div>
+    <div class="card"><div class="kicker">Historique récent</div>${hist.length?'<ul class="listCompact">'+hist.map(h=>`<li><strong>${fmt(h.date)}</strong> — ${h.summary||''}<br><span class="small">${threadById(h.threadId)?.title||''}</span></li>`).join('')+'</ul>':'<p class="empty">Pas encore d’historique.</p>'}</div>`;
+}
+function openLaneFromPanel(lane){
+  isolatedThreadId=null; focusLane=lane; pcSelectedDomain=lane;
+  const roles=pcRolesForDomain(lane); pcSelectedRole=roles[0]?.id||null; subRoleFocus=pcSelectedRole;
+  render();
+  if(pcSelectedRole) showRoleSummary(pcSelectedRole); else showLaneSummary(lane);
+}
+window.openLaneFromPanel=openLaneFromPanel;
 function renderDeepNodeDetails(){
-  if(!DATA||rowH<70||currentView()!=='detail')return;
+  if(!DATA||rowH<86||currentView()!=='detail')return;
   layout.rows.forEach(row=>{
     const t=row.thread;
     if(!t)return;
@@ -3221,9 +3104,51 @@ function openMobilePanel(name){
 function mobileAfterSelection(){if(isMobileMode())closeMobilePanels();}
 
 function roleName(id){const r=(DATA.roles||[]).find(x=>x.id===id);return r?r.name:'—'}
-function showThread(id){pcSelectedThread=id;const t=DATA.threads.find(x=>x.id===id);if(!t)return;selectedId=id; const hist=historyFor(id).sort((a,b)=>D(a.date)-D(b.date)); const nodes=nodesFor(id); const links=(DATA.threadLinks||[]).filter(l=>l.source===id||l.target===id); detail.innerHTML=`<div class="card primary"><div class="kicker">Fil</div><h2>${t.title}</h2><div class="meta"><div class="pill">État<strong>${t.state}</strong></div><div class="pill">Chaleur<strong>${t.heat}/5</strong></div><div class="pill">Rôle<strong>${roleName(t.rolePrimary)}</strong></div><div class="pill">Ligne<strong>${t.lane}</strong></div></div><p>${t.summary||''}</p><div class="agenda"><strong>Prochaine action</strong><br>${t.nextAction||'—'}</div><p class="small"><strong>Risque :</strong> ${t.risk||'—'}</p></div><div class="card"><div class="kicker">Historique</div>${hist.length?'<ul>'+hist.map(h=>`<li><strong>${fmt(h.date)}</strong> — ${h.summary}<br><span class="small">${h.effect||''}</span></li>`).join('')+'</ul>':'<p class="empty">Pas encore d’historique.</p>'}</div><div class="card"><div class="kicker">Nœuds</div>${nodes.length?'<ul>'+nodes.map(n=>`<li><strong>${n.symbol||'•'} ${n.title}</strong><br><span class="small">${fmt(n.date||n.deadline)} · ${n.status||''}</span></li>`).join('')+'</ul>':'<p class="empty">Aucun nœud.</p>'}</div><div class="card"><div class="kicker">Liens</div>${links.length?'<ul>'+links.map(l=>{const other=DATA.threads.find(t=>t.id===(l.source===id?l.target:l.source)); return `<li><strong>${other?other.title:'—'}</strong><br><span class="small">${l.type||'lien'} — ${l.summary||''}</span></li>`}).join('')+'</ul>':'<p class="empty">Pas de lien transversal.</p>'}</div>`;updateMobileIsolateButton();if(isMobileMode())openMobilePanel('detail'); }
-function showHistory(id){const h=(DATA.history||[]).find(x=>x.id===id);if(!h)return;const t=DATA.threads.find(x=>x.id===h.threadId);selectedId=t?.id||null; detail.innerHTML=`<div class="card"><div class="kicker">Historique</div><h2>${fmt(h.date)}</h2><p><strong>Fil :</strong> ${t?t.title:'—'}</p><div class="agenda"><strong>${h.summary||''}</strong><br>${h.effect||''}</div><p class="small">Type : ${h.type||'—'}</p></div>`;updateMobileIsolateButton();if(isMobileMode())openMobilePanel('detail'); }
-function showNode(id){const n=(DATA.nodes||[]).find(x=>x.id===id);if(!n)return;const t=DATA.threads.find(x=>x.id===n.threadId);selectedId=t?.id||null; detail.innerHTML=`<div class="card"><div class="kicker">Nœud</div><h2>${n.symbol||'•'} ${n.title}</h2><div class="meta"><div class="pill">Type<strong>${n.type||'—'}</strong></div><div class="pill">Statut<strong>${n.status||'—'}</strong></div><div class="pill">Énergie<strong>${n.energy||'—'}</strong></div><div class="pill">Temps<strong>${n.duration||'—'}</strong></div></div><p><strong>Fil :</strong> ${t?t.title:'—'}</p><div class="agenda"><strong>Date / échéance</strong><br>${fmt(n.date||n.deadline)}</div></div>`;updateMobileIsolateButton();if(isMobileMode())openMobilePanel('detail'); }
+function showThread(id){
+  pcSelectedThread=id;
+  const t=DATA.threads.find(x=>x.id===id); if(!t) return;
+  selectedId=id;
+  const hist=historyFor(id).sort((a,b)=>D(a.date)-D(b.date));
+  const nodes=nodesFor(id).sort((a,b)=>new Date(a.date||a.deadline||0)-new Date(b.date||b.deadline||0));
+  const links=(DATA.threadLinks||[]).filter(l=>l.source===id||l.target===id);
+  const children=(DATA.threads||[]).filter(x=>x.parentId===id);
+  detail.innerHTML=`
+    <div class="card primary">
+      <div class="kicker">Fil</div>
+      <h2>${t.title}</h2>
+      <div class="meta"><div class="pill">État<strong>${t.state}</strong></div><div class="pill">Chaleur<strong>${t.heat}/5</strong></div><div class="pill">Rôle<strong>${roleName(t.rolePrimary)}</strong></div><div class="pill">Ligne<strong>${t.lane}</strong></div></div>
+      <p>${t.summary||''}</p>
+      <div class="agenda"><strong>Prochaine action</strong><br>${t.nextAction||'—'}</div>
+      <p class="small"><strong>Risque :</strong> ${t.risk||'—'}</p>
+    </div>
+    <div class="card"><div class="kicker">Sous-fils</div>${children.length?'<ul class="listCompact">'+children.map(c=>`<li><button class="inlineAction" onclick="showThread(\'${c.id}\')">${c.title}</button><br><span class="small">${c.summary||''}</span></li>`).join('')+'</ul>':'<p class="empty">Aucun sous-fil.</p>'}</div>
+    <div class="card"><div class="kicker">Nœuds / tâches</div>${nodes.length?'<ul class="listCompact">'+nodes.map(n=>`<li><button class="inlineAction" onclick="showNode(\'${n.id}\')">${n.symbol||'•'} ${n.title}</button><br><span class="small">${fmt(n.date||n.deadline)} · ${n.status||''}</span></li>`).join('')+'</ul>':'<p class="empty">Aucun nœud.</p>'}</div>
+    <div class="card"><div class="kicker">Historique</div>${hist.length?'<ul class="listCompact">'+hist.map(h=>`<li><strong>${fmt(h.date)}</strong> — ${h.summary}<br><span class="small">${h.effect||''}</span></li>`).join('')+'</ul>':'<p class="empty">Pas encore d’historique.</p>'}</div>
+    <div class="card"><div class="kicker">Liens</div>${links.length?'<ul class="listCompact">'+links.map(l=>{const other=DATA.threads.find(t=>t.id===(l.source===id?l.target:l.source)); return `<li><strong>${other?other.title:'—'}</strong><br><span class="small">${l.type||'lien'} — ${l.summary||''}</span></li>`}).join('')+'</ul>':'<p class="empty">Pas de lien transversal.</p>'}</div>`;
+  updateMobileIsolateButton(); if(isMobileMode()) openMobilePanel('detail');
+}
+function showHistory(id){
+  const h=(DATA.history||[]).find(x=>x.id===id); if(!h) return;
+  const t=DATA.threads.find(x=>x.id===h.threadId); selectedId=t?.id||null;
+  detail.innerHTML=`<div class="card primary"><div class="kicker">Historique</div><h2>${fmt(h.date)}</h2><p><strong>Fil :</strong> ${t?t.title:'—'}</p><div class="agenda"><strong>${h.summary||''}</strong><br>${h.effect||''}</div><p class="small">Type : ${h.type||'—'}</p>${t?`<p><button class="inlineAction" onclick="showThread('${t.id}')">Voir le fil</button></p>`:''}</div>`;
+  updateMobileIsolateButton(); if(isMobileMode()) openMobilePanel('detail');
+}
+function showNode(id){
+  const n=(DATA.nodes||[]).find(x=>x.id===id); if(!n) return;
+  const t=DATA.threads.find(x=>x.id===n.threadId); selectedId=t?.id||null;
+  const siblingNodes=(DATA.nodes||[]).filter(x=>x.threadId===n.threadId && x.id!==n.id).slice(0,6);
+  detail.innerHTML=`
+    <div class="card primary">
+      <div class="kicker">Nœud / tâche</div>
+      <h2>${n.symbol||'•'} ${n.title}</h2>
+      <div class="meta"><div class="pill">Type<strong>${n.type||'—'}</strong></div><div class="pill">Statut<strong>${n.status||'—'}</strong></div><div class="pill">Énergie<strong>${n.energy||'—'}</strong></div><div class="pill">Temps<strong>${n.duration||'—'}</strong></div></div>
+      <p><strong>Fil :</strong> ${t?t.title:'—'}</p>
+      <div class="agenda"><strong>Date / échéance</strong><br>${fmt(n.date||n.deadline)}</div>
+      ${t?`<p><button class="inlineAction" onclick="showThread('${t.id}')">Voir le fil</button></p>`:''}
+    </div>
+    <div class="card"><div class="kicker">Autres nœuds du fil</div>${siblingNodes.length?'<ul class="listCompact">'+siblingNodes.map(s=>`<li><button class="inlineAction" onclick="showNode(\'${s.id}\')">${s.symbol||'•'} ${s.title}</button><br><span class="small">${fmt(s.date||s.deadline)}</span></li>`).join('')+'</ul>':'<p class="empty">Aucun autre nœud.</p>'}</div>`;
+  updateMobileIsolateButton(); if(isMobileMode()) openMobilePanel('detail');
+}
 function validateData(obj){if(!obj||typeof obj!=='object')throw new Error('JSON vide ou invalide');if(!obj.meta||!obj.meta.period)throw new Error('meta.period absent');if(!Array.isArray(obj.threads))throw new Error('threads absent');obj.roles=Array.isArray(obj.roles)?obj.roles:[];obj.history=Array.isArray(obj.history)?obj.history:[];obj.nodes=Array.isArray(obj.nodes)?obj.nodes:[];obj.threadLinks=Array.isArray(obj.threadLinks)?obj.threadLinks:[];obj.visualConfig=obj.visualConfig||{};return obj}
 function loadData(obj,options={}){
   DATA=validateData(obj);
@@ -3259,7 +3184,7 @@ function loadText(txt){try{loadData(JSON.parse(txt),{persist:true,restoreView:tr
 document.getElementById('fileInput').addEventListener('change',e=>{const input=e.currentTarget;const f=input.files&&input.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{loadText(String(r.result||''));input.value=''};r.onerror=()=>{showLoadError(r.error||new Error('Lecture impossible'));input.value=''};r.readAsText(f,'UTF-8')}); const mobileFileInput=document.getElementById('mobileFileInput');if(mobileFileInput)mobileFileInput.addEventListener('change',e=>{const input=e.currentTarget;const f=input.files&&input.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{loadText(String(r.result||''));input.value=''};r.onerror=()=>{showLoadError(r.error||new Error('Lecture impossible'));input.value=''};r.readAsText(f,'UTF-8')}); document.querySelectorAll('button[data-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.filter; subRoleFocus=null; isolatedThreadId=null; document.querySelectorAll('button[data-filter]').forEach(x=>x.classList.remove('active')); b.classList.add('active'); render(); schedulePersistView();}); document.getElementById('allRoles').onclick=()=>{isolatedThreadId=null;focusLane=null; subRoleFocus=null; render(); schedulePersistView();}; const secondaryBtn=document.getElementById('toggleSecondary'); if(secondaryBtn){secondaryBtn.onclick=()=>{showSecondary=!showSecondary;secondaryBtn.textContent=showSecondary?'Masquer secondaires':'Afficher secondaires';isolatedThreadId=null;render();schedulePersistView();};secondaryBtn.textContent=showSecondary?'Masquer secondaires':'Afficher secondaires';} document.getElementById('desktopTimeToggle')?.addEventListener('click',toggleTimeMode);
 document.getElementById('modeTime').onclick=()=>{zoomMode='time'; document.getElementById('modeTime').classList.add('active'); document.getElementById('modeDetail').classList.remove('active'); schedulePersistView();}; document.getElementById('modeDetail').onclick=()=>{zoomMode='detail'; document.getElementById('modeDetail').classList.add('active'); document.getElementById('modeTime').classList.remove('active'); schedulePersistView();};
 function zoomTime(f){const center=(chartScroll.scrollLeft+chartScroll.clientWidth/2-branchW)/pxPerDay; pxPerDay=Math.max(minPxPerDay(),Math.min(380,pxPerDay*f)); render(); chartScroll.scrollLeft=branchW+center*pxPerDay-chartScroll.clientWidth/2;}
-function zoomDetail(f){const center=(chartScroll.scrollTop+chartScroll.clientHeight/2)/rowH; rowH=Math.max(22,Math.min(540,rowH*f)); render(); chartScroll.scrollTop=center*rowH-chartScroll.clientHeight/2;}
+function zoomDetail(f){const center=(chartScroll.scrollTop+chartScroll.clientHeight/2)/rowH; rowH=Math.max(22,Math.min(180,rowH*f)); render(); chartScroll.scrollTop=center*rowH-chartScroll.clientHeight/2;}
 document.getElementById('zoomIn').onclick=()=>zoomMode==='time'?zoomTimeAt(1.25):zoomDetailAt(1.18); document.getElementById('zoomOut').onclick=()=>zoomMode==='time'?zoomTimeAt(1/1.25):zoomDetailAt(1/1.18); document.getElementById('reset').onclick=()=>{isolatedThreadId=null;focusLane=null;subRoleFocus=null;selectedId=null;mobileRolesRoot=true;mobileRolesBrowseLane=null;showSecondary=false;const sb=document.getElementById('toggleSecondary');if(sb)sb.textContent='Afficher secondaires';rowH=isMobileMode()?42:34;strokeScale=1;filter='all';document.querySelectorAll('button[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter==='all'));applyTimeRangeState(isMobileMode()?'3m':'all');if(isMobileMode())fitMobileCurrentView();else fitFullPeriod();schedulePersistView();};
 chartScroll.addEventListener('scroll',()=>{hideNodeTooltip();syncScroll();schedulePersistView();}); chartScroll.addEventListener('mousedown',e=>{dragging=true; last={x:e.clientX,y:e.clientY,l:chartScroll.scrollLeft,t:chartScroll.scrollTop}; chartScroll.style.cursor='grabbing'; e.preventDefault();}); window.addEventListener('mouseup',()=>{dragging=false; chartScroll.style.cursor='grab';}); window.addEventListener('mousemove',e=>{if(!dragging)return; chartScroll.scrollLeft=last.l-(e.clientX-last.x); chartScroll.scrollTop=last.t-(e.clientY-last.y);}); function zoomTimeAt(f, clientX){
   const rect=chartScroll.getBoundingClientRect();
@@ -3648,7 +3573,7 @@ chartScroll.addEventListener('wheel',e=>{
 applyResponsiveMetrics();
 applyIPhoneLayout();
 updateStandaloneHint();
-document.body.classList.remove('iphonePortrait','iphoneLandscape','landLeftHidden','landRightHidden','landMenusHidden');document.body.classList.add('pcRoleTree');
+document.body.classList.remove('iphonePortrait','iphoneLandscape','landLeftHidden','landRightHidden','landMenusHidden');
 
 pcCursorDate=new Date();
 async function bootViewer(){
@@ -3656,7 +3581,7 @@ async function bootViewer(){
   try{local=readStoredJson()}catch(e){}
 
   try{
-    const remoteUrl='data/current.json?build=PILOT_PC_V2_2&t='+Date.now();
+    const remoteUrl='data/current.json?build=PILOT_PC_V2_3&t='+Date.now();
     const res=await fetch(remoteUrl,{cache:'no-store'});
     if(res.ok){
       const remote=await res.json();
