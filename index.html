@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Pilotage">
-<title>Poste de pilotage — PILOT v2.0.1</title>
+<title>PILOT v2.0 — PC</title>
 <meta name="format-detection" content="telephone=no">
 <style>
 :root{--bg:#000;--panel:#080808;--panel2:#111;--text:#fff;--muted:#a9a9a9;--yellow:#ffd400;--yellow2:#ffea61;--yellowSoft:rgba(255,212,0,.18);--grid:#252525;--grid2:#141414;--leftw:320px;--rightw:420px;--rightwDynamic:420px;--headerh:126px;--axish:92px;}
@@ -1040,17 +1040,165 @@ body.timeOff .gridV{display:none !important}
   color:var(--yellow) !important;
 }
 
+
+/* ==========================================================
+   PILOT v2.0 — PC
+   ========================================================== */
+
+/* Pas d'interface mobile / iPhone sur PC */
+#mobileQuickBar,
+#mobileNav,
+#mobileBackdrop,
+#mobileControlsSheet,
+#landscapeControls,
+#safeLeftMask,
+#safeRightMask,
+#pilotTopDecor,
+#pilotBottomDecor,
+#standaloneHint,
+#zoomGestureBadge{
+  display:none !important;
+}
+
+html,body{
+  position:static !important;
+  width:100% !important;
+  height:100% !important;
+  overflow:hidden !important;
+  touch-action:auto !important;
+}
+
+/* Desktop: interface 3 colonnes */
+#app{
+  display:grid !important;
+  grid-template-columns:var(--leftw) minmax(0,1fr) var(--rightwDynamic) !important;
+  grid-template-rows:var(--headerh) 1fr !important;
+  width:100vw !important;
+  height:100vh !important;
+  padding:0 !important;
+}
+
+#header{
+  position:relative !important;
+  inset:auto !important;
+  display:block !important;
+  grid-column:1 / 4 !important;
+  grid-row:1 !important;
+  height:auto !important;
+  padding:14px 22px !important;
+  text-align:left !important;
+}
+
+#header h1{
+  text-align:left !important;
+  width:auto !important;
+}
+
+#header .sub{
+  display:block !important;
+}
+
+.toolbar{
+  display:flex !important;
+  gap:10px !important;
+  align-items:center !important;
+  flex-wrap:wrap !important;
+  margin-top:14px !important;
+}
+
+#left{
+  display:block !important;
+  position:relative !important;
+  inset:auto !important;
+  grid-column:1 !important;
+  grid-row:2 !important;
+  width:auto !important;
+  height:auto !important;
+  padding:0 !important;
+  transform:none !important;
+  overflow:auto !important;
+  border-right:1px solid #222 !important;
+  box-shadow:none !important;
+  background:#050505 !important;
+}
+#leftInner{
+  position:relative !important;
+  inset:auto !important;
+  width:100% !important;
+  padding:0 10px 40px !important;
+  transform:none !important;
+}
+
+#center{
+  display:block !important;
+  position:relative !important;
+  inset:auto !important;
+  grid-column:2 !important;
+  grid-row:2 !important;
+  width:auto !important;
+  height:auto !important;
+  min-width:0 !important;
+  min-height:0 !important;
+}
+
+#right{
+  display:block !important;
+  position:relative !important;
+  inset:auto !important;
+  grid-column:3 !important;
+  grid-row:2 !important;
+  width:auto !important;
+  height:auto !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  max-height:none !important;
+  transform:none !important;
+  overflow:auto !important;
+  border-left:1px solid #222 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  background:#080808 !important;
+}
+
+/* Time desktop */
+#desktopTimeToggle.active{
+  background:var(--yellow) !important;
+  color:#000 !important;
+  border-color:var(--yellow) !important;
+}
+body.timeOff{
+  --axish:0px !important;
+}
+body.timeOff #axisWrap{
+  display:none !important;
+}
+body.timeOff #chartScroll{
+  top:0 !important;
+}
+body.timeOff .gridV{
+  display:none !important;
+}
+
+/* Le PC conserve les contrôles souris classiques. */
+#chartScroll{
+  touch-action:auto !important;
+  cursor:grab !important;
+}
+#chartScroll.dragging{
+  cursor:grabbing !important;
+}
+
 </style>
 </head>
 <body>
 <div id="app">
-<header id="header"><h1>PILOT v2.0</h1><div class="sub" id="subtitle">PILOT v2.0 · navigation inertielle + zoom directionnel</div>
+<header id="header"><h1>PILOT v2.0 — PC</h1><div class="sub" id="subtitle">PILOT v2.0 · navigation inertielle + zoom directionnel</div>
 <div id="mobileQuickBar">
   <label class="mobileFileLabel">JSON<input id="mobileFileInput" type="file" accept=".json,application/json"></label>
   <button id="mobilePeriodTop">3 mois</button>
   <button id="mobileRolesTop">Rôles</button>
   <button id="mobileControlsTop">Réglages</button>
-</div><div class="toolbar"><label class="fileLabel">Charger JSON<input id="fileInput" type="file" accept=".json,application/json"></label><button id="modeTime" class="active">Zoom temps</button><button id="modeDetail">Zoom détail</button><button id="zoomOut">−</button><span id="zoomInfo" class="small">100%</span><button id="zoomIn">+</button><span id="thicknessInfo" class="small" title="MAJ + molette">Épaisseur 100%</span><button id="reset">Reset vue</button><div class="sep"></div><button id="allRoles">Tous les rôles</button><button id="toggleSecondary">Afficher secondaires</button><button data-filter="all" class="active">Tout</button><button data-filter="hot">Chaud</button><button data-filter="active">Actif</button><button data-filter="watch">Veille</button><button data-filter="dormant">Dormant</button></div></header>
+</div><div class="toolbar"><label class="fileLabel">Charger JSON<input id="fileInput" type="file" accept=".json,application/json"></label><button id="modeTime" class="active">Zoom temps</button><button id="modeDetail">Zoom détail</button><button id="zoomOut">−</button><span id="zoomInfo" class="small">100%</span><button id="zoomIn">+</button><span id="thicknessInfo" class="small" title="MAJ + molette">Épaisseur 100%</span><button id="desktopTimeToggle" class="active" aria-pressed="true">Time</button><button id="reset">Reset vue</button><div class="sep"></div><button id="allRoles">Tous les rôles</button><button id="toggleSecondary">Afficher secondaires</button><button data-filter="all" class="active">Tout</button><button data-filter="hot">Chaud</button><button data-filter="active">Actif</button><button data-filter="watch">Veille</button><button data-filter="dormant">Dormant</button></div></header>
 <aside id="left"><div class="mobileDrawerHead"><strong>Rôles et fils</strong><button id="mobileCloseLeft">×</button></div><div id="leftInner"></div></aside>
 <main id="center"><div id="axisWrap"><div id="axisInner"><div id="axisContent"></div></div></div><div id="chartScroll"><div id="chartContent"><svg id="chartSvg"></svg><div id="labelLayer"></div></div></div><div class="hint"></div></main>
 <div id="nodeTooltip"></div><div id="panelResize" title="Glisser pour redimensionner le panneau"></div><aside id="right"><div class="detailHead"><div><div class="kicker">Panneau</div><strong>Détail / synthèse</strong></div><button id="togglePanel" title="Alterner entre largeur normale et 50 %">Panneau 50%</button><div class="mobileDetailActions mobileOnly"><button id="mobileIsolate">Isoler</button><button id="mobileCloseRight">×</button></div></div><div id="detail"><div class="card primary"><h2>Chargement</h2><p class="empty">Les données sont intégrées. Tu peux aussi charger un autre JSON.</p></div></div></aside>
@@ -1108,7 +1256,7 @@ let timeRangeMode="all", viewStartOverride=null, viewEndOverride=null;
 let mobileRolesRoot=true, mobileRolesBrowseLane=null;
 
 const STORAGE_DATA_KEY='postePilotage:lastJson:v1';
-const STORAGE_VIEW_KEY='pilot:viewState:IPHONE:v2.0';
+const STORAGE_VIEW_KEY='pilot:viewState:PC:v2.0';
 let restoringView=false;
 let saveTimer=null;
 
@@ -1196,7 +1344,7 @@ function applyStoredView(state){
 }
 
 let branchW=340,leftRootX=24,roleX=130,roleLabelX=170,rightPad=280;
-function isMobileMode(){return true}
+function isMobileMode(){return false}
 function applyResponsiveMetrics(){
   if(isMobileMode()){
     if(document.body.classList.contains('iphoneLandscape')){
@@ -2313,11 +2461,18 @@ function refreshThreadLabelPositions(){
 let timeMode=true;
 
 function updateTimeButton(){
-  const btn=document.querySelector('#mobileNav button[data-mobile-view="time"]');
-  if(!btn)return;
-  btn.classList.toggle('active',timeMode);
-  btn.setAttribute('aria-pressed',timeMode?'true':'false');
-  btn.title=timeMode?'Masquer le temps':'Afficher le temps';
+  const mobile=document.querySelector('#mobileNav button[data-mobile-view="time"]');
+  if(mobile){
+    mobile.classList.toggle('active',timeMode);
+    mobile.setAttribute('aria-pressed',timeMode?'true':'false');
+  }
+
+  const desktop=document.getElementById('desktopTimeToggle');
+  if(desktop){
+    desktop.classList.toggle('active',timeMode);
+    desktop.setAttribute('aria-pressed',timeMode?'true':'false');
+    desktop.textContent=timeMode?'Time ON':'Time OFF';
+  }
 }
 
 function applyTimeMode(){
@@ -2409,17 +2564,7 @@ const iphoneLayout={
   landscapeInitialized:false
 };
 
-function physicalLandscape(){
-  // matchMedia est le signal principal sur Safari.
-  if(window.matchMedia && window.matchMedia('(orientation: landscape)').matches) return true;
-
-  // visualViewport est utile pendant les transitions Safari.
-  if(window.visualViewport){
-    return window.visualViewport.width > window.visualViewport.height;
-  }
-
-  return window.innerWidth > window.innerHeight;
-}
+function physicalLandscape(){return false}
 
 function updateLandscapeButtons(){
   const left=document.getElementById('landscapeToggleLeft');
@@ -2592,7 +2737,8 @@ function loadData(obj,options={}){
 }
 function showLoadError(err){console.error(err);detail.innerHTML=`<div class="card primary"><div class="kicker">Erreur JSON</div><h2>Le fichier n'a pas pu être chargé</h2><p class="empty">${String(err&&err.message?err.message:err)}</p></div>`}
 function loadText(txt){try{loadData(JSON.parse(txt),{persist:true,restoreView:true})}catch(err){showLoadError(err)}}
-document.getElementById('fileInput').addEventListener('change',e=>{const input=e.currentTarget;const f=input.files&&input.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{loadText(String(r.result||''));input.value=''};r.onerror=()=>{showLoadError(r.error||new Error('Lecture impossible'));input.value=''};r.readAsText(f,'UTF-8')}); const mobileFileInput=document.getElementById('mobileFileInput');if(mobileFileInput)mobileFileInput.addEventListener('change',e=>{const input=e.currentTarget;const f=input.files&&input.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{loadText(String(r.result||''));input.value=''};r.onerror=()=>{showLoadError(r.error||new Error('Lecture impossible'));input.value=''};r.readAsText(f,'UTF-8')}); document.querySelectorAll('button[data-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.filter; subRoleFocus=null; isolatedThreadId=null; document.querySelectorAll('button[data-filter]').forEach(x=>x.classList.remove('active')); b.classList.add('active'); render(); schedulePersistView();}); document.getElementById('allRoles').onclick=()=>{isolatedThreadId=null;focusLane=null; subRoleFocus=null; render(); schedulePersistView();}; const secondaryBtn=document.getElementById('toggleSecondary'); if(secondaryBtn){secondaryBtn.onclick=()=>{showSecondary=!showSecondary;secondaryBtn.textContent=showSecondary?'Masquer secondaires':'Afficher secondaires';isolatedThreadId=null;render();schedulePersistView();};secondaryBtn.textContent=showSecondary?'Masquer secondaires':'Afficher secondaires';} document.getElementById('modeTime').onclick=()=>{zoomMode='time'; document.getElementById('modeTime').classList.add('active'); document.getElementById('modeDetail').classList.remove('active'); schedulePersistView();}; document.getElementById('modeDetail').onclick=()=>{zoomMode='detail'; document.getElementById('modeDetail').classList.add('active'); document.getElementById('modeTime').classList.remove('active'); schedulePersistView();};
+document.getElementById('fileInput').addEventListener('change',e=>{const input=e.currentTarget;const f=input.files&&input.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{loadText(String(r.result||''));input.value=''};r.onerror=()=>{showLoadError(r.error||new Error('Lecture impossible'));input.value=''};r.readAsText(f,'UTF-8')}); const mobileFileInput=document.getElementById('mobileFileInput');if(mobileFileInput)mobileFileInput.addEventListener('change',e=>{const input=e.currentTarget;const f=input.files&&input.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{loadText(String(r.result||''));input.value=''};r.onerror=()=>{showLoadError(r.error||new Error('Lecture impossible'));input.value=''};r.readAsText(f,'UTF-8')}); document.querySelectorAll('button[data-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.filter; subRoleFocus=null; isolatedThreadId=null; document.querySelectorAll('button[data-filter]').forEach(x=>x.classList.remove('active')); b.classList.add('active'); render(); schedulePersistView();}); document.getElementById('allRoles').onclick=()=>{isolatedThreadId=null;focusLane=null; subRoleFocus=null; render(); schedulePersistView();}; const secondaryBtn=document.getElementById('toggleSecondary'); if(secondaryBtn){secondaryBtn.onclick=()=>{showSecondary=!showSecondary;secondaryBtn.textContent=showSecondary?'Masquer secondaires':'Afficher secondaires';isolatedThreadId=null;render();schedulePersistView();};secondaryBtn.textContent=showSecondary?'Masquer secondaires':'Afficher secondaires';} document.getElementById('desktopTimeToggle')?.addEventListener('click',toggleTimeMode);
+document.getElementById('modeTime').onclick=()=>{zoomMode='time'; document.getElementById('modeTime').classList.add('active'); document.getElementById('modeDetail').classList.remove('active'); schedulePersistView();}; document.getElementById('modeDetail').onclick=()=>{zoomMode='detail'; document.getElementById('modeDetail').classList.add('active'); document.getElementById('modeTime').classList.remove('active'); schedulePersistView();};
 function zoomTime(f){const center=(chartScroll.scrollLeft+chartScroll.clientWidth/2-branchW)/pxPerDay; pxPerDay=Math.max(minPxPerDay(),Math.min(380,pxPerDay*f)); render(); chartScroll.scrollLeft=branchW+center*pxPerDay-chartScroll.clientWidth/2;}
 function zoomDetail(f){const center=(chartScroll.scrollTop+chartScroll.clientHeight/2)/rowH; rowH=Math.max(22,Math.min(80,rowH*f)); render(); chartScroll.scrollTop=center*rowH-chartScroll.clientHeight/2;}
 document.getElementById('zoomIn').onclick=()=>zoomMode==='time'?zoomTimeAt(1.25):zoomDetailAt(1.18); document.getElementById('zoomOut').onclick=()=>zoomMode==='time'?zoomTimeAt(1/1.25):zoomDetailAt(1/1.18); document.getElementById('reset').onclick=()=>{isolatedThreadId=null;focusLane=null;subRoleFocus=null;selectedId=null;mobileRolesRoot=true;mobileRolesBrowseLane=null;showSecondary=false;const sb=document.getElementById('toggleSecondary');if(sb)sb.textContent='Afficher secondaires';rowH=isMobileMode()?42:34;strokeScale=1;filter='all';document.querySelectorAll('button[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter==='all'));applyTimeRangeState(isMobileMode()?'3m':'all');if(isMobileMode())fitMobileCurrentView();else fitFullPeriod();schedulePersistView();};
@@ -2983,12 +3129,14 @@ chartScroll.addEventListener('wheel',e=>{
 applyResponsiveMetrics();
 applyIPhoneLayout();
 updateStandaloneHint();
+document.body.classList.remove('iphonePortrait','iphoneLandscape','landLeftHidden','landRightHidden','landMenusHidden');
+
 async function bootViewer(){
   let local=null;
   try{local=readStoredJson()}catch(e){}
 
   try{
-    const remoteUrl='../data/current.json?build=PILOT_V2_2_TIME&t='+Date.now();
+    const remoteUrl='data/current.json?build=PILOT_PC_V2_0&t='+Date.now();
     const res=await fetch(remoteUrl,{cache:'no-store'});
     if(res.ok){
       const remote=await res.json();
