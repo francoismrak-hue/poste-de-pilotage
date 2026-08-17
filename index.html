@@ -10,7 +10,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Pilotage">
-<title>PILOT v2.3 — PC</title>
+<title>PILOT v2.4 — PC</title>
+<meta name="pilot-build" content="PILOT_PC_v2.4-20260817-150813">
 <meta name="format-detection" content="telephone=no">
 <style>
 :root{--bg:#000;--panel:#080808;--panel2:#111;--text:#fff;--muted:#a9a9a9;--yellow:#ffd400;--yellow2:#ffea61;--yellowSoft:rgba(255,212,0,.18);--grid:#252525;--grid2:#141414;--leftw:320px;--rightw:420px;--rightwDynamic:420px;--headerh:126px;--axish:92px;}
@@ -1474,7 +1475,7 @@ body.timeOff .gridV{
 </head>
 <body>
 <div id="app">
-<header id="header"><h1>PILOT v2.3</h1><div class="sub" id="subtitle">PILOT v2.0 · navigation inertielle + zoom directionnel</div>
+<header id="header"><h1>PILOT v2.4</h1><div class="sub" id="subtitle">PILOT v2.0 · navigation inertielle + zoom directionnel</div>
 <div id="mobileQuickBar">
   <label class="mobileFileLabel">JSON<input id="mobileFileInput" type="file" accept=".json,application/json"></label>
   <button id="mobilePeriodTop">3 mois</button>
@@ -1544,7 +1545,8 @@ let timeRangeMode="all", viewStartOverride=null, viewEndOverride=null;
 let mobileRolesRoot=true, mobileRolesBrowseLane=null;
 
 const STORAGE_DATA_KEY='postePilotage:lastJson:v1';
-const STORAGE_VIEW_KEY='pilot:viewState:PC:v2.3';
+const PILOT_BUILD='PILOT_PC_v2.4-20260817-150813';
+const STORAGE_VIEW_KEY='pilot:viewState:PC:v2.4';
 let restoringView=false;
 let saveTimer=null;
 
@@ -3581,7 +3583,7 @@ async function bootViewer(){
   try{local=readStoredJson()}catch(e){}
 
   try{
-    const remoteUrl='data/current.json?build=PILOT_PC_V2_3&t='+Date.now();
+    const remoteUrl='data/current.json?build=PILOT_PC_V2_4&t='+Date.now();
     const res=await fetch(remoteUrl,{cache:'no-store'});
     if(res.ok){
       const remote=await res.json();
