@@ -1,20 +1,20 @@
 {
   "meta": {
-    "schema": "pilot-2.6",
-    "version": "PILOT_PC_v2.6",
-    "generatedAt": "2026-08-17T18:19:00+02:00",
+    "schema": "pilot-2.7",
+    "version": "PILOT_PC_v2.7",
+    "generatedAt": "2026-08-18T00:07:00+02:00",
     "title": "PILOT v2.5",
     "defaultWindow": {
-      "start": "2026-07-01T00:00:00",
-      "end": "2026-10-31T23:59:59"
+      "start": "2025-06-01T00:00:00",
+      "end": "2027-12-31T23:59:59"
     },
     "fullPeriod": {
-      "start": "2025-07-01T00:00:00",
-      "end": "2027-09-30T23:59:00"
+      "start": "2025-06-01T00:00:00",
+      "end": "2027-12-31T23:59:59"
     },
     "defaultDomainId": null,
     "defaultRoleId": null,
-    "note": "Arborescence explicite : Domaine → Rôle → Branches du rôle → Sous-fils / nœuds / historique."
+    "note": "Horizon juin 2025 → décembre 2027. Chemin actif jaune, branches inactives grisées, iconographie nœuds/tâches restaurée."
   },
   "domains": [
     {
