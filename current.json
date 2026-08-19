@@ -1,8 +1,8 @@
 {
   "meta": {
-    "schema": "pilot-2.7",
-    "version": "PILOT_PC_v2.7",
-    "generatedAt": "2026-08-18T00:07:00+02:00",
+    "schema": "pilot-2.8",
+    "version": "PILOT_PC_v2.8",
+    "generatedAt": "2026-08-19T14:24:00+02:00",
     "title": "PILOT v2.5",
     "defaultWindow": {
       "start": "2025-06-01T00:00:00",
@@ -14,7 +14,7 @@
     },
     "defaultDomainId": null,
     "defaultRoleId": null,
-    "note": "Horizon juin 2025 → décembre 2027. Chemin actif jaune, branches inactives grisées, iconographie nœuds/tâches restaurée."
+    "note": "PILOT PC v2.8 — lisibilité renforcée, zoom détail global, panneau droit redimensionnable, échelle temporelle adaptative heures/jours/dimanches/mois-années."
   },
   "domains": [
     {
