@@ -1,9 +1,9 @@
 {
   "meta": {
-    "schema": "pilot-2.8",
-    "version": "PILOT_PC_v2.8",
-    "generatedAt": "2026-08-19T14:24:00+02:00",
-    "title": "PILOT v2.5",
+    "schema": "pilot-2.9",
+    "version": "PILOT_PC_v2.9",
+    "generatedAt": "2026-08-19T14:42:00+02:00",
+    "title": "PILOT v2.9",
     "defaultWindow": {
       "start": "2025-06-01T00:00:00",
       "end": "2027-12-31T23:59:59"
@@ -14,7 +14,7 @@
     },
     "defaultDomainId": null,
     "defaultRoleId": null,
-    "note": "PILOT PC v2.8 — lisibilité renforcée, zoom détail global, panneau droit redimensionnable, échelle temporelle adaptative heures/jours/dimanches/mois-années."
+    "note": "PILOT PC v2.9 — consolidation technique : géométrie unifiée, CSS consolidé, doublons de données nettoyés, zoom/curseur stabilisés."
   },
   "domains": [
     {
@@ -2813,18 +2813,6 @@
       "agendaStatus": "optional_reminder"
     },
     {
-      "id": "node_hanna_rentree_6e",
-      "threadId": "thread_hanna",
-      "type": "vigilance",
-      "symbol": "▲",
-      "title": "Rentrée / transition collège Hanna",
-      "deadline": "2026-09-01T09:00:00",
-      "status": "watch",
-      "energy": "medium",
-      "duration": "continu",
-      "agendaStatus": "optional_reminder"
-    },
-    {
       "id": "node_ametis_selection_start",
       "threadId": "thread_ametis",
       "type": "task",
@@ -2877,19 +2865,7 @@
       "threadId": "thread_facturation_electronique",
       "type": "task",
       "symbol": "■",
-      "title": "Comprendre facturation électronique",
-      "deadline": "2026-09-10T18:00:00",
-      "status": "open",
-      "energy": "medium",
-      "duration": "1h",
-      "agendaStatus": "optional_reminder"
-    },
-    {
-      "id": "node_facturation_sept",
-      "threadId": "thread_facturation_electronique",
-      "type": "task",
-      "symbol": "■",
-      "title": "Point facturation électronique",
+      "title": "Comprendre / point facturation électronique",
       "deadline": "2026-09-10T18:00:00",
       "status": "open",
       "energy": "medium",
@@ -2902,18 +2878,6 @@
       "type": "vigilance",
       "symbol": "▲",
       "title": "Réactivation Bouygues / Massy en septembre",
-      "deadline": "2026-09-15T18:00:00",
-      "status": "watch",
-      "energy": "medium",
-      "duration": "—",
-      "agendaStatus": "optional_reminder"
-    },
-    {
-      "id": "node_bouygues_sept2",
-      "threadId": "thread_bouygues",
-      "type": "vigilance",
-      "symbol": "▲",
-      "title": "Réactivation Bouygues en septembre",
       "deadline": "2026-09-15T18:00:00",
       "status": "watch",
       "energy": "medium",
@@ -3723,14 +3687,6 @@
       "effect": "Suivi santé alimenté."
     },
     {
-      "id": "hist_hanna_dentiste_jun",
-      "threadId": "thread_hanna",
-      "date": "2026-06-30T13:00:00",
-      "type": "event",
-      "summary": "Dentiste Hanna / première consultation.",
-      "effect": "Suivi santé."
-    },
-    {
       "id": "hist_ametis_materiel_paye",
       "threadId": "thread_ametis",
       "date": "2026-06-30T15:00:00",
@@ -3891,20 +3847,12 @@
       "effect": "Attente retour colorimétrie."
     },
     {
-      "id": "hist_brs_house_meeting",
-      "threadId": "thread_brs",
-      "date": "2026-07-09T18:00:00",
-      "type": "meeting",
-      "summary": "Présentation BRS faite avec Elsa.",
-      "effect": "Lien maison / couple / finance activé."
-    },
-    {
       "id": "hist_brs_meeting",
       "threadId": "thread_brs",
       "date": "2026-07-09T18:00:00",
       "type": "milestone",
       "summary": "Réunion de présentation BRS faite avec Elsa.",
-      "effect": "Le projet devient concret."
+      "effect": "Le projet devient concret et active les dimensions maison / couple / finance."
     },
     {
       "id": "hist_setec_versions",
